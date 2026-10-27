@@ -15563,9 +15563,23 @@ html.light .sidebar .nav-label{color:inherit!important}
 .update-prompt-actions{display:flex;gap:9px;margin-top:16px}.update-prompt-actions .btn{flex:1;height:42px}
 </style>
 <style id="onex-edge-tools-native">
-#page-edge-tools .scan-ports{display:flex;flex-wrap:wrap;gap:8px 16px;margin:4px 0 2px;direction:ltr;justify-content:flex-end}
-#page-edge-tools .scan-ports .chk{font-size:12px;font-family:"JetBrains Mono",ui-monospace,monospace}
+#page-edge-tools .scan-ports{display:grid;grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:9px;margin:8px 0 2px;direction:ltr}
+#page-edge-tools .scan-ports .chk{position:relative;display:flex;align-items:center;justify-content:center;min-height:48px;padding:0 10px;border:1px solid var(--card-b);border-radius:14px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));font:700 12px "JetBrains Mono",ui-monospace,monospace;color:var(--t2);cursor:pointer;transition:transform .2s ease,border-color .2s ease,background .2s ease,box-shadow .2s ease}
+#page-edge-tools .scan-ports .chk:hover{transform:translateY(-2px);border-color:rgba(var(--accent-rgb),.55);color:var(--t1)}
+#page-edge-tools .scan-ports .chk:has(input:checked){color:#fff;border-color:rgba(var(--accent-rgb),.9);background:linear-gradient(145deg,rgba(var(--accent-rgb),.28),rgba(var(--accent2-rgb),.16));box-shadow:0 8px 20px -12px rgba(var(--accent-rgb),.95),0 0 0 1px rgba(var(--accent-rgb),.18) inset}
+#page-edge-tools .scan-ports .chk input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+#page-edge-tools .scan-ports .chk::after{content:"";position:absolute;top:6px;right:7px;width:6px;height:6px;border-radius:50%;background:var(--t3);opacity:.55}
+#page-edge-tools .scan-ports .chk:has(input:checked)::after{background:#35e8a2;opacity:1;box-shadow:0 0 9px #35e8a2}
+
 #page-edge-tools .scan-ports-tools{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+#page-edge-tools .scan-ports-tools .btn{border-radius:999px;padding-inline:14px}
+#page-edge-tools .scan-port-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+#page-edge-tools .scan-port-toolbar small{color:var(--t3);font-size:11px}
+#page-edge-tools .sni-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+#page-edge-tools .sni-results{display:grid;gap:7px;margin-top:10px}
+#page-edge-tools .sni-result{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid var(--card-b);border-radius:12px;background:rgba(var(--accent-rgb),.045)}
+#page-edge-tools .sni-result code{direction:ltr;color:var(--accent2);overflow-wrap:anywhere}
+#page-edge-tools .sni-result b{color:#35e8a2;white-space:nowrap}
 #page-edge-tools .scan-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
 #page-edge-tools .scan-hint{font-size:11px;color:var(--t3);margin-top:6px;line-height:1.8}
 #page-edge-tools .scan-summary{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 10px}
@@ -15594,7 +15608,8 @@ html.light .sidebar .nav-label{color:inherit!important}
       <div class="field"><label>حالت اسکن</label><select id="edgeScanMode"><option value="sample">سریع، نمونه‌برداری</option><option value="full">کامل، حداکثر ۲۰۴۸ تست</option></select></div>
       <div class="field"><label>Timeout (ثانیه)</label><input id="edgeScanTimeout" type="number" min="0.4" max="8" step="0.1" value="3" dir="ltr"></div>
     </div>
-    <div class="field"><label>پورت‌ها</label>
+    <div class="field">
+      <div class="scan-port-toolbar"><label>پورت‌ها</label><small id="edgePortCount">۱ پورت انتخاب شده</small></div>
       <div class="scan-ports" id="edgeScanPorts"><label class="chk"><input type="checkbox" class="scanPortChk" value="80"> 80</label><label class="chk"><input type="checkbox" class="scanPortChk" value="443" checked> 443</label><label class="chk"><input type="checkbox" class="scanPortChk" value="2052"> 2052</label><label class="chk"><input type="checkbox" class="scanPortChk" value="2053"> 2053</label><label class="chk"><input type="checkbox" class="scanPortChk" value="2082"> 2082</label><label class="chk"><input type="checkbox" class="scanPortChk" value="2083"> 2083</label><label class="chk"><input type="checkbox" class="scanPortChk" value="2086"> 2086</label><label class="chk"><input type="checkbox" class="scanPortChk" value="2087"> 2087</label><label class="chk"><input type="checkbox" class="scanPortChk" value="2095"> 2095</label><label class="chk"><input type="checkbox" class="scanPortChk" value="2096"> 2096</label><label class="chk"><input type="checkbox" class="scanPortChk" value="8080"> 8080</label><label class="chk"><input type="checkbox" class="scanPortChk" value="8443"> 8443</label><label class="chk"><input type="checkbox" class="scanPortChk" value="8880"> 8880</label></div>
       <div class="scan-ports-tools"><button class="btn btn-sm" type="button" onclick="onexScanPorts('tls')">فقط TLS</button><button class="btn btn-sm" type="button" onclick="onexScanPorts('all')">همه</button><button class="btn btn-sm" type="button" onclick="onexScanPorts('http')">HTTP</button><button class="btn btn-sm" type="button" onclick="onexScanPorts('none')">هیچ‌کدام</button></div>
     </div>
@@ -15616,6 +15631,16 @@ html.light .sidebar .nav-label{color:inherit!important}
     <div id="edgeScanResults" class="page-sub">هنوز اسکن انجام نشده.</div>
   </div>
   <div class="card">
+    <div class="card-title">SNI Scanner · Reality</div>
+    <div class="page-sub">SNIهای سریع را با TLS handshake واقعی پیدا کن؛ فقط دامنه‌ها را وارد کن، هر خط یکی.</div>
+    <div class="sni-grid">
+      <div class="field"><label>لیست SNI</label><textarea id="sniScanList" rows="4" dir="ltr" placeholder="www.cloudflare.com&#10;cloudflare.com"></textarea></div>
+      <button class="btn btn-p" type="button" onclick="onexSniScan()">اسکن SNI</button>
+    </div>
+    <div class="scan-actions"><button class="btn" type="button" onclick="onexCopySni()">کپی سریع‌ترین‌ها</button><button class="btn" type="button" onclick="onexClearSni()">پاک کردن</button><span id="sniScanStatus" class="page-sub"></span></div>
+    <div id="sniScanResults" class="sni-results"><span class="page-sub">هنوز اسکن SNI انجام نشده.</span></div>
+  </div>
+  <div class="card">
     <div class="card-title">دامنه عمومی پنل</div>
     <div class="page-sub">لینک‌های جدید با این دامنه ساخته می‌شوند، نه hostname محلی.</div>
     <div id="onexPublicEndpoint">در حال بررسی...</div>
@@ -15632,10 +15657,11 @@ html.light .sidebar .nav-label{color:inherit!important}
   function selectedPorts(){
     const out=[...document.querySelectorAll('#edgeScanPorts .scanPortChk:checked')].map(x=>Number(x.value));
     ($('edgeScanCustomPorts').value||'').split(/[\s,]+/).forEach(v=>{const n=Number(v);if(n>=1&&n<=65535&&!out.includes(n))out.push(n)});
+    const count=$('edgePortCount'); if(count)count.textContent=`${out.length.toLocaleString('fa-IR')} پورت انتخاب شده`;
     return out;
   }
   const HTTP_PORTS=[80,8080,8880,2052,2082,2086,2095];
-  window.onexScanPorts=function(kind){document.querySelectorAll('#edgeScanPorts .scanPortChk').forEach(c=>{const n=Number(c.value);c.checked=kind==='all'||(kind==='tls'&&TLS.includes(n))||(kind==='http'&&HTTP_PORTS.includes(n))})};
+  window.onexScanPorts=function(kind){document.querySelectorAll('#edgeScanPorts .scanPortChk').forEach(c=>{const n=Number(c.value);c.checked=kind==='all'||(kind==='tls'&&TLS.includes(n))||(kind==='http'&&HTTP_PORTS.includes(n))});selectedPorts()};
   let lastRows=[];
   function render(rows,stats){
     lastRows=rows||[];
@@ -15672,6 +15698,12 @@ html.light .sidebar .nav-label{color:inherit!important}
   window.onexCopyEdge=async function(){if(!lastGood.length){toast('IP سالمی نیست');return}const t=lastGood.map(x=>x.host+':'+x.port).join('\n');try{await navigator.clipboard.writeText(t);toast(`${lastGood.length} IP کپی شد`)}catch(e){prompt('کپی کن:',t)}};
   window.onexApplyEdge=async function(){const source=$('edgeScanSource').value;if(!confirm('IPهای سالم داخل Clean IP همه‌ی کانفیگ‌ها قرار بگیرد؟'))return;const r=await api('/api/scanner/edge/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source})});if(r)toast(`${r.updated} کانفیگ بروزرسانی شد`);};
   window.onexClearEdge=async function(){const source=$('edgeScanSource').value;const r=await api('/api/scanner/edge/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source})});if(r){render([],null);$('edgeScanResults').textContent='نتایج پاک شد';$('edgeScanStatus').textContent='';}};
+  let sniRows=[];
+  function renderSni(rows){sniRows=rows||[];const box=$('sniScanResults');if(!box)return;if(!sniRows.length){box.innerHTML='<span class="page-sub">SNI سالمی پیدا نشد.</span>';return}box.innerHTML=sniRows.map(x=>`<div class="sni-result"><code>${esc(x.sni)}</code><b>${x.latency_ms}ms</b></div>`).join('')}
+  window.onexSniScan=async function(){const raw=$('sniScanList').value.split(/[\s,]+/).map(x=>x.trim()).filter(Boolean);if(!raw.length){toast('حداقل یک SNI وارد کن');return}const st=$('sniScanStatus');st.textContent='در حال تست TLS...';const r=await api('/api/scanner/sni/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({snis:raw,port:443,timeout:3})});if(!r){st.textContent='اسکن ناموفق بود';return}st.textContent=`${r.tested} SNI بررسی شد`;renderSni(r.results)};
+  window.onexCopySni=async function(){if(!sniRows.length){toast('نتیجه‌ای نیست');return}const t=sniRows.map(x=>x.sni).join('\n');try{await navigator.clipboard.writeText(t);toast('SNIهای سریع کپی شد')}catch(e){prompt('کپی کن:',t)}};
+  window.onexClearSni=async function(){const r=await api('/api/scanner/sni/clear',{method:'POST'});if(r){sniRows=[];renderSni([]);$('sniScanStatus').textContent=''}};
+  document.querySelectorAll('#edgeScanPorts .scanPortChk').forEach(x=>x.addEventListener('change',selectedPorts));selectedPorts();
   const srcEl=$('edgeScanSource');
   if(srcEl)srcEl.addEventListener('change',()=>{$('edgeSourceHint').textContent=HINTS[srcEl.value]||'';const sni=$('edgeScanSni');sni.placeholder=srcEl.value==='cloudflare'?'www.cloudflare.com':'onex.shiprr.dev';loadSaved();});
   const oldGo=window.goPage;window.goPage=function(name){oldGo(name);if(name==='edge-tools'){loadOnexPublicEndpoint();loadSaved();}};
@@ -16044,6 +16076,78 @@ async def _scan_public_targets(targets: list[tuple[str, int]], sni: str, timeout
 
     results = await asyncio.gather(*(probe(h, port) for h, port in list(dict.fromkeys(targets))[:2048]))
     return sorted(results, key=lambda x: (not x["ok"], x["latency_ms"]))
+
+
+SNI_SCAN_STATE = {"results": [], "updated_at": None}
+
+
+def _read_onex_sni_list() -> list[str]:
+    candidates = [BASE_DIR / "config" / "sni_reality.txt", BASE_DIR / "data" / "sni_reality.txt"]
+    for path in candidates:
+        if path.is_file():
+            out = []
+            for line in path.read_text(errors="ignore").splitlines():
+                value = line.strip().lower()
+                if value and not value.startswith("#") and len(value) <= 253 and "/" not in value and " " not in value:
+                    out.append(value)
+            return list(dict.fromkeys(out))[:512]
+    return []
+
+
+@app.get("/api/scanner/sni")
+async def sni_scan_state(_=Depends(require_auth)):
+    return {"ok": True, **SNI_SCAN_STATE, "defaults": _read_onex_sni_list()}
+
+
+@app.post("/api/scanner/sni/scan")
+async def sni_scan(request: Request, _=Depends(require_auth)):
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    raw = body.get("snis") or _read_onex_sni_list()
+    if isinstance(raw, str):
+        raw = re.split(r"[\s,]+", raw)
+    snis = []
+    for item in raw[:128]:
+        host = _clean_scan_host(str(item))
+        if host and len(host) <= 253 and host not in {"localhost", "127.0.0.1", "0.0.0.0"} and host not in snis:
+            snis.append(host)
+    port = safe_int(body.get("port"), 443, 1, 65535)
+    timeout = max(0.5, min(8.0, safe_float(body.get("timeout"), 3.0, 0.5)))
+    sem = asyncio.Semaphore(24)
+    import ssl
+
+    async def probe(host: str) -> dict:
+        started = time.perf_counter()
+        async with sem:
+            writer = None
+            try:
+                ctx = ssl.create_default_context()
+                ctx.check_hostname = False
+                ctx.verify_mode = ssl.CERT_NONE
+                _, writer = await asyncio.wait_for(asyncio.open_connection(host, port, ssl=ctx, server_hostname=host), timeout=timeout)
+                return {"sni": host, "port": port, "ok": True, "latency_ms": round((time.perf_counter() - started) * 1000, 1)}
+            except Exception as exc:
+                return {"sni": host, "port": port, "ok": False, "latency_ms": round((time.perf_counter() - started) * 1000, 1), "error": str(exc)[:120]}
+            finally:
+                if writer is not None:
+                    writer.close()
+                    try:
+                        await writer.wait_closed()
+                    except Exception:
+                        pass
+
+    rows = await asyncio.gather(*(probe(host) for host in snis))
+    good = sorted((row for row in rows if row.get("ok")), key=lambda row: row["latency_ms"])[:10]
+    SNI_SCAN_STATE.update({"results": good, "updated_at": datetime.now().isoformat()})
+    return {"ok": True, "tested": len(rows), "good": len(good), "results": good, "updated_at": SNI_SCAN_STATE["updated_at"]}
+
+
+@app.post("/api/scanner/sni/clear")
+async def sni_scan_clear(_=Depends(require_auth)):
+    SNI_SCAN_STATE.update({"results": [], "updated_at": datetime.now().isoformat()})
+    return {"ok": True}
 
 
 @app.get("/api/public-endpoint")
