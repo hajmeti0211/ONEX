@@ -11136,7 +11136,7 @@ Cache-Control: no-cache"></textarea></div>
       <div class="field"><label>افزودن IP / IP:Port</label><input id="poolIps" dir="ltr" placeholder="104.16.0.1, 172.67.1.1:443"><button class="btn btn-sm" type="button" onclick="poolAddIps()">افزودن به مخزن</button></div>
       <div class="field"><label>افزودن Proxy مورداعتماد</label><input id="poolProxy" dir="ltr" placeholder="socks5://user:pass@host:1080"><button class="btn btn-sm" type="button" onclick="poolAddProxy()">افزودن Proxy</button></div>
     </div>
-    <div class="scan-actions"><button class="btn btn-p" type="button" onclick="poolCheckIps()">تست همه IPها</button><span id="poolStatus" class="page-sub"></span></div>
+    <div class="scan-actions"><button class="btn btn-p" type="button" onclick="poolCheckIps()">تست همه IPها</button><button class="btn" type="button" onclick="poolCheckProxies()">تست Proxyها</button><span id="poolStatus" class="page-sub"></span></div>
     <div id="poolRows" class="scan-results" style="margin-top:10px">در حال بارگذاری…</div>
   </div>
   <div class="card">
@@ -15831,6 +15831,7 @@ html.light .sidebar .nav-label{color:inherit!important}
   window.poolAddIps=async function(){const v=document.getElementById('poolIps').value.trim();if(!v)return;const r=await j('/api/pools/ips','POST',{ips:v});if(r){document.getElementById('poolIps').value='';loadPools();toast(`${r.added} IP اضافه شد`)}}
   window.poolAddProxy=async function(){const v=document.getElementById('poolProxy').value.trim();if(!v)return;const r=await j('/api/pools/proxies','POST',{url:v});if(r){document.getElementById('poolProxy').value='';loadPools();toast('Proxy اضافه شد')}}
   window.poolCheckIps=async function(){const r=await j('/api/pools/ips/check','POST',{});if(r){document.getElementById('poolStatus').textContent=`${r.healthy} IP سالم از ${r.checked}`;loadPools()}}
+  window.poolCheckProxies=async function(){const r=await j('/api/pools/proxies/check','POST',{});if(r){document.getElementById('poolStatus').textContent=`${r.healthy} Proxy قابل‌دسترسی از ${r.checked}`;loadPools()}}
   window.poolDel=async function(kind,id){const r=await j('/api/pools/'+kind+'/'+encodeURIComponent(id),'DELETE');if(r)loadPools()}
   // ---- edge
   window.edgeDomainMode=function(){const custom=document.querySelector('input[name="edgeMode"]:checked')?.value==='custom';const box=document.getElementById('edgeCustomDomainBox');const input=document.getElementById('edgeDomain');if(box)box.hidden=!custom;if(input&&!custom)input.value='';};
