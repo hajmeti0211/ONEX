@@ -11129,6 +11129,16 @@ Cache-Control: no-cache"></textarea></div>
       <button class="btn" onclick="edgeRemove()">حذف Edge</button>
     </div>
   </div>
+  <div class="card" id="onexPoolsCard">
+    <div class="card-title">مخزن IP و Proxy مدیریت‌شده</div>
+    <div class="page-sub">فقط IP و Proxy خودت را اضافه کن. لیست‌های عمومی ناشناس وارد پنل نمی‌شوند.</div>
+    <div class="form-row" style="margin-top:12px">
+      <div class="field"><label>افزودن IP / IP:Port</label><input id="poolIps" dir="ltr" placeholder="104.16.0.1, 172.67.1.1:443"><button class="btn btn-sm" type="button" onclick="poolAddIps()">افزودن به مخزن</button></div>
+      <div class="field"><label>افزودن Proxy مورداعتماد</label><input id="poolProxy" dir="ltr" placeholder="socks5://user:pass@host:1080"><button class="btn btn-sm" type="button" onclick="poolAddProxy()">افزودن Proxy</button></div>
+    </div>
+    <div class="scan-actions"><button class="btn btn-p" type="button" onclick="poolCheckIps()">تست همه IPها</button><span id="poolStatus" class="page-sub"></span></div>
+    <div id="poolRows" class="scan-results" style="margin-top:10px">در حال بارگذاری…</div>
+  </div>
   <div class="card">
     <div class="card-title">اسکنر SNI برای Reality</div>
     <div class="page-sub">هر دامنه را از سرور تست می‌کنیم: TLS 1.3، پشتیبانی HTTP/2 و سرعت اتصال.</div>
@@ -15697,16 +15707,6 @@ html.light .sidebar .nav-label{color:inherit!important}
     <div class="scan-actions"><button class="btn" type="button" onclick="onexCopySni()">کپی سریع‌ترین‌ها</button><button class="btn" type="button" onclick="onexClearSni()">پاک کردن</button><span id="sniScanStatus" class="page-sub"></span></div>
     <div id="sniScanResults" class="sni-results"><span class="page-sub">هنوز اسکن SNI انجام نشده.</span></div>
   </div>
-  <div class="card" id="onexPoolsCard">
-    <div class="card-title">مخزن IP و Proxy مدیریت‌شده</div>
-    <div class="page-sub">فقط IP و Proxy خودت را اضافه کن. لیست‌های عمومی ناشناس وارد پنل نمی‌شوند.</div>
-    <div class="form-row" style="margin-top:12px">
-      <div class="field"><label>افزودن IP / IP:Port</label><input id="poolIps" dir="ltr" placeholder="104.16.0.1, 172.67.1.1:443"><button class="btn btn-sm" type="button" onclick="poolAddIps()">افزودن به مخزن</button></div>
-      <div class="field"><label>افزودن Proxy مورداعتماد</label><input id="poolProxy" dir="ltr" placeholder="socks5://user:pass@host:1080"><button class="btn btn-sm" type="button" onclick="poolAddProxy()">افزودن Proxy</button></div>
-    </div>
-    <div class="scan-actions"><button class="btn btn-p" type="button" onclick="poolCheckIps()">تست همه IPها</button><span id="poolStatus" class="page-sub"></span></div>
-    <div id="poolRows" class="scan-results" style="margin-top:10px">در حال بارگذاری…</div>
-  </div>
   <div class="card">
     <div class="card-title">دامنه عمومی پنل</div>
     <div class="page-sub">لینک‌های جدید با این دامنه ساخته می‌شوند، نه hostname محلی.</div>
@@ -15773,7 +15773,7 @@ html.light .sidebar .nav-label{color:inherit!important}
   document.querySelectorAll('#edgeScanPorts .scanPortChk').forEach(x=>x.addEventListener('change',selectedPorts));selectedPorts();
   const srcEl=$('edgeScanSource');
   if(srcEl)srcEl.addEventListener('change',()=>{$('edgeSourceHint').textContent=HINTS[srcEl.value]||'';const sni=$('edgeScanSni');sni.placeholder=srcEl.value==='cloudflare'?'www.cloudflare.com':'onex.shiprr.dev';loadSaved();});
-  const oldGo=window.goPage;window.goPage=function(name){oldGo(name);if(name==='edge-tools'){loadOnexPublicEndpoint();loadSaved();loadPools();}};
+  const oldGo=window.goPage;window.goPage=function(name){oldGo(name);if(name==='edge-tools'){loadOnexPublicEndpoint();loadSaved();}if(name==='edge'){loadEdge();loadPools();}};
 })();
 </script>
 <script id="onexSellEdgeJs">
