@@ -42,26 +42,27 @@ export default {
     }
 
     const target = new URL(path + url.search, "https://" + env.ORIGIN);
-    const headers = new Headers();
-    for (const [k, v] of request.headers) {
-      if (!HOP_HEADERS.includes(k.toLowerCase())) headers.set(k, v);
-    }
+    const headers = new Headers(request.headers);
+    for (const name of HOP_HEADERS) headers.delete(name);
+    // Cloudflare requires the Upgrade header to survive the relay handshake.
+    // Do not rebuild this as a plain fetch init without the original headers.
     const clientIp = request.headers.get("cf-connecting-ip") || "";
     if (clientIp) headers.set("x-forwarded-for", clientIp);
     if (env.KEY) headers.set("x-onex-edge", env.KEY);
+    headers.set("host", target.host);
 
     const method = request.method.toUpperCase();
-    const init = {
+    const forwarded = new Request(target.toString(), {
       method,
       headers,
       redirect: "manual",
       body: method === "GET" || method === "HEAD" ? undefined : request.body,
-    };
+    });
 
     try {
-      // WebSocket upgrades are passed through as-is: Cloudflare returns the
-      // origin's 101 response with the paired socket attached.
-      return await fetch(target.toString(), init);
+      // The original Upgrade header is retained, allowing Cloudflare to
+      // return the origin's 101 WebSocket response instead of downgrading it.
+      return await fetch(forwarded);
     } catch (err) {
       return new Response("origin unreachable", { status: 502 });
     }
