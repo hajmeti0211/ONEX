@@ -68,6 +68,7 @@ import asyncio
 import base64
 import hashlib
 import json
+import re
 import logging
 import os
 import secrets
@@ -77,7 +78,7 @@ from collections import defaultdict, deque
 from copy import deepcopy
 from datetime import datetime, timedelta
 from pathlib import Path
-from urllib.parse import quote, parse_qs
+from urllib.parse import quote, parse_qs, unquote
 import aiofiles
 import httpx
 import uvicorn
@@ -1306,7 +1307,7 @@ def protocol_public_port(link: dict | None, protocol: str, fallback: int = DEFAU
     except Exception:
         return safe_int((link or {}).get("port", fallback), fallback, MIN_PORT, MAX_PORT)
 
-def generate_vless_link(
+def _generate_vless_link_base(
     uuid: str, host: str, remark: str = "ONEX",
     protocol: str = DEFAULT_PROTOCOL, fingerprint: str | None = None,
     alpn: str | None = None, port: int | None = None, link: dict | None = None,
@@ -1460,6 +1461,74 @@ def generate_vless_link(
     if protocol == "tuic": return f"tuic://{uuid}:{uuid}@{host}:{port_value}?sni={quote(host)}&alpn=h3#{label}"
     return f"vless://{uuid}@{host}:{port_value}"
 
+
+# ============================================================
+# CONFIG OPTIMIZER (cs + fm) for VLESS / Trojan
+# ============================================================
+CDN_OPT_CIPHER_SUITES = (
+    "TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:"
+    "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384:"
+    "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:"
+    "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:"
+    "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA:"
+    "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256:TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256"
+)
+CDN_OPT_FINAL_MASK = json.dumps({
+    "tcp": [
+        {"type": "fragment", "settings": {"packets": "tlshello", "lengths": ["0", "104", "1"], "delays": ["0"], "maxSplit": "0"}},
+        {"type": "fragment", "settings": {"packets": "1-1", "lengths": ["114", "1"], "delays": ["1"], "maxSplit": "11"}},
+    ]
+}, separators=(",", ":"))
+CDN_OPT_DEFAULT_ECH = "cloudflare-ech.com+udp://1.1.1.1"
+_CDN_ECH_RE = re.compile(r"^[A-Za-z0-9.\-]{1,190}(\+(udp|tcp|https?)://[A-Za-z0-9.\-:\[\]/]{1,120})?$")
+
+
+def normalize_cdn_ech(value) -> str:
+    """Accept one ECH value like 'cloudflare-ech.com+udp://1.1.1.1'; empty disables ECH."""
+    v = str(value or "").strip()
+    if not v:
+        return ""
+    return v if _CDN_ECH_RE.match(v) else ""
+
+
+def apply_cdn_optimizer(uri: str, link: dict | None) -> str:
+    """Add cs (Cipher Suites) + fm (FinalMask) to a vless:// or trojan:// URI.
+
+    Only those parameters are replaced; host, port, path, sni, remark and every
+    other parameter are kept exactly as generated. Other protocols pass through.
+    """
+    if not link or not link.get("cdn_optimizer") or not isinstance(uri, str):
+        return uri
+    if not (link.get("bundle_protocols") or link.get("all_protocols")):
+        return uri  # only ONEX VIP (multi-protocol) configs
+    low = uri[:10].lower()
+    if not (low.startswith("vless://") or low.startswith("trojan://")):
+        return uri
+    base, sep, frag = uri.partition("#")
+    head, qsep, query = base.partition("?")
+    pairs = []
+    security = ""
+    for part in (query.split("&") if query else []):
+        if not part:
+            continue
+        key = part.split("=", 1)[0]
+        if key in ("cs", "fm"):
+            continue
+        if key == "security":
+            security = unquote(part.split("=", 1)[1] if "=" in part else "").lower()
+        pairs.append(part)
+    extra = [
+        "cs=" + quote(CDN_OPT_CIPHER_SUITES, safe=""),
+        "fm=" + quote(CDN_OPT_FINAL_MASK, safe=""),
+    ]
+    out = head + "?" + "&".join(extra + pairs)
+    return out + (sep + frag if sep else "")
+
+
+def generate_vless_link(*args, link: dict | None = None, **kwargs):
+    return apply_cdn_optimizer(_generate_vless_link_base(*args, link=link, **kwargs), link)
+
+
 def vless_link_for_link(
     link: dict,
     uid: str,
@@ -1601,6 +1670,8 @@ def get_link_info(
         "protocol": link.get("protocol", DEFAULT_PROTOCOL),
         "bundle_protocols": list(link.get("bundle_protocols") or []),
         "ad_block_enabled": bool(link.get("ad_block_enabled", AD_BLOCKER.get("enabled"))),
+        "cdn_optimizer": bool(link.get("cdn_optimizer", False)),
+        "cdn_ech": str(link.get("cdn_ech") or ""),
         "active": is_active,
         "used_bytes": used_b,
         "limit_bytes": limit_b,
@@ -1914,6 +1985,8 @@ async def make_link(
     bundle_protocols=None,
     ad_blocker: bool | None = None,
     advanced: dict | None = None,
+    cdn_optimizer: bool = False,
+    cdn_ech: str = "",
 ):
 
     if not PROTOCOLS:
@@ -2029,6 +2102,8 @@ async def make_link(
         "native_protocols": [p for p in PROTOCOLS if p not in {"vless-ws", "xhttp-packet-up", "xhttp-stream-up", "xhttp-stream-one", "trojan-ws", "vmess-ws"}],
         "usage_history": [],
         "ad_block_enabled": bool(AD_BLOCKER.get("enabled") if ad_blocker is None else ad_blocker),
+        "cdn_optimizer": bool(cdn_optimizer),
+        "cdn_ech": normalize_cdn_ech(cdn_ech),
     }
 
     async with LINKS_LOCK:
@@ -3785,6 +3860,8 @@ async def create_link_api(
         bundle_protocols=bundle_protocols,
         ad_blocker=bool(body.get("ad_block_enabled", AD_BLOCKER.get("enabled"))),
         advanced=advanced,
+        cdn_optimizer=bool(body.get("cdn_optimizer", False)),
+        cdn_ech=body.get("cdn_ech", ""),
     )
 
     host = get_host(request)
@@ -4283,6 +4360,11 @@ async def update_link(
 
         if "ad_block_enabled" in body:
             link["ad_block_enabled"] = bool(body.get("ad_block_enabled"))
+
+        if "cdn_optimizer" in body:
+            link["cdn_optimizer"] = bool(body.get("cdn_optimizer"))
+        if "cdn_ech" in body:
+            link["cdn_ech"] = normalize_cdn_ech(body.get("cdn_ech"))
 
         if "bundle_protocols" in body:
             raw_bundle = body.get("bundle_protocols") or []
@@ -10508,17 +10590,18 @@ html.light #page-configs .ocx-menu{background:color-mix(in srgb,var(--o-a) 6%,rg
     <div class="cfgx-card">
       <div class="cfgx-head"><span class="cfgx-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 7l9 5 9-5-9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg></span><div><b>🚀 انتخاب پروتکل</b><small>پروتکل اصلی کانفیگ - ۶ پروتکل ONEX VIP</small></div><span class="cfgx-badge" id="cfgxProtoBadge">—</span></div>
       <div class="cfgx-proto-grid" id="cfgxProtoGrid"><div class="cfgx-empty">در حال بارگذاری پروتکل‌ها...</div></div>
-      <label class="all-proto-toggle cfgx-all-toggle" style="margin:10px 0 12px">
-        <span><b>ساخت همه پروتکل‌های Railway</b><small>یک کانفیگ بساز و هر ۶ پروتکل ONEX را داخل یک ساب قرار بده</small></span>
-        <input id="cAllProtocols" type="checkbox">
-        <i aria-hidden="true"></i>
-      </label>
+
     </div>
 
     <div class="cfgx-card">
       <div class="cfgx-head"><span class="cfgx-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><path d="M17.5 14v7M14 17.5h7"/></svg></span><div><b>🔀 ترکیب پروتکل‌ها</b><small>هر تعداد پروتکل که انتخاب کنی، همه داخل یک ساب ساخته می‌شوند · ۶ پروتکل ONEX VIP</small></div><span class="cfgx-badge" id="cfgxBundleBadge">0</span></div>
       <div id="protocolBundleOptions" class="cfgx-bundle"></div>
       <small class="cfgx-note">پروتکل اصلی خودکار داخل ترکیب قرار می‌گیرد.</small>
+      <label class="all-proto-toggle cfgx-all-toggle cdn-opt-toggle" style="margin:12px 0 0">
+        <span><b>⚡ بهینه‌ساز کانفیگ ONEX VIP</b><small>Cipher Suites (cs) + FinalMask (fm) روی همه‌ی پروتکل‌های VLESS و Trojan این ترکیب اعمال می‌شود</small></span>
+        <input id="cCdnOpt" type="checkbox" onchange="syncCdnOpt(this)">
+        <i aria-hidden="true"></i>
+      </label>
     </div>
 
     <div class="cfgx-card">
@@ -13558,16 +13641,21 @@ async function openConfigEditor(e,uid){
   const bundleSelected=new Set(Array.isArray(link.bundle_protocols)?link.bundle_protocols:[link.protocol]);
   document.querySelectorAll('#protocolBundleOptions input').forEach(x=>{x.checked=bundleSelected.has(x.value)});
   const adb=document.getElementById('cAdBlockEnabled');if(adb)adb.checked=!!link.ad_block_enabled;
+  setCdnOpt(!!link.cdn_optimizer);
   fillAdvancedForm(link.advanced||{ports:[Number(link.port)||443]});
   document.getElementById('advancedValidationStatus')?.replaceChildren();
   document.getElementById('advancedPreviewBox')?.setAttribute('hidden','');
   window.scrollTo({top:0,behavior:'smooth'});
   toast(lang==='fa'?'فرم ویرایش آماده شد':'Edit form loaded');
 }
+function setCdnOpt(on){
+  ['cCdnOpt'].forEach(id=>{const el=document.getElementById(id);if(el){el.checked=!!on;el.closest('.all-proto-toggle')?.classList.toggle('is-checked',!!on)}});
+}
+function syncCdnOpt(src){setCdnOpt(!!(src&&src.checked));try{typeof syncSummary==='function'&&syncSummary()}catch(e){}}
 function collectConfigFormBody(){
   const advanced=advancedFormObject(),ports=advanced.ports.length?advanced.ports:[Number(configEditValue('cPort'))||443];
   const bundle=[...document.querySelectorAll('#protocolBundleOptions input:checked')].map(x=>x.value);
-  return {label:configEditValue('cName').trim()||undefined,protocol:configEditValue('cProto')||undefined,bundle_protocols:bundle,ad_block_enabled:!!document.getElementById('cAdBlockEnabled')?.checked,category_id:'0',sub_id:configEditValue('cSubGroup')||undefined,limit_value:Number(configEditValue('cLimit'))||0,limit_unit:configEditValue('cUnit')||'GB',expires_days:Number(configEditValue('cDays'))||0,ip_limit:Number(configEditValue('cIp'))||0,speed_limit_value:Number(configEditValue('cSpeed'))||0,speed_limit_unit:'MBIT',all_protocols:!!document.getElementById('cAllProtocols')?.checked,port:ports[0],fingerprint:advanced.fingerprint.value,alpn:advanced.tls.alpn,advanced};
+  return {label:configEditValue('cName').trim()||undefined,protocol:configEditValue('cProto')||undefined,bundle_protocols:bundle,ad_block_enabled:!!document.getElementById('cAdBlockEnabled')?.checked,cdn_optimizer:!!document.getElementById('cCdnOpt')?.checked,category_id:'0',sub_id:configEditValue('cSubGroup')||undefined,limit_value:Number(configEditValue('cLimit'))||0,limit_unit:configEditValue('cUnit')||'GB',expires_days:Number(configEditValue('cDays'))||0,ip_limit:Number(configEditValue('cIp'))||0,speed_limit_value:Number(configEditValue('cSpeed'))||0,speed_limit_unit:'MBIT',all_protocols:!!document.getElementById('cAllProtocols')?.checked,port:ports[0],fingerprint:advanced.fingerprint.value,alpn:advanced.tls.alpn,advanced};
 }
 async function saveEditedConfig(){
   const uid=__configEditUid;if(!uid)return false;
