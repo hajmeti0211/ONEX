@@ -48,6 +48,27 @@ def _clean_host(v):
         if _HOST_RE.fullmatch(x): return x
     raise HTTPException(400, "آدرس IP یا دامنه معتبر نیست")
 
+def _split_host_port(value, default_port=443):
+    """Parse host:port without breaking IPv6 literals."""
+    raw = str(value or "").strip()
+    if not raw:
+        raise HTTPException(400, "آدرس خالی است")
+    if raw.startswith("["):
+        end = raw.find("]")
+        if end < 0:
+            raise HTTPException(400, "آدرس IPv6 نامعتبر است")
+        host = raw[1:end]
+        suffix = raw[end + 1:]
+        port = int(suffix[1:]) if suffix.startswith(":") and suffix[2:] else default_port
+    elif raw.count(":") == 1:
+        host, port_text = raw.rsplit(":", 1)
+        port = int(port_text) if port_text else default_port
+    else:
+        host, port = raw, default_port
+    if not 1 <= int(port) <= 65535:
+        raise HTTPException(400, "پورت باید بین ۱ تا ۶۵۵۳۵ باشد")
+    return host.strip().lower(), int(port)
+
 def _public_ip(row):
     return {k:v for k,v in row.items() if k not in {"username", "password"}}
 
@@ -72,6 +93,20 @@ async def _probe(host, port, timeout=3.0, tls=False):
             try: await writer.wait_closed()
             except Exception: pass
 
+async def _probe_proxy(row, timeout=4.0):
+    """Check that the configured proxy listener is reachable.
+
+    This deliberately checks the proxy endpoint itself, not an arbitrary
+    destination. It works for HTTP and SOCKS listeners and avoids leaking
+    stored credentials while still catching dead hosts and closed ports.
+    """
+    return await _probe(
+        str(row.get("host") or ""),
+        int(row.get("port") or 0),
+        timeout,
+        str(row.get("scheme") or "").lower() == "https",
+    )
+
 def build_router(require_perm):
     r=APIRouter(prefix="/api/pools",tags=["pools"]); dep=Depends(require_perm("settings"))
     @r.get("")
@@ -83,12 +118,11 @@ def build_router(require_perm):
         if isinstance(raw,str): raw=re.split(r"[\s,]+",raw)
         d=_load(); out=[]
         for item in raw[:200]:
-            host=str(item).strip().lower(); port=443
-            if ":" in host and host.count(":")==1:
-                host,ps=host.rsplit(":",1)
-                try: port=int(ps)
-                except: port=443
-            host=_clean_host(host); port=max(1,min(65535,port)); key=f"{host}:{port}"
+            try:
+                host, port = _split_host_port(item)
+            except (TypeError, ValueError, HTTPException):
+                continue
+            host=_clean_host(host); key=f"{host}:{port}"
             if not any(f"{x['host']}:{x['port']}"==key for x in d["ips"]):
                 row={"id":_id("ip"),"host":host,"port":port,"sni":str(b.get("sni") or "").strip().lower(),"enabled":True,"status":"untested","latency_ms":None,"last_check":""}
                 d["ips"].append(row); out.append(row)
@@ -111,10 +145,53 @@ def build_router(require_perm):
     async def add_proxy(request:Request,_=dep):
         b=await request.json(); raw=str(b.get("url") or b.get("proxy") or "").strip()
         if not raw: raise HTTPException(400,"آدرس Proxy لازم است")
-        u=urlsplit(raw if "://" in raw else "http://"+raw)
-        if u.scheme.lower() not in _PROXY_SCHEMES or not u.hostname or not u.port: raise HTTPException(400,"Proxy باید HTTP یا SOCKS4/SOCKS5 و دارای پورت باشد")
-        d=_load(); row={"id":_id("px"),"scheme":u.scheme.lower(),"host":u.hostname,"port":int(u.port),"username":u.username or "","password":u.password or "","country":str(b.get("country") or "").upper()[:2],"enabled":True,"status":"untested","latency_ms":None,"last_check":""}
+        try:
+            u=urlsplit(raw if "://" in raw else "http://"+raw)
+            scheme=u.scheme.lower()
+            host=(u.hostname or "").strip().lower()
+            port=int(u.port or 0)
+        except (ValueError, TypeError):
+            raise HTTPException(400,"آدرس Proxy یا پورت نامعتبر است")
+        if scheme not in _PROXY_SCHEMES or not host or not 1 <= port <= 65535:
+            raise HTTPException(400,"Proxy باید HTTP یا SOCKS4/SOCKS5 و دارای پورت معتبر باشد")
+        d=_load()
+        if any(x.get("scheme")==scheme and x.get("host")==host and int(x.get("port") or 0)==port for x in d["proxies"]):
+            raise HTTPException(409,"این Proxy قبلاً در مخزن ثبت شده است")
+        row={"id":_id("px"),"scheme":scheme,"host":host,"port":port,"username":u.username or "","password":u.password or "","country":str(b.get("country") or "").upper()[:2],"enabled":True,"status":"untested","latency_ms":None,"last_check":""}
         d["proxies"].append(row); _save(d); return {"ok":True,"proxy":_public_proxy(row)}
+    @r.post("/proxies/check")
+    async def check_proxies(request:Request,_=dep):
+        """Check every saved proxy listener, or only the requested ids."""
+        try:
+            b=await request.json()
+        except Exception:
+            b={}
+        ids=set(str(x) for x in (b.get("ids") or []))
+        d=_load()
+        rows=[x for x in d["proxies"] if not ids or str(x.get("id")) in ids]
+
+        async def one(x):
+            res=await _probe_proxy(x, 4.0)
+            x.update(
+                status="healthy" if res["ok"] else "down",
+                latency_ms=res.get("latency_ms"),
+                last_check=datetime.now().isoformat(),
+                error=res.get("error",""),
+            )
+            return x
+
+        await asyncio.gather(*(one(x) for x in rows))
+        good=sorted(
+            [x for x in rows if x.get("status")=="healthy"],
+            key=lambda x:x.get("latency_ms") or 999999,
+        )
+        _save(d)
+        return {
+            "ok":True,
+            "checked":len(rows),
+            "healthy":len(good),
+            "proxies":[_public_proxy(x) for x in good],
+        }
     @r.delete("/proxies/{entry_id}")
     async def delete_proxy(entry_id:str,_=dep):
         d=_load(); before=len(d["proxies"]); d["proxies"]=[x for x in d["proxies"] if x.get("id")!=entry_id]
