@@ -11053,22 +11053,51 @@ Cache-Control: no-cache"></textarea></div>
   </div>
 </section>
 
+<style id="onex-edge-guide">
+#page-edge .edge-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 14px}
+#page-edge .edge-step{display:flex;align-items:center;gap:8px;padding:11px 10px;border:1px solid var(--card-b);border-radius:14px;background:rgba(var(--accent-rgb),.04);color:var(--t3);font-size:11px}
+#page-edge .edge-step b{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:rgba(var(--accent-rgb),.15);color:var(--accent2);font-family:"JetBrains Mono",monospace}
+#page-edge .edge-step strong{display:block;color:var(--t1);font-size:12px}
+#page-edge .edge-step small{display:block;margin-top:2px}
+#page-edge .edge-choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0 16px}
+#page-edge .edge-choice label{position:relative;display:block;padding:14px;border:1px solid var(--card-b);border-radius:15px;background:rgba(255,255,255,.03);cursor:pointer;transition:.2s ease}
+#page-edge .edge-choice label:hover{transform:translateY(-2px);border-color:rgba(var(--accent-rgb),.55)}
+#page-edge .edge-choice label:has(input:checked){border-color:var(--accent);background:linear-gradient(135deg,rgba(var(--accent-rgb),.18),rgba(var(--accent2-rgb),.08));box-shadow:0 8px 22px -16px rgba(var(--accent-rgb),.9)}
+#page-edge .edge-choice input{position:absolute;opacity:0}
+#page-edge .edge-choice strong{display:block;color:var(--t1);font-size:13px}.edge-choice small{display:block;color:var(--t3);line-height:1.8;margin-top:4px}
+#page-edge .edge-help{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid rgba(var(--accent-rgb),.2);border-radius:14px;background:rgba(var(--accent-rgb),.06);line-height:1.9;color:var(--t2);font-size:12px;margin-bottom:14px}
+#page-edge .edge-help .edge-help-icon{font-size:18px;line-height:1}
+#page-edge .edge-help a{color:var(--accent2);font-weight:800;text-decoration:none}.edge-help a:hover{text-decoration:underline}
+@media(max-width:640px){#page-edge .edge-steps{grid-template-columns:repeat(2,1fr)}#page-edge .edge-choice{grid-template-columns:1fr}}
+</style>
 <section class="page" id="page-edge">
-  <div class="page-head"><div><div class="page-title"><span>Cloudflare Edge</span></div><div class="page-sub">یک مسیر دوم از شبکه‌ی کلودفلر برای کانفیگ‌ها. اگه دامنه‌ی اصلی فیلتر شد، کاربر با همون اشتراک وصل می‌مونه.</div></div></div>
+  <div class="page-head"><div><div class="page-title"><span>Cloudflare Edge</span></div><div class="page-sub">یک مسیر دوم از شبکه‌ی کلودفلر برای کانفیگ‌ها. این راهنما قدم‌به‌قدم می‌گوید چه چیزی لازم است.</div></div></div>
   <div class="card">
-    <div class="card-title">اتصال به Cloudflare</div>
+    <div class="edge-steps">
+      <div class="edge-step"><b>۱</b><span><strong>توکن</strong><small>ساخت API Token</small></span></div>
+      <div class="edge-step"><b>۲</b><span><strong>دامنه</strong><small>Worker یا اختصاصی</small></span></div>
+      <div class="edge-step"><b>۳</b><span><strong>دیپلوی</strong><small>ساخت Edge</small></span></div>
+      <div class="edge-step"><b>۴</b><span><strong>تست</strong><small>ورود به اشتراک</small></span></div>
+    </div>
+    <div class="card-title">۱) اتصال به Cloudflare</div>
+    <div class="edge-help"><span class="edge-help-icon">☁️</span><div>اول از لینک رسمی زیر یک <b>API Token</b> بساز. مجوزهای لازم: <b>Workers Scripts: Edit</b>، <b>Workers Subdomain: Edit</b> و <b>Account: Read</b>. اگر دامنه اختصاصی می‌خواهی، <b>Zone: Read</b> و <b>Workers Domains: Edit</b> هم لازم است.<br><a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener">باز کردن صفحه ساخت API Token در Cloudflare ↗</a></div></div>
     <div class="page-sub" id="edgeStatus" style="margin-bottom:10px"></div>
     <div class="form-row">
-      <div class="field"><label>API Token (فقط برای ذخیره، بعد از ذخیره نمایش داده نمی‌شود)</label><input id="edgeToken" type="password" autocomplete="off" placeholder="توکن کلودفلر"></div>
-      <div class="field"><label>Account ID (اختیاری)</label><input id="edgeAccount" placeholder="خودکار تشخیص داده می‌شود"></div>
-      <div class="field"><label>دامنه‌ی سفارشی (اختیاری، روی زون کلودفلر)</label><input id="edgeDomain" placeholder="edge.example.com"></div>
-      <div class="field"><label>آی‌پی تمیز (اختیاری، حداکثر ۵ تا، با کاما)</label><input id="edgeIps" placeholder="104.16.0.1, 172.67.1.1"></div>
+      <div class="field"><label>API Token <small>(ذخیره می‌شود و دوباره نمایش داده نمی‌شود)</small></label><input id="edgeToken" type="password" autocomplete="off" placeholder="توکن کلودفلر را اینجا وارد کن"></div>
+      <div class="field"><label>Account ID <small>(اختیاری)</small></label><input id="edgeAccount" dir="ltr" placeholder="خودکار تشخیص داده می‌شود"></div>
     </div>
-    <label class="chk"><input type="checkbox" id="edgeInSub" checked> کپی Edge را داخل همه‌ی اشتراک‌ها بگذار</label>
+    <div class="card-title" style="margin-top:14px">۲) نوع دامنه Edge</div>
+    <div class="edge-choice">
+      <label><input type="radio" name="edgeMode" value="worker" checked onchange="edgeDomainMode()"><strong>دامنه رایگان Worker</strong><small>پیشنهاد برای شروع. مثل onex-abc.workers.dev، بدون خرید یا تنظیم DNS.</small></label>
+      <label><input type="radio" name="edgeMode" value="custom" onchange="edgeDomainMode()"><strong>دامنه اختصاصی</strong><small>مثل edge.example.com. دامنه باید داخل همین Cloudflare Account باشد.</small></label>
+    </div>
+    <div class="field" id="edgeCustomDomainBox" hidden><label>دامنه اختصاصی</label><input id="edgeDomain" dir="ltr" placeholder="edge.example.com"><div class="scan-hint">قبل از Deploy، این دامنه را در Cloudflare اضافه کن و DNS آن را روی Cloudflare نگه دار.</div></div>
+    <div class="field" style="margin-top:12px"><label>آی‌پی تمیز <small>(اختیاری، حداکثر ۵ تا)</small></label><input id="edgeIps" dir="ltr" placeholder="104.16.0.1, 172.67.1.1"><div class="scan-hint">اگر خالی باشد، لینک‌ها با دامنه Worker ساخته می‌شوند. بعداً می‌توانی IPهای سالم Scanner را اینجا بگذاری.</div></div>
+    <label class="chk" style="margin-top:12px"><input type="checkbox" id="edgeInSub" checked> کپی Edge را داخل همه‌ی اشتراک‌ها بگذار</label>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-      <button class="btn" onclick="edgeSave()">ذخیره</button>
-      <button class="btn btn-p" onclick="edgeDeploy()">دیپلوی Edge</button>
-      <button class="btn" onclick="edgeTest()">تست اتصال</button>
+      <button class="btn" onclick="edgeSave()">ذخیره تنظیمات</button>
+      <button class="btn btn-p" onclick="edgeDeploy()">۳) دیپلوی Edge</button>
+      <button class="btn" onclick="edgeTest()">۴) تست اتصال</button>
       <button class="btn" onclick="edgeRemove()">حذف Edge</button>
     </div>
   </div>
@@ -15761,11 +15790,13 @@ html.light .sidebar .nav-label{color:inherit!important}
   }
 
   // ---- edge
+  window.edgeDomainMode=function(){const custom=document.querySelector('input[name="edgeMode"]:checked')?.value==='custom';const box=document.getElementById('edgeCustomDomainBox');if(box)box.hidden=!custom;};
   async function loadEdge(){
     const e=await j('/api/cfedge'); if(!e)return;
     document.getElementById('edgeInSub').checked=e.include_in_sub!==false;
     document.getElementById('edgeAccount').value=e.account_id||'';
     document.getElementById('edgeDomain').value=e.custom_domain||'';
+    const custom=!!e.custom_domain;const mode=document.querySelector(`input[name="edgeMode"][value="${custom?'custom':'worker'}"]`);if(mode)mode.checked=true;edgeDomainMode();
     document.getElementById('edgeIps').value=(e.clean_ips||[]).join(', ');
     const st=document.getElementById('edgeStatus');
     st.innerHTML=e.edge_host?`✅ دیپلوی شده: <code>${esc2(e.edge_host)}</code> · ${e.enabled?'فعال':'غیرفعال'} · توکن: ${esc2(e.token_masked||'—')}`:(e.last_error?`⚠️ ${esc2(e.last_error)}`:`هنوز دیپلوی نشده. توکن کلودفلر را وارد و ذخیره کنید.`);
