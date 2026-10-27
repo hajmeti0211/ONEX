@@ -7626,9 +7626,11 @@ try:
     from onex.integrations import sell as _sell_mod
     from onex.integrations import cf_edge as _edge_mod
     from onex.integrations import scanner as _scan_mod
+    from onex.integrations import pools as _pools_mod
     app.include_router(_sell_mod.build_router(require_perm))
     app.include_router(_edge_mod.build_router(require_perm))
     app.include_router(_scan_mod.build_router(require_perm))
+    app.include_router(_pools_mod.build_router(require_perm))
     logger.info("Sell shop, Cloudflare Edge and scanner routes loaded")
 except Exception as exc:
     logger.warning("Sell/Edge/scanner routes unavailable: %s", exc)
@@ -15684,6 +15686,16 @@ html.light .sidebar .nav-label{color:inherit!important}
     <div class="scan-actions"><button class="btn" type="button" onclick="onexCopySni()">کپی سریع‌ترین‌ها</button><button class="btn" type="button" onclick="onexClearSni()">پاک کردن</button><span id="sniScanStatus" class="page-sub"></span></div>
     <div id="sniScanResults" class="sni-results"><span class="page-sub">هنوز اسکن SNI انجام نشده.</span></div>
   </div>
+  <div class="card" id="onexPoolsCard">
+    <div class="card-title">مخزن IP و Proxy مدیریت‌شده</div>
+    <div class="page-sub">فقط IP و Proxy خودت را اضافه کن. لیست‌های عمومی ناشناس وارد پنل نمی‌شوند.</div>
+    <div class="form-row" style="margin-top:12px">
+      <div class="field"><label>افزودن IP / IP:Port</label><input id="poolIps" dir="ltr" placeholder="104.16.0.1, 172.67.1.1:443"><button class="btn btn-sm" type="button" onclick="poolAddIps()">افزودن به مخزن</button></div>
+      <div class="field"><label>افزودن Proxy مورداعتماد</label><input id="poolProxy" dir="ltr" placeholder="socks5://user:pass@host:1080"><button class="btn btn-sm" type="button" onclick="poolAddProxy()">افزودن Proxy</button></div>
+    </div>
+    <div class="scan-actions"><button class="btn btn-p" type="button" onclick="poolCheckIps()">تست همه IPها</button><span id="poolStatus" class="page-sub"></span></div>
+    <div id="poolRows" class="scan-results" style="margin-top:10px">در حال بارگذاری…</div>
+  </div>
   <div class="card">
     <div class="card-title">دامنه عمومی پنل</div>
     <div class="page-sub">لینک‌های جدید با این دامنه ساخته می‌شوند، نه hostname محلی.</div>
@@ -15750,7 +15762,7 @@ html.light .sidebar .nav-label{color:inherit!important}
   document.querySelectorAll('#edgeScanPorts .scanPortChk').forEach(x=>x.addEventListener('change',selectedPorts));selectedPorts();
   const srcEl=$('edgeScanSource');
   if(srcEl)srcEl.addEventListener('change',()=>{$('edgeSourceHint').textContent=HINTS[srcEl.value]||'';const sni=$('edgeScanSni');sni.placeholder=srcEl.value==='cloudflare'?'www.cloudflare.com':'onex.shiprr.dev';loadSaved();});
-  const oldGo=window.goPage;window.goPage=function(name){oldGo(name);if(name==='edge-tools'){loadOnexPublicEndpoint();loadSaved();}};
+  const oldGo=window.goPage;window.goPage=function(name){oldGo(name);if(name==='edge-tools'){loadOnexPublicEndpoint();loadSaved();loadPools();}};
 })();
 </script>
 <script id="onexSellEdgeJs">
@@ -15804,6 +15816,11 @@ html.light .sidebar .nav-label{color:inherit!important}
         <div style="display:flex;gap:6px">${x.receipt_file_id?`<a class="btn btn-sm" target="_blank" href="/api/sell/orders/${x.id}/receipt">رسید</a>`:''}${x.status==='pending_review'||x.status==='awaiting_receipt'?`<button class="btn btn-sm btn-p" onclick="sellApprove('${x.id}')">تأیید</button><button class="btn btn-sm" onclick="sellReject('${x.id}')">رد</button>`:''}</div></div>`).join(''):'<div class="page-sub">سفارشی ثبت نشده.</div>';
   }
 
+  async function loadPools(){const r=await j('/api/pools');if(!r)return;const box=document.getElementById('poolRows');const ips=(r.ips||[]).map(x=>`<div class="scan-row"><code>${esc2(x.host)}:${x.port}</code><span class="scan-${x.status==='healthy'?'ok':'bad'}">${x.status==='healthy'?'✅ '+x.latency_ms+'ms':x.status||'بدون تست'} <button class="btn btn-sm" onclick="poolDel('ips','${x.id}')">حذف</button></span></div>`).join('');const px=(r.proxies||[]).map(x=>`<div class="scan-row"><code>${esc2(x.scheme+'://'+x.host+':'+x.port)}</code><span>${x.country||'--'} · ${x.status||'بدون تست'} <button class="btn btn-sm" onclick="poolDel('proxies','${x.id}')">حذف</button></span></div>`).join('');box.innerHTML=(ips+px)||'<div class="page-sub">مخزن خالی است.</div>'}
+  window.poolAddIps=async function(){const v=document.getElementById('poolIps').value.trim();if(!v)return;const r=await j('/api/pools/ips','POST',{ips:v});if(r){document.getElementById('poolIps').value='';loadPools();toast(`${r.added} IP اضافه شد`)}}
+  window.poolAddProxy=async function(){const v=document.getElementById('poolProxy').value.trim();if(!v)return;const r=await j('/api/pools/proxies','POST',{url:v});if(r){document.getElementById('poolProxy').value='';loadPools();toast('Proxy اضافه شد')}}
+  window.poolCheckIps=async function(){const r=await j('/api/pools/ips/check','POST',{});if(r){document.getElementById('poolStatus').textContent=`${r.healthy} IP سالم از ${r.checked}`;loadPools()}}
+  window.poolDel=async function(kind,id){const r=await j('/api/pools/'+kind+'/'+encodeURIComponent(id),'DELETE');if(r)loadPools()}
   // ---- edge
   window.edgeDomainMode=function(){const custom=document.querySelector('input[name="edgeMode"]:checked')?.value==='custom';const box=document.getElementById('edgeCustomDomainBox');const input=document.getElementById('edgeDomain');if(box)box.hidden=!custom;if(input&&!custom)input.value='';};
   async function loadEdge(){
