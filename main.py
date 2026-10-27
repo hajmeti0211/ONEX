@@ -102,7 +102,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # ============================================================
 
 APP_NAME = "ONEX"
-APP_VERSION = "1.3.9"
+APP_VERSION = "1.4.0"
 
 SUPPORT_USERNAME = "@V2rayTun0"
 SUPPORT_URL = "https://t.me/V2rayTun0"
@@ -2460,6 +2460,11 @@ async def remove_sub_group(
 async def startup():
 
     global http_client
+    try:
+        from onex.integrations import sell as _sell_boot
+        _sell_boot.start_background()
+    except Exception as _sell_exc:
+        logger.warning("sell background not started: %s", _sell_exc)
 
     limits = httpx.Limits(
         max_connections=500,
@@ -4955,7 +4960,13 @@ async def subscription_single(
     # 1) usage info (remaining volume + remaining time) with icons, always first
     lines = subscription_info_lines(uuid, link)
     # 2) every config of this sub (all selected protocols, all clean IPs)
-    lines.extend(link_config_uris(link, uuid, host))
+    _uris = link_config_uris(link, uuid, host)
+    lines.extend(_uris)
+    try:
+        from onex.integrations.cf_edge import extra_uris as _edge_extra
+        lines.extend(_edge_extra(_uris))
+    except Exception as _edge_exc:
+        logger.debug("edge sub skipped: %s", _edge_exc)
     content = base64.b64encode("\n".join(lines).encode()).decode()
     _vol_t, _time_t = subscription_usage_texts(link)
     profile_title = f"{label} | {_vol_t} | {_time_t}"
@@ -7541,6 +7552,18 @@ except Exception as exc:
         "XHTTP module unavailable: %s",
         exc,
     )
+
+try:
+    from onex.integrations import sell as _sell_mod
+    from onex.integrations import cf_edge as _edge_mod
+    from onex.integrations import scanner as _scan_mod
+    app.include_router(_sell_mod.build_router(require_perm))
+    app.include_router(_edge_mod.build_router(require_perm))
+    app.include_router(_scan_mod.build_router(require_perm))
+    logger.info("Sell shop, Cloudflare Edge and scanner routes loaded")
+except Exception as exc:
+    logger.warning("Sell/Edge/scanner routes unavailable: %s", exc)
+
 
 if "vless-httpupgrade" not in PROTOCOLS and "vless-ws" in PROTOCOLS:
     # Real HTTPUpgrade relay lives in the front proxy (101 + raw VLESS stream).
@@ -10276,6 +10299,14 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
       <svg class="nav-ico nav-ico-telegram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m6.5 12 11-4-3.2 8-2.1-3-3.2-1Z"/><path d="m12.2 13 2.1-2.2"/></svg>
       <span class="nav-label" data-i18n="nav_telegram">ربات ONEX</span>
     </button>
+    <button class="nav-item" data-page="sell" data-perm="telegram">
+      <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18l-1.5 10h-15Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+      <span class="nav-label">فروشگاه</span>
+    </button>
+    <button class="nav-item" data-page="edge" data-perm="settings">
+      <svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4 4 0 0 1 0 9Z"/></svg>
+      <span class="nav-label">Cloudflare Edge</span>
+    </button>
     <button class="nav-item" data-page="news" data-perm="news">
       <svg class="nav-ico nav-ico-news" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 8h8M8 12h5M8 16h8"/><path d="m15 12 1.5 1.5L19 11"/></svg>
       <span class="nav-label" data-i18n="nav_news">اخبـار</span>
@@ -10921,6 +10952,75 @@ Cache-Control: no-cache"></textarea></div>
       <div class="logs-detail-body" id="logsDetailBody"></div>
       <div class="logs-detail-actions"><button type="button" class="btn btn-sm" onclick="closeLogDetail()">بستن</button></div>
     </div>
+  </div>
+</section>
+
+<section class="page" id="page-sell">
+  <div class="page-head"><div><div class="page-title"><span>فروشگاه و ربات فروش</span></div><div class="page-sub">پلن بسازید، رسید را تأیید کنید، سرویس خودکار ارسال می‌شود.</div></div></div>
+  <div class="card">
+    <div class="card-title">وضعیت</div>
+    <label class="chk"><input type="checkbox" id="sellEnabled" onchange="sellSaveSettings()"> فروشگاه فعال باشد</label>
+    <label class="chk" style="margin-top:8px"><input type="checkbox" id="sellHideFree" onchange="sellSaveSettings()"> دکمه «ساخت کانفیگ» را برای کاربران عادی پنهان کن</label>
+    <div class="page-sub" id="sellBotNote" style="margin-top:8px"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">اطلاعات پرداخت</div>
+    <div class="form-row">
+      <div class="field"><label>شماره کارت</label><input id="sellCard"></div>
+      <div class="field"><label>به نام</label><input id="sellHolder"></div>
+      <div class="field"><label>بانک</label><input id="sellBank"></div>
+      <div class="field"><label>لینک پرداخت (اختیاری)</label><input id="sellPayUrl"></div>
+      <div class="field"><label>آیدی پشتیبانی (بدون @)</label><input id="sellSupport"></div>
+      <div class="field"><label>هشدار انقضا (روز قبل)</label><input id="sellWarnDays" type="number" min="0" max="30"></div>
+    </div>
+    <div class="field"><label>متن راهنمای پرداخت</label><input id="sellPayNote"></div>
+    <div class="field"><label>متن خوش‌آمد فروشگاه</label><textarea id="sellWelcome" rows="2"></textarea></div>
+    <button class="btn btn-p" onclick="sellSaveSettings(true)">ذخیره اطلاعات</button>
+  </div>
+  <div class="card">
+    <div class="card-title">پلن‌ها</div>
+    <div class="form-row">
+      <div class="field"><label>نام پلن</label><input id="plName" placeholder="یک ماهه ۳۰ گیگ"></div>
+      <div class="field"><label>قیمت (تومان، 0 = رایگان)</label><input id="plPrice" type="number" min="0"></div>
+      <div class="field"><label>حجم (گیگ، 0 = نامحدود)</label><input id="plGb" type="number" min="0" step="0.1"></div>
+      <div class="field"><label>مدت (روز، 0 = بدون انقضا)</label><input id="plDays" type="number" min="0" value="30"></div>
+      <div class="field"><label>محدودیت IP (0 = بدون)</label><input id="plIp" type="number" min="0" value="0"></div>
+      <div class="field"><label>پروتکل</label><select id="plProto"></select></div>
+    </div>
+    <button class="btn btn-p" onclick="sellAddPlan()">افزودن پلن</button>
+    <div id="sellPlans" style="margin-top:12px"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">سفارش‌ها <small id="sellSummary" class="page-sub"></small></div>
+    <div id="sellOrders"></div>
+  </div>
+</section>
+
+<section class="page" id="page-edge">
+  <div class="page-head"><div><div class="page-title"><span>Cloudflare Edge</span></div><div class="page-sub">یک مسیر دوم از شبکه‌ی کلودفلر برای کانفیگ‌ها. اگه دامنه‌ی اصلی فیلتر شد، کاربر با همون اشتراک وصل می‌مونه.</div></div></div>
+  <div class="card">
+    <div class="card-title">اتصال به Cloudflare</div>
+    <div class="page-sub" id="edgeStatus" style="margin-bottom:10px"></div>
+    <div class="form-row">
+      <div class="field"><label>API Token (فقط برای ذخیره، بعد از ذخیره نمایش داده نمی‌شود)</label><input id="edgeToken" type="password" autocomplete="off" placeholder="توکن کلودفلر"></div>
+      <div class="field"><label>Account ID (اختیاری)</label><input id="edgeAccount" placeholder="خودکار تشخیص داده می‌شود"></div>
+      <div class="field"><label>دامنه‌ی سفارشی (اختیاری، روی زون کلودفلر)</label><input id="edgeDomain" placeholder="edge.example.com"></div>
+      <div class="field"><label>آی‌پی تمیز (اختیاری، حداکثر ۵ تا، با کاما)</label><input id="edgeIps" placeholder="104.16.0.1, 172.67.1.1"></div>
+    </div>
+    <label class="chk"><input type="checkbox" id="edgeInSub" checked> کپی Edge را داخل همه‌ی اشتراک‌ها بگذار</label>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+      <button class="btn" onclick="edgeSave()">ذخیره</button>
+      <button class="btn btn-p" onclick="edgeDeploy()">دیپلوی Edge</button>
+      <button class="btn" onclick="edgeTest()">تست اتصال</button>
+      <button class="btn" onclick="edgeRemove()">حذف Edge</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">اسکنر SNI برای Reality</div>
+    <div class="page-sub">هر دامنه را از سرور تست می‌کنیم: TLS 1.3، پشتیبانی HTTP/2 و سرعت اتصال.</div>
+    <div class="field" style="margin-top:8px"><label>دامنه‌ها (خالی = لیست آماده)</label><textarea id="sniHosts" rows="3" placeholder="www.google.com"></textarea></div>
+    <button class="btn btn-p" onclick="sniScan()">شروع اسکن</button>
+    <div id="sniResults" style="margin-top:12px"></div>
   </div>
 </section>
 
@@ -15405,6 +15505,101 @@ html.light .sidebar .nav-label{color:inherit!important}
 .update-prompt-version{margin:12px 0;padding:9px 12px;border-radius:11px;background:rgba(37,99,235,.08);border:1px solid rgba(96,165,250,.13);color:var(--t3);font-size:11px;direction:ltr}
 .update-prompt-actions{display:flex;gap:9px;margin-top:16px}.update-prompt-actions .btn{flex:1;height:42px}
 </style>
+<script id="onexSellEdgeJs">
+(function(){
+  const esc2=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtP=n=>Number(n)===0?'رایگان':Number(n||0).toLocaleString('fa-IR')+' تومان';
+  const STAT={awaiting_receipt:'منتظر رسید',pending_review:'در حال بررسی',approved:'تأیید شده',rejected:'رد شده',cancelled:'لغو شده'};
+  const PROTOS=['vless-ws','xhttp-packet-up','xhttp-stream-up','xhttp-stream-one'];
+  const PLABEL={'vless-ws':'ONEX WB','xhttp-packet-up':'ONEX Xhttp','xhttp-stream-up':'ONEX Gaming','xhttp-stream-one':'ONEX Stream'};
+  const j=(u,m,b)=>api(u,{method:m||'GET',headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined});
+  const v=id=>document.getElementById(id).value.trim();
+  const c=id=>document.getElementById(id).checked;
+
+  window.sellSaveSettings=async function(){
+    const r=await j('/api/sell/settings','POST',{enabled:c('sellEnabled'),hide_free_create:c('sellHideFree'),
+      card_number:v('sellCard'),card_holder:v('sellHolder'),bank_name:v('sellBank'),payment_url:v('sellPayUrl'),
+      support_username:v('sellSupport'),payment_note:v('sellPayNote'),welcome_text:v('sellWelcome'),expiry_warn_days:v('sellWarnDays')||2});
+    if(r){toast('ذخیره شد');loadSell();}
+  };
+  window.sellAddPlan=async function(){
+    const body={name:v('plName'),price:v('plPrice')||0,traffic_gb:v('plGb')||0,days:v('plDays')||0,ip_limit:v('plIp')||0,protocol:v('plProto')};
+    if(!body.name){toast('نام پلن را بنویس');return}
+    const r=await j('/api/sell/plans','POST',body);
+    if(r){['plName','plPrice','plGb','plIp'].forEach(i=>document.getElementById(i).value='');toast('پلن اضافه شد');loadSell();}
+  };
+  window.sellTogglePlan=async function(id,on){const p=(window.__sellPlans||[]).find(x=>x.id===id);if(!p)return;
+    const r=await j('/api/sell/plans/'+id,'PUT',Object.assign({},p,{enabled:on}));if(r)loadSell();};
+  window.sellDelPlan=async function(id){if(!confirm('این پلن حذف شود؟'))return;const r=await j('/api/sell/plans/'+id,'DELETE');if(r){toast('حذف شد');loadSell();}};
+  window.sellApprove=async function(id){const r=await j('/api/sell/orders/'+id+'/approve','POST');if(r){toast('تأیید و ارسال شد');loadSell();}};
+  window.sellReject=async function(id){const reason=prompt('دلیل رد (اختیاری)','')||'';const r=await j('/api/sell/orders/'+id+'/reject','POST',{reason});if(r){toast('رد شد');loadSell();}};
+
+  async function loadSell(){
+    const s=await j('/api/sell/settings'); if(!s)return;
+    document.getElementById('sellEnabled').checked=!!s.enabled;
+    document.getElementById('sellHideFree').checked=s.hide_free_create!==false;
+    ['card_number:sellCard','card_holder:sellHolder','bank_name:sellBank','payment_url:sellPayUrl','support_username:sellSupport','payment_note:sellPayNote','welcome_text:sellWelcome','expiry_warn_days:sellWarnDays'].forEach(p=>{const[k,id]=p.split(':');const el=document.getElementById(id);if(el&&document.activeElement!==el)el.value=s[k]??''});
+    const pSel=document.getElementById('plProto');
+    if(!pSel.options.length)pSel.innerHTML=PROTOS.map(p=>`<option value="${p}">${PLABEL[p]}</option>`).join('');
+    document.getElementById('sellBotNote').textContent=s.bot_ready?(`ربات متصل است · ${s.admin_count} ادمین تعریف شده`):'توکن ربات تلگرام هنوز ثبت نشده (تب ربات ONEX).';
+    const pl=await j('/api/sell/plans'); window.__sellPlans=(pl&&pl.plans)||[];
+    document.getElementById('sellPlans').innerHTML=window.__sellPlans.length?window.__sellPlans.map(p=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--card-b)">
+        <div><b>${esc2(p.name)}</b> · ${p.traffic_gb?p.traffic_gb+' گیگ':'نامحدود'} · ${p.days?p.days+' روز':'بدون انقضا'} · ${fmtP(p.price)} · ${PLABEL[p.protocol]||esc2(p.protocol)}</div>
+        <div style="display:flex;gap:6px"><button class="btn btn-sm" onclick="sellTogglePlan('${p.id}',${!p.enabled})">${p.enabled?'غیرفعال':'فعال'}</button><button class="btn btn-sm" onclick="sellDelPlan('${p.id}')">حذف</button></div></div>`).join(''):'<div class="page-sub">هنوز پلنی ندارید.</div>';
+    const o=await j('/api/sell/orders'); if(!o)return;
+    document.getElementById('sellSummary').textContent=` · در انتظار بررسی: ${o.summary.pending} · تأییدشده: ${o.summary.approved} · درآمد: ${fmtP(o.summary.revenue)}`;
+    const list=o.orders.slice(0,50);
+    document.getElementById('sellOrders').innerHTML=list.length?list.map(x=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--card-b);flex-wrap:wrap">
+        <div><code>${esc2(x.id)}</code> · ${esc2(x.username?'@'+x.username:x.chat_id)} · ${esc2(x.plan.name)} · ${STAT[x.status]||esc2(x.status)}${x.receipt_text?' · '+esc2(x.receipt_text.slice(0,60)):''}</div>
+        <div style="display:flex;gap:6px">${x.receipt_file_id?`<a class="btn btn-sm" target="_blank" href="/api/sell/orders/${x.id}/receipt">رسید</a>`:''}${x.status==='pending_review'||x.status==='awaiting_receipt'?`<button class="btn btn-sm btn-p" onclick="sellApprove('${x.id}')">تأیید</button><button class="btn btn-sm" onclick="sellReject('${x.id}')">رد</button>`:''}</div></div>`).join(''):'<div class="page-sub">سفارشی ثبت نشده.</div>';
+  }
+
+  // ---- edge
+  async function loadEdge(){
+    const e=await j('/api/cfedge'); if(!e)return;
+    document.getElementById('edgeInSub').checked=e.include_in_sub!==false;
+    document.getElementById('edgeAccount').value=e.account_id||'';
+    document.getElementById('edgeDomain').value=e.custom_domain||'';
+    document.getElementById('edgeIps').value=(e.clean_ips||[]).join(', ');
+    const st=document.getElementById('edgeStatus');
+    st.innerHTML=e.edge_host?`✅ دیپلوی شده: <code>${esc2(e.edge_host)}</code> · ${e.enabled?'فعال':'غیرفعال'} · توکن: ${esc2(e.token_masked||'—')}`:(e.last_error?`⚠️ ${esc2(e.last_error)}`:`هنوز دیپلوی نشده. توکن کلودفلر را وارد و ذخیره کنید.`);
+  }
+  window.edgeSave=async function(){
+    const body={include_in_sub:c('edgeInSub'),account_id:v('edgeAccount'),custom_domain:v('edgeDomain'),clean_ips:v('edgeIps')};
+    if(v('edgeToken'))body.api_token=v('edgeToken');
+    const r=await j('/api/cfedge/settings','POST',body);
+    if(r){document.getElementById('edgeToken').value='';toast('ذخیره شد');loadEdge();}
+  };
+  window.edgeDeploy=async function(){
+    if(v('edgeToken'))await edgeSave();
+    toast('در حال دیپلوی روی کلودفلر…');
+    const r=await j('/api/cfedge/deploy','POST');
+    if(r){toast('Edge دیپلوی شد');loadEdge();}
+  };
+  window.edgeTest=async function(){const r=await j('/api/cfedge/test','POST');if(r)toast(r.ok?`✅ جواب داد (${r.ms}ms${r.colo?' · '+r.colo:''})`:('⚠️ '+(r.error||'بدون پاسخ')));};
+  window.edgeRemove=async function(){if(!confirm('Edge روی کلودفلر حذف شود؟'))return;const r=await j('/api/cfedge/remove','POST');if(r){toast('حذف شد');loadEdge();}};
+
+  // ---- SNI
+  window.sniScan=async function(){
+    const hosts=v('sniHosts');
+    toast('در حال اسکن…');
+    const r=await j('/api/scanner/sni','POST',{hosts:hosts||undefined});
+    if(!r)return;
+    document.getElementById('sniResults').innerHTML=`<div class="page-sub">${r.good} از ${r.count} دامنه مناسب Reality</div>`+
+      r.results.slice(0,60).map(x=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--card-b)"><code>${esc2(x.host)}</code><span>${x.ok?'✅':'❌'} ${x.ms!=null?x.ms+'ms':''} ${x.tls13?'TLS1.3':''} ${x.h2?'H2':''} ${x.error?esc2(x.error):''}</span></div>`).join('');
+  };
+
+  const prevGo=window.goPage;
+  window.goPage=function(name){
+    prevGo(name);
+    if(name==='sell')loadSell();
+    if(name==='edge'){loadEdge();}
+  };
+})();
+</script>
+
 </body>
 </html>
 """
