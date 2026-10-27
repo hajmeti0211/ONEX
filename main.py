@@ -7622,18 +7622,29 @@ except Exception as exc:
         exc,
     )
 
+# Keep integrations isolated: a missing optional file must not prevent ONEX
+# itself, Cloudflare Edge, or the scanner from booting.
 try:
     from onex.integrations import sell as _sell_mod
-    from onex.integrations import cf_edge as _edge_mod
-    from onex.integrations import scanner as _scan_mod
-    from onex.integrations import pools as _pools_mod
     app.include_router(_sell_mod.build_router(require_perm))
-    app.include_router(_edge_mod.build_router(require_perm))
-    app.include_router(_scan_mod.build_router(require_perm))
-    app.include_router(_pools_mod.build_router(require_perm))
-    logger.info("Sell shop, Cloudflare Edge and scanner routes loaded")
 except Exception as exc:
-    logger.warning("Sell/Edge/scanner routes unavailable: %s", exc)
+    logger.warning("Sell integration unavailable: %s", exc)
+try:
+    from onex.integrations import cf_edge as _edge_mod
+    app.include_router(_edge_mod.build_router(require_perm))
+except Exception as exc:
+    logger.warning("Cloudflare Edge integration unavailable: %s", exc)
+try:
+    from onex.integrations import scanner as _scan_mod
+    app.include_router(_scan_mod.build_router(require_perm))
+except Exception as exc:
+    logger.warning("Scanner integration unavailable: %s", exc)
+try:
+    from onex.integrations import pools as _pools_mod
+    app.include_router(_pools_mod.build_router(require_perm))
+    logger.info("IP/Proxy pools routes loaded")
+except Exception as exc:
+    logger.warning("IP/Proxy pools unavailable (copy onex/integrations/pools.py): %s", exc)
 
 
 if "vless-httpupgrade" not in PROTOCOLS and "vless-ws" in PROTOCOLS:
