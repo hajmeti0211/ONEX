@@ -4,7 +4,7 @@ The pool stores operator-managed entries only. It never imports public proxy
 lists automatically and never exposes proxy credentials in API responses.
 """
 from __future__ import annotations
-import asyncio, ipaddress, json, re, socket, ssl, time
+import asyncio, ipaddress, json, re, socket, ssl, sys, time
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -14,6 +14,13 @@ _HOST_RE = re.compile(r"^(?=.{1,253}$)([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[
 _PROXY_SCHEMES = {"http", "https", "socks4", "socks5"}
 
 def _m():
+    # Railway starts ONEX with `python main.py`, so the application module is
+    # named __main__. Importing `main` here would boot a second application
+    # during every pool request and makes the add buttons appear to do nothing.
+    for name in ("main", "__main__"):
+        mod = sys.modules.get(name)
+        if mod is not None and hasattr(mod, "DATA_DIR"):
+            return mod
     import main
     return main
 
