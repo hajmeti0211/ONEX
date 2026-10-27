@@ -114,8 +114,58 @@ async def _probe_proxy(row, timeout=4.0):
         str(row.get("scheme") or "").lower() == "https",
     )
 
+_REPO_CACHE = {}
+ZEUS_REPO_DIR = Path(__file__).resolve().parents[2] / "assets" / "zeus_repo"
+
+async def _repo_text(path):
+    now = time.time()
+    cached = _REPO_CACHE.get(path)
+    if cached and now - cached[0] < 900:
+        return cached[1]
+    file_path = (ZEUS_REPO_DIR / path).resolve()
+    if ZEUS_REPO_DIR not in file_path.parents or not file_path.is_file():
+        raise FileNotFoundError(path)
+    text = file_path.read_text(encoding="utf-8", errors="ignore")
+    _REPO_CACHE[path] = (now, text)
+    return text
+
+def _repo_lines(text):
+    out=[]
+    for raw in str(text or "").splitlines():
+        x=raw.strip()
+        if not x or x.startswith("#") or x.startswith("[") or x.startswith("---") or x.startswith("==="):
+            continue
+        if x not in out: out.append(x)
+    return out
+
 def build_router(require_perm):
     r=APIRouter(prefix="/api/pools",tags=["pools"]); dep=Depends(require_perm("settings"))
+    @r.get("/repository/ips")
+    async def zeus_ips(limit: int = 500, _=dep):
+        try:
+            text=await _repo_text("ips.txt")
+            values=[]
+            for x in _repo_lines(text):
+                try:
+                    host,port=_split_host_port(x)
+                    host=_clean_host(host)
+                    values.append(f"{host}:{port}" if port != 443 else host)
+                except (HTTPException,ValueError,TypeError):
+                    continue
+            return {"ok":True,"source":"Zeus","items":values[:max(1,min(500,int(limit or 500)))]}
+        except Exception as exc:
+            raise HTTPException(502, "دریافت مخزن IP های Zeus ناموفق بود") from exc
+
+    @r.get("/repository/proxies")
+    async def zeus_proxies(country: str = "ALL", limit: int = 200, _=dep):
+        country=str(country or "ALL").upper()
+        path=f"proxy/{country}.txt" if re.fullmatch(r"[A-Z]{2,3}",country) and country != "ALL" else "proxy/ALL.txt"
+        try:
+            values=_repo_lines(await _repo_text(path))
+            return {"ok":True,"source":"Zeus", "country":country, "items":values[:max(1,min(200,int(limit or 200)))]}
+        except Exception as exc:
+            raise HTTPException(502, "دریافت مخزن Proxy های Zeus ناموفق بود") from exc
+
     @r.get("")
     async def get_pools(_=dep):
         d=_load(); return {"ok":True,"ips":[_public_ip(x) for x in d["ips"]],"proxies":[_public_proxy(x) for x in d["proxies"]]}
