@@ -15561,25 +15561,61 @@ html.light .sidebar .nav-label{color:inherit!important}
 .update-prompt-version{margin:12px 0;padding:9px 12px;border-radius:11px;background:rgba(37,99,235,.08);border:1px solid rgba(96,165,250,.13);color:var(--t3);font-size:11px;direction:ltr}
 .update-prompt-actions{display:flex;gap:9px;margin-top:16px}.update-prompt-actions .btn{flex:1;height:42px}
 </style>
+<style id="onex-edge-tools-responsive">
+/* Edge Scanner: responsive ONEX-native layout */
+#page-edge-tools{direction:rtl;max-width:100%;overflow:hidden}
+#page-edge-tools .page-head{margin-bottom:18px}
+#page-edge-tools .edge-tools-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:14px;align-items:start}
+#page-edge-tools .edge-card{min-width:0;padding:18px;border:1px solid var(--card-b);background:linear-gradient(145deg,rgba(var(--accent-rgb),.08),rgba(255,255,255,.025));border-radius:18px;box-shadow:0 16px 38px rgba(0,0,0,.16)}
+#page-edge-tools .edge-card h3{font-size:16px;margin:0 0 14px;color:var(--t1)}
+#page-edge-tools .edge-label{display:block;margin:12px 0 6px;color:var(--t2);font-size:12px;font-weight:700}
+#page-edge-tools .edge-input{width:100%;min-width:0;min-height:44px;border:1px solid var(--card-b);border-radius:12px;background:var(--input-bg);color:var(--t1);padding:0 12px;font:inherit;font-size:13px;outline:0}
+#page-edge-tools textarea.edge-input{height:112px;padding:12px;resize:vertical}
+#page-edge-tools .edge-input:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.14)}
+#page-edge-tools .edge-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+#page-edge-tools .edge-scan-btn{min-height:44px;padding:0 22px;border-radius:12px;white-space:nowrap}
+#page-edge-tools .edge-status{color:var(--t3);font-size:12px}
+#page-edge-tools .edge-endpoint{min-height:82px;margin-top:14px;padding:13px;border:1px solid var(--card-b);border-radius:12px;background:rgba(0,0,0,.12);line-height:1.9;overflow-wrap:anywhere}
+#page-edge-tools .edge-results{padding:0 14px;margin-top:14px}
+#page-edge-tools .edge-result-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--card-b);font-size:12px}
+#page-edge-tools .edge-result-row:last-child{border-bottom:0}
+#page-edge-tools .edge-result-row code{direction:ltr;text-align:left;color:var(--accent2);font-size:12px}
+#page-edge-tools .edge-result-ok{color:#35e8a2;white-space:nowrap}
+@media (max-width:760px){
+  #page-edge-tools{padding-inline:0!important}
+  #page-edge-tools .page-head{padding-inline:2px}
+  #page-edge-tools .page-title{font-size:18px;line-height:1.45}
+  #page-edge-tools .page-sub{font-size:11px;line-height:1.85}
+  #page-edge-tools .edge-tools-grid{grid-template-columns:1fr!important;gap:12px}
+  #page-edge-tools .edge-card{padding:14px;border-radius:15px}
+  #page-edge-tools .edge-card h3{font-size:15px}
+  #page-edge-tools .edge-label{font-size:11px}
+  #page-edge-tools .edge-actions{display:block}
+  #page-edge-tools .edge-scan-btn{width:100%;margin-bottom:8px}
+  #page-edge-tools .edge-status{display:block;text-align:center}
+  #page-edge-tools .edge-result-row{align-items:flex-start;flex-direction:column;gap:4px}
+  #page-edge-tools .edge-result-row code{font-size:11px;max-width:100%}
+}
+</style>
 <section class="page" id="page-edge-tools">
   <div class="page-head"><div><h2 class="page-title">☁ اسکنر Cloudflare و Railway</h2><p class="page-sub">پیدا کردن endpointهای سریع برای لینک‌ها، بدون اسکن بازه‌های نامحدود اینترنت.</p></div></div>
-  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
-    <div class="glass" style="padding:18px"><h3 style="margin-bottom:12px">اسکن Edge</h3>
-      <label class="field-label">منبع</label><select id="edgeScanSource" class="input" style="width:100%;margin:6px 0 12px"><option value="cloudflare">Cloudflare</option><option value="railway">Railway</option></select>
-      <label class="field-label">حالت اسکن</label><select id="edgeScanMode" class="input" style="width:100%;margin:6px 0 12px"><option value="sample">سریع، نمونه‌برداری</option><option value="full">کامل، حداکثر ۲۰۴۸ مقصد</option></select>
-      <label class="field-label">SNI / دامنه مقصد</label><input id="edgeScanSni" class="input" style="width:100%;margin:6px 0 12px" placeholder="www.cloudflare.com">
-      <label class="field-label">مقصدهای دستی، هر خط یک IP:Port</label><textarea id="edgeScanCandidates" class="input" rows="4" style="width:100%;margin:6px 0 12px" placeholder="اختیاری، برای Railway مفید است"></textarea>
-      <button class="btn btn-primary" type="button" onclick="onexEdgeScan()">شروع اسکن</button><span id="edgeScanStatus" class="page-sub" style="display:block;margin-top:10px"></span>
+  <div class="edge-tools-grid">
+    <div class="edge-card"><h3>اسکن Edge</h3>
+      <label class="edge-label">منبع</label><select id="edgeScanSource" class="edge-input"><option value="cloudflare">Cloudflare</option><option value="railway">Railway</option></select>
+      <label class="edge-label">حالت اسکن</label><select id="edgeScanMode" class="edge-input"><option value="sample">سریع، نمونه‌برداری</option><option value="full">کامل، حداکثر ۲۰۴۸ مقصد</option></select>
+      <label class="edge-label">SNI / دامنه مقصد</label><input id="edgeScanSni" class="edge-input" placeholder="www.cloudflare.com">
+      <label class="edge-label">مقصدهای دستی، هر خط یک IP:Port</label><textarea id="edgeScanCandidates" class="edge-input" rows="4" placeholder="اختیاری، برای Railway مفید است"></textarea>
+      <div class="edge-actions"><button class="btn btn-primary edge-scan-btn" type="button" onclick="onexEdgeScan()">شروع اسکن</button><span id="edgeScanStatus" class="edge-status"></span></div>
     </div>
-    <div class="glass" style="padding:18px"><h3 style="margin-bottom:12px">Public Domain</h3><p class="page-sub">دامنه عمومی از تنظیمات deploy یا درخواست ورودی تشخیص داده می‌شود و لینک‌های جدید از hostname محلی استفاده نمی‌کنند.</p><div id="onexPublicEndpoint" style="margin-top:15px;padding:12px;border:1px solid var(--card-b);border-radius:12px">در حال بررسی...</div><button class="btn" type="button" style="margin-top:12px" onclick="loadOnexPublicEndpoint()">بروزرسانی دامنه</button></div>
-  </div><div class="glass" style="padding:18px;margin-top:14px"><h3 style="margin-bottom:10px">نتایج سریع</h3><div id="edgeScanResults" class="page-sub">هنوز اسکن انجام نشده.</div></div>
+    <div class="edge-card"><h3>دامنه عمومی</h3><p class="page-sub">دامنه عمومی از تنظیمات deploy یا درخواست ورودی تشخیص داده می‌شود و لینک‌های جدید از hostname محلی استفاده نمی‌کنند.</p><div id="onexPublicEndpoint" class="edge-endpoint">در حال بررسی...</div><button class="btn edge-scan-btn" type="button" style="margin-top:12px" onclick="loadOnexPublicEndpoint()">بروزرسانی دامنه</button></div>
+  </div><div class="edge-card edge-results"><h3>نتایج سریع</h3><div id="edgeScanResults" class="page-sub">هنوز اسکن انجام نشده.</div></div>
 </section>
 <script>
 (function(){const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 window.loadOnexPublicEndpoint=async function(){const r=await api('/api/public-endpoint');const e=document.getElementById('onexPublicEndpoint');if(e)e.innerHTML=r?`<b>${esc(r.host)}</b><br><small>${esc(r.url)} · ${esc(r.source)}</small>`:'دریافت دامنه ناموفق بود';};
-window.onexEdgeScan=async function(){const source=document.getElementById('edgeScanSource').value,mode=document.getElementById('edgeScanMode').value,sni=document.getElementById('edgeScanSni').value.trim(),candidates=document.getElementById('edgeScanCandidates').value.split(/[,\n]+/).map(x=>x.trim()).filter(Boolean),st=document.getElementById('edgeScanStatus');st.textContent='در حال اسکن...';const r=await api('/api/scanner/edge/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source,mode,sni,candidates,limit:mode==='full'?2048:128})});if(!r){st.textContent='اسکن ناموفق بود';return}st.textContent=`${r.good} مقصد سالم از ${r.count}`;document.getElementById('edgeScanResults').innerHTML=(r.results||[]).map(x=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--card-b)"><code>${esc(x.host)}:${x.port}</code><span>${x.ok?'✅ '+x.latency_ms+'ms':'❌ '+esc(x.error||'خطا')}</span></div>`).join('')||'نتیجه‌ای پیدا نشد';};
+window.onexEdgeScan=async function(){const source=document.getElementById('edgeScanSource').value,mode=document.getElementById('edgeScanMode').value,sni=document.getElementById('edgeScanSni').value.trim(),candidates=document.getElementById('edgeScanCandidates').value.split(/[,\n]+/).map(x=>x.trim()).filter(Boolean),st=document.getElementById('edgeScanStatus');st.textContent='در حال اسکن...';const r=await api('/api/scanner/edge/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source,mode,sni,candidates,limit:mode==='full'?2048:128})});if(!r){st.textContent='اسکن ناموفق بود';return}st.textContent=`${r.good} مقصد سالم از ${r.count}`;document.getElementById('edgeScanResults').innerHTML=(r.results||[]).map(x=>`<div class="edge-result-row"><code>${esc(x.host)}:${x.port}</code><span class="${x.ok?'edge-result-ok':''}">${x.ok?'✅ '+x.latency_ms+'ms':'❌ '+esc(x.error||'خطا')}</span></div>`).join('')||'نتیجه‌ای پیدا نشد';};
 const oldGo=window.goPage;window.goPage=function(name){oldGo(name);if(name==='edge-tools'){loadOnexPublicEndpoint();loadSavedEdge();}};
-  async function loadSavedEdge(){const r=await api('/api/scanner/edge');if(!r)return;const source=document.getElementById('edgeScanSource').value;const rows=(r[source]||[]);if(rows.length)document.getElementById('edgeScanResults').innerHTML=rows.map(x=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--card-b)"><code>${esc(x.host)}:${x.port}</code><span>✅ ${x.latency_ms}ms</span></div>`).join('');}})();
+  async function loadSavedEdge(){const r=await api('/api/scanner/edge');if(!r)return;const source=document.getElementById('edgeScanSource').value;const rows=(r[source]||[]);if(rows.length)document.getElementById('edgeScanResults').innerHTML=rows.map(x=>`<div class="edge-result-row"><code>${esc(x.host)}:${x.port}</code><span class="edge-result-ok">✅ ${x.latency_ms}ms</span></div>`).join('');}})();
 </script>
 <script id="onexSellEdgeJs">
 (function(){
