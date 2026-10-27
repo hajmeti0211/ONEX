@@ -277,6 +277,21 @@ HTTP_RATE_RULES = {
 @app.middleware("http")
 async def public_security_middleware(request: Request, call_next):
     path = request.url.path
+    edge_header = request.headers.get("x-onex-edge", "")
+    if edge_header:
+        try:
+            from onex.integrations.cf_edge import valid_edge_secret
+            if not valid_edge_secret(edge_header):
+                return JSONResponse({"ok": False, "error": "invalid edge relay"}, status_code=403)
+        except Exception:
+            return JSONResponse({"ok": False, "error": "edge relay unavailable"}, status_code=503)
+    # Set ONEX_EDGE_ONLY=1 when the origin must accept WebSocket relay traffic
+    # only from the managed Worker. Leave it off while direct subscription links
+    # are still in use.
+    strict_edge = str(os.environ.get("ONEX_EDGE_ONLY", "")).lower() in {"1", "true", "yes", "on"}
+    is_relay_path = request.headers.get("upgrade", "").lower() == "websocket" or path.startswith(("/siderail/", "/xhttp-siz10/", "/ws/"))
+    if strict_edge and is_relay_path and not edge_header:
+        return JSONResponse({"ok": False, "error": "edge relay required"}, status_code=403)
     rule = next((v for k, v in HTTP_RATE_RULES.items() if path == k or path.startswith(k)), None)
     if rule:
         limit, window = rule
@@ -15790,7 +15805,7 @@ html.light .sidebar .nav-label{color:inherit!important}
   }
 
   // ---- edge
-  window.edgeDomainMode=function(){const custom=document.querySelector('input[name="edgeMode"]:checked')?.value==='custom';const box=document.getElementById('edgeCustomDomainBox');if(box)box.hidden=!custom;};
+  window.edgeDomainMode=function(){const custom=document.querySelector('input[name="edgeMode"]:checked')?.value==='custom';const box=document.getElementById('edgeCustomDomainBox');const input=document.getElementById('edgeDomain');if(box)box.hidden=!custom;if(input&&!custom)input.value='';};
   async function loadEdge(){
     const e=await j('/api/cfedge'); if(!e)return;
     document.getElementById('edgeInSub').checked=e.include_in_sub!==false;
