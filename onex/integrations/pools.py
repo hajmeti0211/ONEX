@@ -116,17 +116,25 @@ def build_router(require_perm):
     async def add_ips(request:Request,_=dep):
         b=await request.json(); raw=b.get("ips") or b.get("value") or []
         if isinstance(raw,str): raw=re.split(r"[\s,]+",raw)
-        d=_load(); out=[]
+        d=_load(); out=[]; invalid=[]
         for item in raw[:200]:
             try:
                 host, port = _split_host_port(item)
             except (TypeError, ValueError, HTTPException):
+                invalid.append(str(item).strip())
                 continue
-            host=_clean_host(host); key=f"{host}:{port}"
+            try:
+                host=_clean_host(host)
+            except HTTPException:
+                invalid.append(str(item).strip())
+                continue
+            key=f"{host}:{port}"
             if not any(f"{x['host']}:{x['port']}"==key for x in d["ips"]):
                 row={"id":_id("ip"),"host":host,"port":port,"sni":str(b.get("sni") or "").strip().lower(),"enabled":True,"status":"untested","latency_ms":None,"last_check":""}
                 d["ips"].append(row); out.append(row)
-        _save(d); return {"ok":True,"added":len(out),"ips":[_public_ip(x) for x in d["ips"]]}
+        if not out and invalid:
+            raise HTTPException(400, "فرمت IP نامعتبر است: " + ", ".join(invalid[:3]))
+        _save(d); return {"ok":True,"added":len(out),"invalid":invalid[:10],"ips":[_public_ip(x) for x in d["ips"]]}
     @r.delete("/ips/{entry_id}")
     async def delete_ip(entry_id:str,_=dep):
         d=_load(); before=len(d["ips"]); d["ips"]=[x for x in d["ips"] if x.get("id")!=entry_id]
