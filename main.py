@@ -15601,7 +15601,7 @@ html.light .sidebar .nav-label{color:inherit!important}
   <div class="page-head"><div><h2 class="page-title">☁ اسکنر Cloudflare و Railway</h2><p class="page-sub">پیدا کردن endpointهای سریع برای لینک‌ها، بدون اسکن بازه‌های نامحدود اینترنت.</p></div></div>
   <div class="edge-tools-grid">
     <div class="edge-card"><h3>اسکن Edge</h3>
-      <label class="edge-label">منبع</label><select id="edgeScanSource" class="edge-input"><option value="cloudflare">Cloudflare</option><option value="railway">Railway</option></select>
+      <label class="edge-label">منبع</label><select id="edgeScanSource" class="edge-input"><option value="cloudflare">Cloudflare</option><option value="railway">Railway (فقط روی Railway)</option></select><small id="edgeRailwayHint" class="edge-status" style="display:block;margin-top:6px">Railway فقط برای deployment واقعی Railway فعال است.</small>
       <label class="edge-label">پورت</label><select id="edgeScanPort" class="edge-input"><option value="443">443</option><option value="2053">2053</option><option value="2083">2083</option><option value="8443">8443</option></select>
       <label class="edge-label">Timeout (ثانیه)</label><input id="edgeScanTimeout" class="edge-input" type="number" min="0.4" max="8" step="0.1" value="3">
       <label class="edge-label">حالت اسکن</label><select id="edgeScanMode" class="edge-input"><option value="sample">سریع، نمونه‌برداری</option><option value="full">کامل، حداکثر ۲۰۴۸ مقصد</option></select>
@@ -15610,14 +15610,16 @@ html.light .sidebar .nav-label{color:inherit!important}
       <div class="edge-actions"><button class="btn btn-primary edge-scan-btn" type="button" onclick="onexEdgeScan()">شروع اسکن</button><span id="edgeScanStatus" class="edge-status"></span></div>
     </div>
     <div class="edge-card"><h3>دامنه عمومی</h3><p class="page-sub">دامنه عمومی از تنظیمات deploy یا درخواست ورودی تشخیص داده می‌شود و لینک‌های جدید از hostname محلی استفاده نمی‌کنند.</p><div id="onexPublicEndpoint" class="edge-endpoint">در حال بررسی...</div><button class="btn edge-scan-btn" type="button" style="margin-top:12px" onclick="loadOnexPublicEndpoint()">بروزرسانی دامنه</button></div>
-  </div><div class="edge-card edge-results"><h3>نتایج سریع</h3><div class="edge-actions"><button class="btn" type="button" onclick="onexApplyEdge()">اعمال IPهای بهتر روی کانفیگ‌ها</button><button class="btn" type="button" onclick="onexClearEdge()">پاک کردن نتایج</button></div><div id="edgeScanResults" class="page-sub">هنوز اسکن انجام نشده.</div></div>
+  </div><div class="edge-card"><h3>اسکن Shippr</h3><p class="page-sub">دامنه عمومی همین deployment را resolve و با SNI واقعی تست می‌کند؛ IP ثابت هاردکد نمی‌شود.</p><label class="edge-label">دامنه</label><input id="shipprScanHost" class="edge-input" dir="ltr" placeholder="onex.shiprr.dev"><label class="edge-label">پورت</label><select id="shipprScanPort" class="edge-input"><option value="443">443</option><option value="80">80</option><option value="8443">8443</option></select><div class="edge-actions"><button class="btn btn-primary edge-scan-btn" type="button" onclick="onexShipprScan()">اسکن Shippr</button><button class="btn edge-scan-btn" type="button" onclick="onexShipprClear()">پاک کردن</button></div><span id="shipprScanStatus" class="edge-status"></span></div><div class="edge-card edge-results"><h3>نتایج سریع</h3><div class="edge-actions"><button class="btn" type="button" onclick="onexApplyEdge()">اعمال IPهای بهتر روی کانفیگ‌ها</button><button class="btn" type="button" onclick="onexClearEdge()">پاک کردن نتایج</button></div><div id="edgeScanResults" class="page-sub">هنوز اسکن انجام نشده.</div></div>
 </section>
 <script>
-(function(){const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+(function(){const sourceEl=document.getElementById('edgeScanSource');if(sourceEl)sourceEl.addEventListener('change',()=>{const h=document.getElementById('edgeRailwayHint');if(h)h.textContent=sourceEl.value==='railway'?'در Shippr قابل استفاده نیست؛ دامنه Railway واقعی یا IP:Port دستی لازم است.':'اسکن محدود subnetهای Cloudflare.';});const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 window.loadOnexPublicEndpoint=async function(){const r=await api('/api/public-endpoint');const e=document.getElementById('onexPublicEndpoint');if(e)e.innerHTML=r?`<b>${esc(r.host)}</b><br><small>${esc(r.url)} · ${esc(r.source)}</small>`:'دریافت دامنه ناموفق بود';};
 window.onexEdgeScan=async function(){const source=document.getElementById('edgeScanSource').value,mode=document.getElementById('edgeScanMode').value,port=Number(document.getElementById('edgeScanPort').value||443),timeout=Number(document.getElementById('edgeScanTimeout').value||3),sni=document.getElementById('edgeScanSni').value.trim(),candidates=document.getElementById('edgeScanCandidates').value.split(/[,\n]+/).map(x=>x.trim()).filter(Boolean),st=document.getElementById('edgeScanStatus');st.textContent='در حال اسکن...';const r=await api('/api/scanner/edge/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source,mode,port,timeout,sni,candidates,limit:mode==='full'?2048:128})});if(!r){st.textContent='اسکن ناموفق بود';return}st.textContent=`${r.good} مقصد سالم از ${r.count}`;document.getElementById('edgeScanResults').innerHTML=(r.results||[]).map(x=>`<div class="edge-result-row"><code>${esc(x.host)}:${x.port}</code><span class="${x.ok?'edge-result-ok':''}">${x.ok?'✅ '+x.latency_ms+'ms':'❌ '+esc(x.error||'خطا')}</span></div>`).join('')||'نتیجه‌ای پیدا نشد';};
 window.onexApplyEdge=async function(){const source=document.getElementById('edgeScanSource').value;const r=await api('/api/scanner/edge/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source})});if(r)toast(`${r.updated} کانفیگ بروزرسانی شد`);};
   window.onexClearEdge=async function(){const source=document.getElementById('edgeScanSource').value;const r=await api('/api/scanner/edge/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source})});if(r){document.getElementById('edgeScanResults').textContent='نتایج پاک شد';toast('نتایج پاک شد');}};
+  window.onexShipprScan=async function(){const host=document.getElementById('shipprScanHost').value.trim(),port=Number(document.getElementById('shipprScanPort').value||443),st=document.getElementById('shipprScanStatus');st.textContent='در حال resolve و تست TLS...';const r=await api('/api/scanner/shippr/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({host,port,timeout:3})});if(!r){st.textContent='اسکن ناموفق بود';return}st.textContent=`${r.good} IP سالم از ${r.count}`;document.getElementById('edgeScanResults').innerHTML=(r.results||[]).map(x=>`<div class="edge-result-row"><code>${esc(x.host)}:${x.port}</code><span class="${x.ok?'edge-result-ok':''}">${x.ok?'✅ '+x.latency_ms+'ms':'❌ '+esc(x.error||'خطا')}</span></div>`).join('')||'نتیجه‌ای پیدا نشد';};
+  window.onexShipprClear=async function(){const r=await api('/api/scanner/shippr/clear',{method:'POST'});if(r){document.getElementById('shipprScanStatus').textContent='نتایج پاک شد';document.getElementById('edgeScanResults').textContent='نتایج پاک شد';}};
   const oldGo=window.goPage;window.goPage=function(name){oldGo(name);if(name==='edge-tools'){loadOnexPublicEndpoint();loadSavedEdge();}};
   async function loadSavedEdge(){const r=await api('/api/scanner/edge');if(!r)return;const source=document.getElementById('edgeScanSource').value;const rows=(r[source]||[]);if(rows.length)document.getElementById('edgeScanResults').innerHTML=rows.map(x=>`<div class="edge-result-row"><code>${esc(x.host)}:${x.port}</code><span class="edge-result-ok">✅ ${x.latency_ms}ms</span></div>`).join('');}})();
 </script>
@@ -15758,8 +15760,8 @@ async def dashboard(
 # EDGE SCANNER + PUBLIC ENDPOINT
 # ============================================================
 
-EDGE_SCAN_STATE = {"cloudflare": [], "railway": [], "updated_at": None, "stats": {}}
-RAILWAY_ENDPOINTS = ['8.6.112.148:891', '8.6.112.135:864', '8.6.112.87:946', '8.6.112.120:1010', '8.6.112.165:928', '8.6.112.139:7281', '8.6.112.178:942', '8.6.112.205:3581', '8.6.112.176:8319', '8.6.112.190:5279', '8.6.112.121:500', '8.6.112.202:878', '8.6.112.223:7559', '8.6.112.230:1843', '8.6.112.200:4198', '8.6.112.233:7152', '8.6.112.4:4233', '8.6.112.159:878', '8.6.112.4:859', '8.6.112.233:880', '8.6.112.93:942', '8.6.112.93:945', '8.6.112.182:945', '8.6.112.133:968', '8.6.112.52:928', '8.6.112.121:1180', '8.6.112.78:859', '8.6.112.205:891', '8.6.112.248:903', '8.6.112.246:894', '8.6.112.230:878', '8.6.112.246:859', '8.6.112.172:878', '8.6.112.104:4233', '8.6.112.249:891', '8.6.112.46:4198', '8.6.112.234:3854', '8.6.112.136:4177', '8.6.112.224:8886', '8.6.112.251:1387', '8.6.112.127:4198', '8.6.112.200:1010', '8.6.112.237:946', '8.6.112.82:891', '8.6.112.170:1180', '8.6.112.29:7152', '8.6.112.7:1180', '8.6.112.182:891', '8.6.112.67:7103', '188.114.97.6:7281', '8.6.112.235:1070', '8.6.112.228:1843', '8.6.112.19:908', '8.6.112.184:7281', '8.6.112.51:2506', '188.114.97.6:859', '8.6.112.8:1014', '8.6.112.253:854', '8.6.112.221:500', '8.6.112.96:903', '8.6.112.174:1014', '8.6.112.212:880', '8.6.112.154:7281', '8.6.112.65:2506', '8.6.112.171:946', '8.6.112.160:3854', '8.6.112.86:1387', '8.6.112.163:7281', '8.6.112.29:3581', '8.6.112.122:4177', '8.6.112.154:891', '8.6.112.174:939', '8.6.112.70:945', '8.6.112.53:7156', '8.6.112.165:7281', '8.6.112.181:7152', '8.6.112.122:894', '8.6.112.191:908', '8.6.112.79:8854', '8.6.112.180:928', '8.6.112.61:3581', '8.6.112.224:854', '8.6.112.77:1070', '8.6.112.107:3138', '8.6.112.106:3138', '8.6.112.60:8854']
+EDGE_SCAN_STATE = {"cloudflare": [], "railway": [], "shippr": [], "updated_at": None, "stats": {}}
+RAILWAY_ENDPOINTS = []  # Railway candidates come only from the active Railway deployment.
 
 
 @app.get("/api/scanner/edge")
@@ -15816,11 +15818,19 @@ async def edge_scan(request: Request, _=Depends(require_auth)):
             parsed = _parse_endpoint(str(item))
             if parsed:
                 candidates.append(parsed)
-    if not candidates:
+    if not candidates and source == "cloudflare":
         candidates = load_candidates(BASE_DIR, source, limit, mode=mode)
     if source == "railway" and not candidates:
+        # Never probe stale public IP/port lists copied from another Railway app.
+        # Railway scanning is valid only when this instance exposes its own
+        # Railway domain/environment, or when the operator supplies targets.
+        railway_domain = str(os.environ.get("RAILWAY_PUBLIC_DOMAIN") or os.environ.get("RAILWAY_STATIC_URL") or "").strip()
+        railway_active = bool(os.environ.get("RAILWAY_ENVIRONMENT_ID") or railway_domain)
+        if not railway_active:
+            raise HTTPException(400, "این پنل روی Railway اجرا نمی‌شود؛ برای اسکن Railway باید روی Railway deploy باشید یا IP:Port واقعی وارد کنید")
         from onex.core.edge_scanner import _parse_endpoint
-        candidates = [_parse_endpoint(x, port) for x in RAILWAY_ENDPOINTS]
+        domain_host = railway_domain.split("://", 1)[-1].split("/", 1)[0].rsplit(":", 1)[0]
+        candidates = [_parse_endpoint(domain_host, 443)] if domain_host else []
         candidates = [x for x in candidates if x][:limit]
     if source == "cloudflare" and candidates:
         candidates = [(host, port) for host, _ in candidates]
@@ -15887,6 +15897,55 @@ async def edge_scan_apply(request: Request, _=Depends(require_perm("configs"))):
 async def edge_scan_best(source: str = "cloudflare", _=Depends(require_auth)):
     source = "railway" if source == "railway" else "cloudflare"
     return {"ok": True, "source": source, "best": (EDGE_SCAN_STATE.get(source) or [])[:10], "stats": EDGE_SCAN_STATE.get("stats", {}).get(source, {})}
+
+
+async def _resolve_public_hosts(host: str, port: int = 443) -> list[tuple[str, int]]:
+    try:
+        infos = await asyncio.get_running_loop().getaddrinfo(host, port, type=socket.SOCK_STREAM)
+    except Exception:
+        return []
+    out = []
+    seen = set()
+    for info in infos:
+        ip = str(info[4][0])
+        item = (ip, port)
+        if item not in seen:
+            seen.add(item)
+            out.append(item)
+    return out[:16]
+
+
+@app.post("/api/scanner/shippr/scan")
+async def shippr_scan(request: Request, _=Depends(require_auth)):
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    raw_host = str(body.get("host") or get_host(request)).strip().lower()
+    host = raw_host.split("://", 1)[-1].split("/", 1)[0].rsplit(":", 1)[0]
+    if not host or host in {"localhost", "127.0.0.1", "0.0.0.0"} or len(host) > 253:
+        raise HTTPException(400, "دامنه عمومی معتبر نیست")
+    port = max(1, min(65535, safe_int(body.get("port"), 443, 1, 65535)))
+    timeout = max(0.4, min(8.0, safe_float(body.get("timeout"), 3.0, 0.4)))
+    candidates = await _resolve_public_hosts(host, port)
+    if not candidates:
+        raise HTTPException(400, "برای دامنه IP پیدا نشد")
+    results = await scan_edge_candidates(candidates, sni=host, timeout=timeout, concurrency=16, retries=1)
+    good = [x for x in results if x.get("ok")][:10]
+    EDGE_SCAN_STATE["shippr"] = good
+    EDGE_SCAN_STATE["updated_at"] = datetime.now().isoformat()
+    EDGE_SCAN_STATE.setdefault("stats", {})["shippr"] = {"host": host, "port": port, "tested": len(results), "healthy": len(good), "best_latency_ms": good[0].get("latency_ms") if good else None, "updated_at": EDGE_SCAN_STATE["updated_at"]}
+    await save_state()
+    log_activity("scanner", f"اسکن Shippr برای {host}: {len(good)} IP سالم", "ok" if good else "warn")
+    return {"ok": True, "source": "shippr", "host": host, "port": port, "results": results, "good": len(good), "count": len(results), "stats": EDGE_SCAN_STATE["stats"]["shippr"]}
+
+
+@app.post("/api/scanner/shippr/clear")
+async def shippr_clear(_=Depends(require_auth)):
+    EDGE_SCAN_STATE["shippr"] = []
+    EDGE_SCAN_STATE.setdefault("stats", {}).pop("shippr", None)
+    await save_state()
+    return {"ok": True}
 
 
 @app.get("/api/public-endpoint")
