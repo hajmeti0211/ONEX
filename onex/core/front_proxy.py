@@ -1,7 +1,7 @@
-"""Transparent TCP front proxy for ONEX (SideRail-style edge).
+"""Transparent TCP front proxy for ONEX (ONEX-style edge).
 
 Owns the public port and dispatches raw connections:
-  * /siderail/*        -> uvicorn (siderail_bridge -> local Xray)
+  * /onex/*        -> uvicorn (onex_bridge -> local Xray)
   * /httpup/<uuid>     -> pure-python VLESS HTTPUpgrade relay (101 + raw stream)
   * everything else    -> uvicorn (panel, WS relay, XHTTP)
 
@@ -225,8 +225,8 @@ async def _httpupgrade_relay(path: str, upgrade_value: str, head: bytes, client_
 def make_handler(ctx):
     internal_host = ctx.get("internal_host", "127.0.0.1")
     internal_port = int(ctx.get("internal_port"))
-    vmess_port = int(ctx.get("siderail_vmess_port", 18501))
-    xhttp_port = int(ctx.get("siderail_xhttp_port", 18503))
+    vmess_port = int(ctx.get("onex_vmess_port", 18501))
+    xhttp_port = int(ctx.get("onex_xhttp_port", 18503))
     log = ctx.get("log") or (lambda *a, **k: None)
 
     async def handle(client_r: asyncio.StreamReader, client_w: asyncio.StreamWriter):
@@ -243,7 +243,7 @@ def make_handler(ctx):
         ctx["client_ip"] = headers.get("x-forwarded-for", "").split(",")[0].strip() or (peer[0] if peer else "unknown")
 
         try:
-            # /siderail/* is now served per-request by uvicorn (siderail_bridge),
+            # /onex/* is now served per-request by uvicorn (onex_bridge),
             # so no raw connection is ever pinned to Xray.
             if path.startswith("/httpup/") and upgrade and not has_ws_key:
                 await _httpupgrade_relay(path, upgrade, head, client_r, client_w, ctx)
