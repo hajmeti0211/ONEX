@@ -1,4 +1,4 @@
-🚀 ONEX PANEL 1.3.9
+🚀 ONEX PANEL 1.4.2
 
 ⚡ PROFESSIONAL V2RAY / XRAY MANAGEMENT PANEL
 
@@ -60,11 +60,11 @@ ONEX Panel قابلیت اجرا و Deploy روی Railway را دارد و می�
 
 📦 CURRENT VERSION
 
-🟢 ONEX PANEL v1.3.9
+🟢 ONEX PANEL v1.4.2
 
 نسخه فعلی پروژه:
 
-"v1.3.9"
+"v1.4.2"
 
 این نسخه شامل بهبودهای مختلف در پنل، مدیریت سرویس‌ها و ساختار پروژه است.
 
