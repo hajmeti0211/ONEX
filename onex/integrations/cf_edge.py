@@ -85,6 +85,14 @@ def edge_host(cfg: dict | None = None) -> str:
     return (cfg.get("custom_domain") or cfg.get("workers_dev_host") or "").strip().lower()
 
 
+def valid_edge_secret(value: str | None, cfg: dict | None = None) -> bool:
+    """Validate the secret injected into requests by the managed Worker."""
+    import hmac
+    expected = str((cfg or load()).get("secret") or "").strip()
+    received = str(value or "").strip()
+    return bool(expected and received and hmac.compare_digest(received, expected))
+
+
 def public_view(cfg: dict) -> dict:
     tok = cfg.get("api_token") or ""
     out = {k: v for k, v in cfg.items() if k not in ("api_token", "secret")}
