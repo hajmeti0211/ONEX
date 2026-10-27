@@ -15767,6 +15767,35 @@ async def edge_scan_state(_=Depends(require_auth)):
     return {"ok": True, **EDGE_SCAN_STATE}
 
 
+async def _scan_railway_tcp(candidates: list[tuple[str, int]], timeout: float, concurrency: int = 32) -> list[dict]:
+    """Railway endpoint.txt contains raw TCP proxy endpoints, not TLS hosts."""
+    sem = asyncio.Semaphore(max(1, min(48, concurrency)))
+
+    async def probe(host: str, port: int) -> dict:
+        started = time.perf_counter()
+        async with sem:
+            writer = None
+            try:
+                _, writer = await asyncio.wait_for(asyncio.open_connection(host, port), timeout=timeout)
+                return {"host": host, "port": port, "ok": True,
+                        "latency_ms": round((time.perf_counter() - started) * 1000, 1),
+                        "protocol": "tcp", "attempt": 1}
+            except Exception as exc:
+                return {"host": host, "port": port, "ok": False,
+                        "latency_ms": round((time.perf_counter() - started) * 1000, 1),
+                        "protocol": "tcp", "error": str(exc)[:160]}
+            finally:
+                if writer is not None:
+                    writer.close()
+                    try:
+                        await writer.wait_closed()
+                    except Exception:
+                        pass
+
+    results = await asyncio.gather(*(probe(host, port) for host, port in list(dict.fromkeys(candidates))[:2048]))
+    return sorted(results, key=lambda item: (not item["ok"], item["latency_ms"]))
+
+
 @app.post("/api/scanner/edge/scan")
 async def edge_scan(request: Request, _=Depends(require_auth)):
     try:
@@ -15799,7 +15828,11 @@ async def edge_scan(request: Request, _=Depends(require_auth)):
         candidates = [(host, port if port != 443 else p) for host, p in candidates]
     if not candidates:
         raise HTTPException(status_code=400, detail="لیست مقصدی برای اسکن وجود ندارد")
-    results = await scan_edge_candidates(candidates, sni=sni, timeout=timeout, concurrency=32, retries=1)
+    if source == "railway":
+        # Railway's endpoint.txt entries are TCP proxy host:port pairs.
+        results = await _scan_railway_tcp(candidates, timeout=timeout, concurrency=32)
+    else:
+        results = await scan_edge_candidates(candidates, sni=sni, timeout=timeout, concurrency=32, retries=1)
     good = [r for r in results if r.get("ok")][:10]
     EDGE_SCAN_STATE[source] = good
     EDGE_SCAN_STATE["updated_at"] = datetime.now().isoformat()
