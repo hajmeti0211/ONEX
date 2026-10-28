@@ -222,7 +222,12 @@ def build_router(require_perm):
         except Exception:
             b={}
         ids=set(str(x) for x in (b.get("ids") or [])); d=_load(); rows=[x for x in d["ips"] if not ids or str(x.get("id")) in ids]
+        sem=asyncio.Semaphore(24)
         async def one(x):
+            async with sem:
+                return await _check_one_ip(x)
+
+        async def _check_one_ip(x):
             try:
                 res=await _probe(str(x.get("host") or ""),int(x.get("port") or 443),3.0,bool(int(x.get("port") or 443) in {443,2053,2083,2087,2096,8443}))
             except Exception as exc:
@@ -260,7 +265,12 @@ def build_router(require_perm):
         d=_load()
         rows=[x for x in d["proxies"] if not ids or str(x.get("id")) in ids]
 
+        sem=asyncio.Semaphore(24)
         async def one(x):
+            async with sem:
+                return await _check_one_proxy(x)
+
+        async def _check_one_proxy(x):
             try:
                 res=await _probe_proxy(x, 4.0)
             except Exception as exc:
