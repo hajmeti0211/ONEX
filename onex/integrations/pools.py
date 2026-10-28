@@ -161,9 +161,9 @@ def build_router(require_perm):
                     values.append(f"{host}:{port}" if port != 443 else host)
                 except (HTTPException,ValueError,TypeError):
                     continue
-            return {"ok":True,"source":"Zeus","items":values[:max(1,min(500,int(limit or 500)))]}
+            return {"ok":True,"source":"ONEX","items":values[:max(1,min(500,int(limit or 500)))]}
         except Exception as exc:
-            raise HTTPException(502, "دریافت مخزن IP های Zeus ناموفق بود") from exc
+            raise HTTPException(502, "دریافت مخزن IP های ONEX ناموفق بود") from exc
 
     @r.get("/repository/proxies")
     async def zeus_proxies(country: str = "ALL", limit: int = 200, _=dep):
@@ -171,9 +171,9 @@ def build_router(require_perm):
         path=f"proxy/{country}.txt" if re.fullmatch(r"[A-Z]{2,3}",country) and country != "ALL" else "proxy/ALL.txt"
         try:
             values=_repo_lines(await _repo_text(path))
-            return {"ok":True,"source":"Zeus", "country":country, "items":values[:max(1,min(200,int(limit or 200)))]}
+            return {"ok":True,"source":"ONEX", "country":country, "items":values[:max(1,min(200,int(limit or 200)))]}
         except Exception as exc:
-            raise HTTPException(502, "دریافت مخزن Proxy های Zeus ناموفق بود") from exc
+            raise HTTPException(502, "دریافت مخزن Proxy های ONEX ناموفق بود") from exc
 
     @r.get("")
     async def get_pools(_=dep):
