@@ -215,6 +215,9 @@ def build_router(require_perm):
         d=_load(); before=len(d["ips"]); d["ips"]=[x for x in d["ips"] if x.get("id")!=entry_id]
         if len(d["ips"])==before: raise HTTPException(404,"IP پیدا نشد")
         _save(d); return {"ok":True}
+    @r.delete("/ips")
+    async def delete_all_ips(_=dep):
+        d=_load(); count=len(d["ips"]); d["ips"]=[]; _save(d); return {"ok":True,"deleted":count}
     @r.post("/ips/check")
     async def check_ips(request:Request,_=dep):
         try:
@@ -300,4 +303,7 @@ def build_router(require_perm):
         d=_load(); before=len(d["proxies"]); d["proxies"]=[x for x in d["proxies"] if x.get("id")!=entry_id]
         if len(d["proxies"])==before: raise HTTPException(404,"Proxy پیدا نشد")
         _save(d); return {"ok":True}
+    @r.delete("/proxies")
+    async def delete_all_proxies(_=dep):
+        d=_load(); count=len(d["proxies"]); d["proxies"]=[]; _save(d); return {"ok":True,"deleted":count}
     return r
