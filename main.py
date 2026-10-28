@@ -8,12 +8,6 @@
 import os as _ob_os, sys as _ob_sys, json as _ob_json
 from pathlib import Path as _ob_Path
 
-# When launched as `python main.py`, child modules import `main` by name.
-# Alias the running __main__ module first so they do not boot a second copy
-# of the application, duplicate routes, or trigger circular-import failures.
-if __name__ == "__main__":
-    _ob_sys.modules.setdefault("main", _ob_sys.modules[__name__])
-
 
 def _ob_ver(v):
     out = []
@@ -1022,36 +1016,11 @@ def is_ip_allowed(
     if ip in ips:
         return True
 
-    # Edge -> direct handoff: the old Worker connections are transient runtime
-    # state, not real devices. Remove only known Cloudflare-edge sessions for
-    # this UUID before evaluating the saved IP limit.
-    if not _is_cloudflare_edge_ip(ip):
-        stale_edge_ids = [cid for cid, conn in connections.items()
-                          if conn.get("uuid") == uuid and _is_cloudflare_edge_ip(conn.get("ip"))]
-        for cid in stale_edge_ids:
-            connections.pop(cid, None)
-        if stale_edge_ids:
-            ips = unique_ips_for_uuid(uuid)
-            if ip in ips:
-                return True
-
-    # Do not let disconnected/stale in-memory sessions permanently consume the
-    # limit. This table is runtime-only and is cleared on restart.
-    if len(ips) >= limit and connections:
-        now = time.time()
-        recent = False
-        for connection in connections.values():
-            if connection.get("uuid") != uuid:
-                continue
-            try:
-                age = now - datetime.fromisoformat(str(connection.get("connected_at"))).timestamp()
-            except Exception:
-                age = 0
-            if age < 90:
-                recent = True
-                break
-        if not recent:
-            return True
+    # A user may switch from the Cloudflare Edge subscription to the direct
+    # hostname. Keep a one-IP account usable while old Edge sessions remain
+    # in the in-memory table, instead of returning 403 until a restart.
+    if ips and not _is_cloudflare_edge_ip(ip) and all(_is_cloudflare_edge_ip(x) for x in ips):
+        return True
 
     return len(ips) < limit
 
@@ -11161,13 +11130,13 @@ Cache-Control: no-cache"></textarea></div>
 </style>
 <style>
 #onexPoolsCard{background:linear-gradient(145deg,rgba(10,38,46,.96),rgba(8,22,32,.96));border-color:rgba(56,213,241,.28);color:#eafcff}
-.pool-toolbar{display:flex;align-items:center;gap:10px;padding:12px 14px;margin:16px 0;border:1px solid rgba(56,213,241,.2);border-radius:16px;background:rgba(2,20,27,.5);color:#a9c5ca}.pool-toolbar strong{color:#35d7ef}.pool-toolbar button{margin-right:auto}
+.pool-item-actions{display:inline-flex;align-items:center;gap:4px;direction:ltr}.pool-item-actions button{border:0;background:rgba(255,255,255,.06);color:#8eeaf2;border-radius:6px;padding:3px 6px;cursor:pointer}.pool-item-actions small{font-size:11px;color:#a9c5ca;direction:rtl}.pool-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 14px;margin:16px 0;border:1px solid rgba(56,213,241,.2);border-radius:16px;background:rgba(2,20,27,.5);color:#a9c5ca}.pool-toolbar strong{color:#35d7ef}.pool-toolbar button{margin-right:auto}
 .pool-columns{display:grid;grid-template-columns:1fr 1fr;gap:14px}.pool-column{padding:18px;border-radius:21px;background:linear-gradient(145deg,rgba(8,48,57,.82),rgba(5,27,34,.9));border:1px solid rgba(56,213,241,.32)}.pool-column-proxy{border-color:rgba(167,91,238,.42)}
 .pool-column-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.pool-column-kicker{font:800 10px JetBrains Mono,monospace;letter-spacing:.13em;color:#b98bf2;direction:ltr}.pool-column h4{font-size:22px;margin:8px 0}.pool-column-head>b{font-size:12px;color:#45d8ee;border:1px solid rgba(56,213,241,.3);border-radius:99px;padding:7px 9px;white-space:nowrap}.pool-column-proxy .pool-column-head>b{color:#d19aff;border-color:rgba(180,100,240,.35)}.pool-column-hint{color:#9bb9bf;font-size:13px;min-height:38px;margin:7px 0 14px}.pool-add-trigger{width:100%;border:0;border-radius:12px;padding:12px;background:linear-gradient(110deg,#20d1e5,#bd9af9);font-weight:800;color:#071c27}.pool-items{display:grid;gap:7px;margin-top:15px;max-height:235px;overflow:auto}.pool-item{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.06);border-radius:10px;padding:10px}.pool-item code{font:12px JetBrains Mono,monospace;direction:ltr;overflow-wrap:anywhere;color:#e8fbff}.pool-item button{border:0;background:none;color:#ff9eae;font-size:18px}.pool-clear-all{margin-top:13px;border:1px solid rgba(255,113,139,.35);border-radius:10px;padding:8px 11px;background:rgba(255,76,109,.08);color:#ffb4c0}.pool-picker{background:rgba(2,17,23,.96);border-color:rgba(56,213,241,.25);color:#eafcff}.pool-picker-head{color:#a8c6ca}.pool-picker-row{background:rgba(255,255,255,.07);border-color:rgba(130,220,230,.2)}.pool-picker-row code{color:#e9fbff}.pool-selection-workspace{display:block}.pool-selection-rail{margin-top:10px;position:static}.pool-selection-continue{color:#071c27}
 @media(max-width:640px){.pool-columns{grid-template-columns:1fr}.pool-toolbar{flex-wrap:wrap}.pool-toolbar button{width:100%;margin-right:0}.pool-column h4{font-size:20px}}
 </style>
 <div class="pool-head"><div><div class="pool-kicker">ONEX CLOUD POOLS</div><h3>مخزن‌های آماده</h3><p>انتخاب سریع IP و Proxy برای تست و استفاده در کانفیگ‌ها</p></div><div class="pool-live"><i></i> داخلی · آماده استفاده</div></div>
-    <div class="pool-toolbar"><span>موجودی داخلی</span><strong id="poolTotalCount">— مورد فعال</strong><button class="btn btn-sm" type="button" onclick="poolPreview()">پیش‌نمایش انتخاب‌ها</button></div>
+    <div class="pool-toolbar"><span>موجودی داخلی</span><strong id="poolTotalCount">— مورد فعال</strong><button class="btn btn-sm" type="button" onclick="poolCopyAll('ips')">کپی IPها</button><button class="btn btn-sm" type="button" onclick="poolUseAllHealthyForEdge()">IP سالم برای Edge</button><button class="btn btn-sm" type="button" onclick="poolCopyAll('proxies')">کپی Proxyها</button><button class="btn btn-sm" type="button" onclick="poolPreview()">پیش‌نمایش انتخاب‌ها</button></div>
     <div class="pool-columns">
       <div class="pool-column pool-column-ip"><div class="pool-column-head"><div><span class="pool-column-kicker">NETWORK TARGETS</span><h4>مخزن IP 🌐</h4></div><b id="poolIpCount">— مورد</b></div><p class="pool-column-hint">IPهای آماده برای تست و استفاده در کانفیگ‌ها</p><button class="pool-add-trigger" type="button" onclick="poolLoadRepo('ips')">＋ افزودن IP</button><div id="poolRepoRowsIps" class="pool-picker" style="display:none"></div><div id="poolRowsIps" class="pool-items"></div><button class="pool-clear-all" type="button" onclick="poolDeleteAll('ips')">♲ حذف همه IPها</button></div>
       <div class="pool-column pool-column-proxy"><div class="pool-column-head"><div><span class="pool-column-kicker">ROUTE SOURCES</span><h4>مخزن Proxy 🔐</h4></div><b id="poolProxyCount">— مورد</b></div><p class="pool-column-hint">Proxyهای آماده برای تست و استفاده در کانفیگ‌ها</p><button class="pool-add-trigger" type="button" onclick="poolLoadRepo('proxies')">＋ افزودن Proxy</button><div id="poolRepoRowsProxies" class="pool-picker" style="display:none"></div><div id="poolRowsProxies" class="pool-items"></div><button class="pool-clear-all" type="button" onclick="poolDeleteAll('proxies')">♲ حذف همه Proxyها</button></div>
@@ -15863,7 +15832,11 @@ html.light .sidebar .nav-label{color:inherit!important}
         <div style="display:flex;gap:6px">${x.receipt_file_id?`<a class="btn btn-sm" target="_blank" href="/api/sell/orders/${x.id}/receipt">رسید</a>`:''}${x.status==='pending_review'||x.status==='awaiting_receipt'?`<button class="btn btn-sm btn-p" onclick="sellApprove('${x.id}')">تأیید</button><button class="btn btn-sm" onclick="sellReject('${x.id}')">رد</button>`:''}</div></div>`).join(''):'<div class="page-sub">سفارشی ثبت نشده.</div>';
   }
 
-  async function loadPools(){const r=await j('/api/pools');if(!r)return;const ips=r.ips||[],px=r.proxies||[];window.__poolData={ips,proxies:px};const render=(kind,rows)=>{const box=document.getElementById(kind==='ips'?'poolRowsIps':'poolRowsProxies');box.innerHTML=rows.length?rows.map(x=>{const label=kind==='ips'?`${esc2(x.host)}:${x.port}`:esc2(x.scheme+'://'+x.host+':'+x.port);return `<div class="pool-item"><code>${label}</code><span>${x.status==='healthy'?'✅ '+x.latency_ms+'ms':x.status||'بدون تست'} <button type="button" onclick="poolDel('${kind}','${x.id}')">×</button></span></div>`}).join(''):'<div class="pool-selection-empty">موردی اضافه نشده</div>'};render('ips',ips);render('proxies',px);document.getElementById('poolIpCount').textContent=`${ips.length} مورد`;document.getElementById('poolProxyCount').textContent=`${px.length} مورد`;document.getElementById('poolTotalCount').textContent=`${ips.length+px.length} مورد فعال`}
+  async function loadPools(){const r=await j('/api/pools');if(!r)return;const ips=r.ips||[],px=r.proxies||[];window.__poolData={ips,proxies:px};const render=(kind,rows)=>{const box=document.getElementById(kind==='ips'?'poolRowsIps':'poolRowsProxies');box.innerHTML=rows.length?rows.map(x=>{const label=kind==='ips'?`${esc2(x.host)}:${x.port}`:esc2(x.scheme+'://'+x.host+':'+x.port);return `<div class="pool-item"><code>${label}</code><span class="pool-item-actions"><button type="button" title="کپی" onclick="poolCopy(${JSON.stringify(kind==='ips'?`${x.host}:${x.port}`:x.scheme+'://'+x.host+':'+x.port)})">⧉</button>${kind==='ips'?`<button type="button" title="استفاده در Edge" onclick="poolUseEdge('${x.id}')">☁</button>`:''}<button type="button" title="حذف" onclick="poolDel('${kind}','${x.id}')">×</button><small>${x.status==='healthy'?'✅ '+x.latency_ms+'ms':x.status||'بدون تست'}</small></span></div>`}).join(''):'<div class="pool-selection-empty">موردی اضافه نشده</div>'};render('ips',ips);render('proxies',px);document.getElementById('poolIpCount').textContent=`${ips.length} مورد`;document.getElementById('poolProxyCount').textContent=`${px.length} مورد`;document.getElementById('poolTotalCount').textContent=`${ips.length+px.length} مورد فعال`}
+  window.poolCopy=async function(value){try{await navigator.clipboard.writeText(String(value));toast('کپی شد')}catch(e){prompt('کپی کن:',String(value))}};
+  window.poolCopyAll=async function(kind){const rows=window.__poolData?.[kind]||[];const values=rows.map(x=>kind==='ips'?`${x.host}:${x.port}`:`${x.scheme}://${x.host}:${x.port}`);if(values.length)await poolCopy(values.join('\n'));else toast('مخزن خالی است')};
+  window.poolUseEdge=async function(id){const row=(window.__poolData?.ips||[]).find(x=>x.id===id);if(!row){toast('IP پیدا نشد');return}if(row.status!=='healthy'){toast('اول IP را تست کن');return}const current=await j('/api/cfedge');const ips=[...(current?.clean_ips||[])];const value=String(row.host||'');if(!ips.includes(value))ips.push(value);const r=await j('/api/cfedge/settings','POST',{clean_ips:ips.slice(0,5)});if(r)toast('IP سالم به Clean IP Edge اضافه شد')};
+  window.poolUseAllHealthyForEdge=async function(){const rows=(window.__poolData?.ips||[]).filter(x=>x.status==='healthy').map(x=>String(x.host||'')).filter(Boolean).slice(0,5);if(!rows.length){toast('IP سالمی برای Edge نیست؛ اول تست IPها را بزن');return}const r=await j('/api/cfedge/settings','POST',{clean_ips:rows});if(r)toast(`${rows.length} IP سالم برای Edge ذخیره شد`)};
   window.poolAddIps=async function(){const v=prompt('IP یا IPها را با کاما وارد کن:','');if(!v)return;const r=await j('/api/pools/ips','POST',{ips:v});if(r){await loadPools();toast(`${r.added} IP اضافه شد`)}}
   window.poolAddProxy=async function(){const v=prompt('آدرس Proxy را وارد کن:','');if(!v)return;const r=await j('/api/pools/proxies','POST',{url:v});if(r){await loadPools();toast('Proxy اضافه شد')}}
   window.poolLoadRepo=async function(kind){const box=document.getElementById(kind==='ips'?'poolRepoRowsIps':'poolRepoRowsProxies');box.style.display='block';box.textContent='در حال دریافت مخزن داخلی ONEX…';const r=await j('/api/pools/repository/'+kind);if(!r){box.textContent='مخزن داخلی ONEX پیدا نشد';return}const items=r.items||[];if(!items.length){box.textContent='موردی پیدا نشد';return}window.__poolRepo=window.__poolRepo||{};window.__poolRepo[kind]=items;window.__poolSelected=window.__poolSelected||{};window.__poolSelected[kind]=[];const rows=items.slice(0,60);box.innerHTML=`<div class="pool-selection-workspace"><div class="pool-picker-head"><span>${items.length} مورد آماده · نمایش ۶۰ مورد اول</span><label><input type="checkbox" onchange="poolToggleAll('${kind}',this.checked)"> انتخاب همه</label><button class="btn btn-sm" type="button" onclick="poolAddSelected('${kind}')">افزودن انتخاب‌شده‌ها</button></div><div class="pool-picker-list">`+rows.map(x=>{const value=kind==='ips'?x:(x.value||x);return `<label class="pool-picker-row"><input class="pool-pick-${kind}" type="checkbox" value="${esc2(value)}" onchange="poolSelectionChanged('${kind}',this)"><span class="pool-flag">🌐</span><code dir="ltr">${esc2(value)}</code></label>`}).join('')+'</div><aside class="pool-selection-rail" id="poolSelectionRail-'+kind+'"></aside></div>';renderPoolSelectionRail(kind)};
