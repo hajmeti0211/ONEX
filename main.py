@@ -1016,19 +1016,24 @@ def is_ip_allowed(
     if ip in ips:
         return True
 
-    # A user may switch from the Cloudflare Edge subscription to the direct
-    # hostname. Cloudflare connections can remain in the in-memory table while
-    # the client retries direct; do not turn that handoff into a false second
-    # device and 403 the account.
-    if ips and not _is_cloudflare_edge_ip(ip) and any(_is_cloudflare_edge_ip(x) for x in ips):
-        return True
+    # Edge -> direct handoff: the old Worker connections are transient runtime
+    # state, not real devices. Remove only known Cloudflare-edge sessions for
+    # this UUID before evaluating the saved IP limit.
+    if not _is_cloudflare_edge_ip(ip):
+        stale_edge_ids = [cid for cid, conn in connections.items()
+                          if conn.get("uuid") == uuid and _is_cloudflare_edge_ip(conn.get("ip"))]
+        for cid in stale_edge_ids:
+            connections.pop(cid, None)
+        if stale_edge_ids:
+            ips = unique_ips_for_uuid(uuid)
+            if ip in ips:
+                return True
 
-    # Also ignore stale in-memory connections during a handoff. The runtime
-    # table is not persisted, so this only relaxes the check briefly after a
-    # real connection has gone away; it does not change the saved IP limit.
+    # Do not let disconnected/stale in-memory sessions permanently consume the
+    # limit. This table is runtime-only and is cleared on restart.
     if len(ips) >= limit and connections:
         now = time.time()
-        active_recent = False
+        recent = False
         for connection in connections.values():
             if connection.get("uuid") != uuid:
                 continue
@@ -1037,9 +1042,9 @@ def is_ip_allowed(
             except Exception:
                 age = 0
             if age < 90:
-                active_recent = True
+                recent = True
                 break
-        if not active_recent:
+        if not recent:
             return True
 
     return len(ips) < limit
