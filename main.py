@@ -8,6 +8,12 @@
 import os as _ob_os, sys as _ob_sys, json as _ob_json
 from pathlib import Path as _ob_Path
 
+# When launched as `python main.py`, child modules import `main` by name.
+# Alias the running __main__ module first so they do not boot a second copy
+# of the application, duplicate routes, or trigger circular-import failures.
+if __name__ == "__main__":
+    _ob_sys.modules.setdefault("main", _ob_sys.modules[__name__])
+
 
 def _ob_ver(v):
     out = []
