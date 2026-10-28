@@ -17,5 +17,7 @@ RUN python -m pip install --upgrade pip \
 COPY . .
 RUN python -m compileall -q main.py onex
 
-EXPOSE 8080
+EXPOSE 8000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD ["sh", "healthcheck.sh"]
 CMD ["python", "main.py"]

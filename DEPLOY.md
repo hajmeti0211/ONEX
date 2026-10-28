@@ -1,5 +1,19 @@
 # دیپلوی ONEX 1.4.2
 
+## مسیرهای آماده دیپلوی
+
+- Railway: `railway.toml` با Docker و health check روی `/health`
+- Render: `render.yaml` با دیسک پایدار، برای نگه‌داری state پنل
+- Fly.io: `fly.toml` با volume روی `/data`
+- Koyeb: `koyeb.yaml` برای سرویس Docker
+- VPS: اجرای `sudo ONEX_REPO=https://github.com/OWNER/REPO.git ./start.sh`
+
+پلتفرم‌های ابری معمولا فقط HTTP/HTTPS و WebSocket را عبور می‌دهند. برای TCP/UDP واقعی
+مثل Reality، Hysteria2 و TUIC از Fly.io یا VPS استفاده کن. روی هر محیطی که دیسک دائمی
+ندارد، حتما `DATA_DIR` را به volume وصل کن، وگرنه state پنل بعد از redeploy پاک می‌شود.
+
+برای سرویس‌هایی که دامنه را خودکار اعلام نمی‌کنند، مقدار `ONEX_PUBLIC_URL` را دستی تنظیم کن.
+
 مثل قبل: فایل‌ها رو روی ریپو push کن، Railway خودش بیلد می‌کنه (بدون Dockerfile).
 هیچ تنظیم یا متغیر جدیدی لازم نیست.
 
