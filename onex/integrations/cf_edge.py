@@ -263,7 +263,7 @@ def extra_uris(uris: list[str]) -> list[str]:
     host = edge_host(cfg)
     if not host:
         return []
-    addresses = [a for a in (cfg.get("clean_ips") or []) if a][:5] or [host]
+    addresses = [a for a in (cfg.get("clean_ips") or []) if a][:60] or [host]
     out: list[str] = []
     for uri in uris:
         for i, addr in enumerate(addresses):
@@ -274,6 +274,25 @@ def extra_uris(uris: list[str]) -> list[str]:
 
 
 # ---------------------------------------------------------------- panel API
+
+async def _sync_clean_ips_to_links(clean_ips: list[str]) -> int:
+    """Keep Cloudflare Edge IPs in the same link field subscriptions emit."""
+    try:
+        m = _m()
+        changed = 0
+        async with m.LINKS_LOCK:
+            for link in m.LINKS.values():
+                old = list(link.get("clean_ips") or [])
+                merged = list(dict.fromkeys([str(x) for x in clean_ips if str(x).strip()]))[:60]
+                if merged != old:
+                    link["clean_ips"] = merged
+                    changed += 1
+        if changed:
+            await m.save_state()
+        return changed
+    except Exception:
+        return 0
+
 
 def build_router(require_perm) -> APIRouter:
     r = APIRouter(prefix="/api/cfedge", tags=["cloudflare-edge"])
@@ -286,7 +305,7 @@ def build_router(require_perm) -> APIRouter:
             x = str(x).strip().lower()
             if x and (_IP_RE.match(x) or _HOST_RE.match(x)) and x not in out:
                 out.append(x)
-        return out[:5]
+        return out[:60]
 
     @r.get("")
     async def get_cfg(_=dep):
@@ -310,10 +329,15 @@ def build_router(require_perm) -> APIRouter:
             cfg["custom_domain"] = d
         if "include_in_sub" in body:
             cfg["include_in_sub"] = bool(body.get("include_in_sub"))
+        synced_links = 0
         if "clean_ips" in body:
             cfg["clean_ips"] = _clean_ips(body.get("clean_ips"))
         save(cfg)
-        return public_view(cfg)
+        if "clean_ips" in body:
+            synced_links = await _sync_clean_ips_to_links(cfg.get("clean_ips") or [])
+        view = public_view(cfg)
+        view["synced_links"] = synced_links
+        return view
 
     @r.post("/deploy")
     async def do_deploy(request: Request, _=dep):
@@ -327,11 +351,14 @@ def build_router(require_perm) -> APIRouter:
             save(cfg)
             raise HTTPException(400, f"Cloudflare: {exc}")
         save(cfg)
+        synced_links = await _sync_clean_ips_to_links(cfg.get("clean_ips") or [])
         try:
-            m.log_activity("edge", f"Cloudflare Edge دیپلوی شد: {edge_host(cfg)}")
+            m.log_activity("edge", f"Cloudflare Edge دیپلوی شد: {edge_host(cfg)}؛ {synced_links} لینک sync شد")
         except Exception:
             pass
-        return public_view(cfg)
+        view = public_view(cfg)
+        view["synced_links"] = synced_links
+        return view
 
     @r.post("/remove")
     async def do_remove(_=dep):

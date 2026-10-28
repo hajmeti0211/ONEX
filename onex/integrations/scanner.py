@@ -85,6 +85,23 @@ def build_router(require_perm) -> APIRouter:
     async def sni_list(_=dep):
         return {"hosts": default_sni_list()}
 
+
+    @r.get("/repository/ips")
+    async def repository_ips(_=dep):
+        """Return the complete bundled IP repository, not a 60-item preview."""
+        path = Path(__file__).resolve().parents[2] / "onex_repo" / "ips.txt"
+        try:
+            rows = [x.strip() for x in path.read_text(encoding="utf-8", errors="ignore").splitlines()]
+        except Exception as exc:
+            raise HTTPException(500, "مخزن IP قابل خواندن نیست") from exc
+        ips = []
+        seen = set()
+        for value in rows:
+            if re.fullmatch(r"(?:\d{1,3}\.){3}\d{1,3}", value) and value not in seen:
+                seen.add(value)
+                ips.append(value)
+        return {"ok": True, "count": len(ips), "ips": ips}
+
     @r.get("/cf-ranges")
     async def cf_ranges(_=dep):
         return {"v4": CF_RANGES_V4}
