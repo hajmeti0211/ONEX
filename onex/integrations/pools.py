@@ -169,10 +169,18 @@ def build_router(require_perm):
     @r.get("/repository/proxies")
     async def zeus_proxies(country: str = "ALL", limit: int = 200, _=dep):
         country=str(country or "ALL").upper()
-        path=f"proxy/{country}.txt" if re.fullmatch(r"[A-Z]{2,3}",country) and country != "ALL" else "proxy/ALL.txt"
         try:
-            values=_repo_lines(await _repo_text(path))
-            return {"ok":True,"source":"ONEX", "country":country, "items":values[:max(1,min(200,int(limit or 200)))]}
+            if country != "ALL" and re.fullmatch(r"[A-Z]{2,3}", country):
+                paths=[f"proxy/{country}.txt", f"proxy_vip/{country}.txt"]
+            else:
+                paths=["proxy/ALL.txt"]
+            seen=set(); items=[]
+            for path in paths:
+                for value in _repo_lines(await _repo_text(path)):
+                    if value not in seen:
+                        seen.add(value)
+                        items.append({"value":value,"country":country if country != "ALL" else "—"})
+            return {"ok":True,"source":"ONEX", "country":country, "items":items[:max(1,min(200,int(limit or 200)))]}
         except Exception as exc:
             raise HTTPException(502, "دریافت مخزن Proxy های ONEX ناموفق بود") from exc
 
@@ -209,9 +217,16 @@ def build_router(require_perm):
         _save(d); return {"ok":True}
     @r.post("/ips/check")
     async def check_ips(request:Request,_=dep):
-        b=await request.json(); ids=set(str(x) for x in (b.get("ids") or [])); d=_load(); rows=[x for x in d["ips"] if not ids or x.get("id") in ids]
+        try:
+            b=await request.json()
+        except Exception:
+            b={}
+        ids=set(str(x) for x in (b.get("ids") or [])); d=_load(); rows=[x for x in d["ips"] if not ids or str(x.get("id")) in ids]
         async def one(x):
-            res=await _probe(x["host"],int(x["port"]),3.0,bool(x.get("port") in {443,2053,2083,2087,2096,8443}))
+            try:
+                res=await _probe(str(x.get("host") or ""),int(x.get("port") or 443),3.0,bool(int(x.get("port") or 443) in {443,2053,2083,2087,2096,8443}))
+            except Exception as exc:
+                res={"ok":False,"latency_ms":0,"error":str(exc)[:120]}
             x.update(status="healthy" if res["ok"] else "down",latency_ms=res.get("latency_ms"),last_check=datetime.now().isoformat(),error=res.get("error","")); return x
         await asyncio.gather(*(one(x) for x in rows)); _save(d)
         good=sorted([x for x in rows if x.get("status")=="healthy"],key=lambda x:x.get("latency_ms") or 999999)
@@ -246,7 +261,10 @@ def build_router(require_perm):
         rows=[x for x in d["proxies"] if not ids or str(x.get("id")) in ids]
 
         async def one(x):
-            res=await _probe_proxy(x, 4.0)
+            try:
+                res=await _probe_proxy(x, 4.0)
+            except Exception as exc:
+                res={"ok":False,"latency_ms":0,"error":str(exc)[:120]}
             x.update(
                 status="healthy" if res["ok"] else "down",
                 latency_ms=res.get("latency_ms"),
