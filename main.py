@@ -11116,6 +11116,42 @@ Cache-Control: no-cache"></textarea></div>
 #page-edge .edge-help a{color:var(--accent2);font-weight:800;text-decoration:none}.edge-help a:hover{text-decoration:underline}
 @media(max-width:640px){#page-edge .edge-steps{grid-template-columns:repeat(2,1fr)}#page-edge .edge-choice{grid-template-columns:1fr}}
 </style>
+
+<style id="onex-edge-preview-applied">
+/* ONEX Edge Scanner: applied preview skin */
+#page-edge{max-width:920px;margin-inline:auto;padding-bottom:40px}
+#page-edge .page-head{display:none}
+#page-edge>.card{background:linear-gradient(145deg,rgba(20,58,67,.96),rgba(8,27,34,.98));border:1px solid rgba(59,218,241,.38);border-radius:25px;box-shadow:0 18px 52px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.06);padding:24px;margin-bottom:18px}
+#page-edge .edge-steps{gap:10px;margin-bottom:24px}
+#page-edge .edge-step{min-height:74px;padding:14px;border-radius:17px;background:rgba(72,144,158,.12);border-color:rgba(68,207,224,.25);color:#a9c6cb;transition:.2s}
+#page-edge .edge-step b{width:31px;height:31px;background:rgba(42,210,235,.12);color:#b983ff;box-shadow:0 0 18px rgba(42,210,235,.12)}
+#page-edge .edge-step strong{font-size:14px;color:#f0fbfc}
+#page-edge .edge-step small{font-size:12px;color:#91afb4}
+#page-edge .card-title{font-size:18px;color:#f2fbfc;margin:18px 0 12px;font-weight:800}
+#page-edge .edge-help{background:linear-gradient(145deg,rgba(38,104,116,.32),rgba(24,61,70,.45));border-color:rgba(75,219,240,.35);border-radius:18px;padding:18px 20px;font-size:14px;color:#d9edef;line-height:2.05}
+#page-edge .edge-help a{color:#bb7bff}
+#page-edge .form-row{gap:14px}
+#page-edge .field label{color:#d9edef;font-size:13px}
+#page-edge input,#page-edge select,#page-edge textarea{background:rgba(5,25,31,.82);border:1px solid rgba(113,190,200,.28);border-radius:16px;color:#f0fbfc;min-height:54px;padding:14px 16px}
+#page-edge input::placeholder{color:#79949a}
+#page-edge .edge-choice{gap:14px}
+#page-edge .edge-choice label{padding:19px;border-radius:20px;background:rgba(66,137,148,.12);border-color:rgba(83,205,220,.25);min-height:108px}
+#page-edge .edge-choice label:has(input:checked){border-color:#35d9f2;background:linear-gradient(145deg,rgba(40,164,187,.28),rgba(85,93,187,.22));box-shadow:0 0 22px rgba(45,214,238,.16)}
+#page-edge .edge-choice strong{font-size:17px}
+#page-edge .edge-choice small{font-size:13px;color:#9bbabe;line-height:1.9}
+#page-edge .chk{color:#d9edef;font-size:14px}
+#page-edge .btn{border-radius:14px;padding:13px 20px;border-color:rgba(121,189,199,.3);background:rgba(255,255,255,.06);color:#eafcff}
+#page-edge .btn.btn-p{background:linear-gradient(110deg,#27d1e5,#9d65f3);color:#071e26;border:0;box-shadow:0 12px 28px rgba(62,182,226,.2)}
+#page-edge #onexIpRepositoryCard{background:linear-gradient(145deg,rgba(28,65,74,.94),rgba(10,31,38,.98));padding:22px}
+#page-edge #onexIpRepositoryCard .card-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:0}
+#page-edge #repoIpCount{color:#27d9ef;font-size:15px;font-weight:800}
+#page-edge #repoIpList label{background:rgba(26,79,89,.42)!important;border-color:rgba(66,210,226,.24)!important;border-radius:14px!important;min-height:48px}
+#page-edge #repoIpList label:hover{border-color:#35d9f2!important;background:rgba(34,111,124,.52)!important}
+#page-edge #repoIpList code{color:#eefcff;font:14px "JetBrains Mono",monospace}
+#page-edge #repoIpSearch{min-height:52px}
+#page-edge #repoIpStatus{color:#8fd8df}
+@media(max-width:640px){#page-edge{padding:0 4px 30px}#page-edge>.card{padding:17px 14px;border-radius:23px}#page-edge .edge-steps{grid-template-columns:repeat(2,1fr)}#page-edge .edge-step{min-height:76px}#page-edge .edge-help{font-size:13px;padding:15px;line-height:2}#page-edge .edge-choice label{min-height:125px;padding:16px}#page-edge .edge-choice strong{font-size:16px}#page-edge #onexIpRepositoryCard .card-title{display:block}#page-edge #repoIpCount{display:block;margin-top:7px}}
+</style>
 <section class="page" id="page-edge">
   <div class="page-head"><div><div class="page-title"><span>Cloudflare Edge</span></div><div class="page-sub">یک مسیر دوم از شبکه‌ی کلودفلر برای کانفیگ‌ها. این راهنما قدم‌به‌قدم می‌گوید چه چیزی لازم است.</div></div></div>
   <div class="card">
