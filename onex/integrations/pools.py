@@ -115,15 +115,24 @@ async def _probe_proxy(row, timeout=4.0):
     )
 
 _REPO_CACHE = {}
-ZEUS_REPO_DIR = Path(__file__).resolve().parents[2] / "assets" / "zeus_repo"
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+_REPO_DIRS = (
+    _PROJECT_ROOT / "assets" / "onex_repo",
+    _PROJECT_ROOT / "assets" / "zeus_repo",  # backwards-compatible upgrade path
+)
 
 async def _repo_text(path):
     now = time.time()
     cached = _REPO_CACHE.get(path)
     if cached and now - cached[0] < 900:
         return cached[1]
-    file_path = (ZEUS_REPO_DIR / path).resolve()
-    if ZEUS_REPO_DIR not in file_path.parents or not file_path.is_file():
+    file_path = None
+    for repo_dir in _REPO_DIRS:
+        candidate = (repo_dir / path).resolve()
+        if repo_dir in candidate.parents and candidate.is_file():
+            file_path = candidate
+            break
+    if file_path is None:
         raise FileNotFoundError(path)
     text = file_path.read_text(encoding="utf-8", errors="ignore")
     _REPO_CACHE[path] = (now, text)
