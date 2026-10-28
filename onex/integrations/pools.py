@@ -117,8 +117,9 @@ async def _probe_proxy(row, timeout=4.0):
 _REPO_CACHE = {}
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _REPO_DIRS = (
-    _PROJECT_ROOT / "assets" / "onex_repo",
-    _PROJECT_ROOT / "assets" / "zeus_repo",  # backwards-compatible upgrade path
+    _PROJECT_ROOT / "onex_repo",          # repository layout shown in GitHub
+    _PROJECT_ROOT / "assets" / "onex_repo",  # backwards-compatible layout
+    _PROJECT_ROOT / "assets" / "zeus_repo",  # legacy upgrade path
 )
 
 async def _repo_text(path):
