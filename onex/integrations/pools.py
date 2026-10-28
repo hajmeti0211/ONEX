@@ -159,7 +159,6 @@ def build_router(require_perm):
                 try:
                     host,port=_split_host_port(x)
                     host=_clean_host(host)
-                    ipaddress.ip_address(host)
                     values.append(f"{host}:{port}" if port != 443 else host)
                 except (HTTPException,ValueError,TypeError):
                     continue
