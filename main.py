@@ -1017,10 +1017,30 @@ def is_ip_allowed(
         return True
 
     # A user may switch from the Cloudflare Edge subscription to the direct
-    # hostname. Keep a one-IP account usable while old Edge sessions remain
-    # in the in-memory table, instead of returning 403 until a restart.
-    if ips and not _is_cloudflare_edge_ip(ip) and all(_is_cloudflare_edge_ip(x) for x in ips):
+    # hostname. Cloudflare connections can remain in the in-memory table while
+    # the client retries direct; do not turn that handoff into a false second
+    # device and 403 the account.
+    if ips and not _is_cloudflare_edge_ip(ip) and any(_is_cloudflare_edge_ip(x) for x in ips):
         return True
+
+    # Also ignore stale in-memory connections during a handoff. The runtime
+    # table is not persisted, so this only relaxes the check briefly after a
+    # real connection has gone away; it does not change the saved IP limit.
+    if len(ips) >= limit and connections:
+        now = time.time()
+        active_recent = False
+        for connection in connections.values():
+            if connection.get("uuid") != uuid:
+                continue
+            try:
+                age = now - datetime.fromisoformat(str(connection.get("connected_at"))).timestamp()
+            except Exception:
+                age = 0
+            if age < 90:
+                active_recent = True
+                break
+        if not active_recent:
+            return True
 
     return len(ips) < limit
 
