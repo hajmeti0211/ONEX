@@ -1,5 +1,5 @@
 # ============================================================
-# ONEX SELF-UPDATE BOOTLOADER (1.4.4)
+# ONEX SELF-UPDATE BOOTLOADER (1.4.2)
 # Zero-config in-panel updates: the panel downloads the newest public release
 # into the data dir and re-executes itself from there. No Railway/GitHub
 # tokens are needed. A bundled build that is newer (manual redeploy) always
@@ -106,7 +106,7 @@ from onex.core.edge_scanner import load_candidates, scan as scan_edge_candidates
 # ============================================================
 
 APP_NAME = "ONEX"
-APP_VERSION = "1.4.4"
+APP_VERSION = "1.4.2"
 
 SUPPORT_USERNAME = "@V2rayTun0"
 SUPPORT_URL = "https://t.me/V2rayTun0"
@@ -2968,7 +2968,7 @@ html.light .update-prompt-modal{background:#fff;border-color:rgba(37,99,235,.16)
 </style>
 
 <style>
-/* ONEX 1.4.4 — single 3D wordmark in the top chrome.
+/* ONEX 1.4.2 — single 3D wordmark in the top chrome.
    The navigation drawer intentionally has no logo block. */
 #sidebar > .sb-logo{display:none!important;}
 #sidebar .sb-logo-icon{display:none!important;}
@@ -10259,7 +10259,7 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
 }
 @media(max-width:390px){.onex-mobile-mark{width:35px;height:35px;flex-basis:35px}.onex-mobile-copy .onex-brand-word{font-size:16px}}
 
-/* ONEX 1.4.4 FINAL BRAND LAYOUT — matches approved clean mockup */
+/* ONEX 1.4.2 FINAL BRAND LAYOUT — matches approved clean mockup */
 .onex-brand-sub,.onex-mobile-copy .onex-brand-sub,.onex-sidebar-copy .onex-brand-sub,.onex-topbar-copy .onex-brand-sub{display:none!important}
 
 /* Sidebar: compact glass header with full ONEX wordmark. */
@@ -14086,7 +14086,7 @@ window.addEventListener('resize',()=>{const p=document.getElementById('topNotify
 window.addEventListener('scroll',()=>{const p=document.getElementById('topNotifyPanel');if(p&&!p.hidden)positionNotifyPanel()},{passive:true});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')toggleNotifications(false)});
 function renderNotifications(){const list=document.getElementById('notifyList'),badge=document.getElementById('notifyBadge');if(!list||!badge)return;if(!__updateInfo||!__updateInfo.update_available){badge.textContent='0';badge.classList.remove('show');list.innerHTML=`<div class="notify-empty">${updateText('اعلان جدیدی وجود ندارد.','No new notifications.')}</div>`;return;}badge.textContent='1';badge.classList.add('show');const r=__updateInfo;const changes=Array.isArray(r.changelog)&&r.changelog.length?`<div class="notify-item-text" style="margin-top:5px">${r.changelog.slice(0,4).map(x=>`• ${esc(String(x))}`).join('<br>')}</div>`:'';list.innerHTML=`<div class="notify-item"><div class="notify-item-title">🔄 ${esc(r.title||updateText('بروزرسانی جدید پنل','New panel update'))}</div><div class="notify-item-text">${esc(r.message||updateText('نسخه جدید پنل منتشر شده است.','A new panel version is available.'))}</div>${changes}<div class="notify-item-meta">${updateText('نسخه فعلی','Current version')}: ${esc(r.current_version||'—')} → ${esc(r.latest_version||'—')}</div><button type="button" class="notify-update-btn" onclick="toggleNotifications(false);panelUpdate()">${updateText('مشاهده و بروزرسانی','View update')}</button></div>`}
-async function checkPanelUpdateWithNotify(showToast=false){if(__updateCheckBusy)return __updateInfo;__updateCheckBusy=true;try{const r=await api('/api/update/check');if(r&&r.ok){const old=__updateInfo&&__updateInfo.latest_version;__updateInfo=r;setVersionLabels(r.current_version||'1.4.4',r.latest_version||r.current_version);renderNotifications();if(r.update_available&&old!==r.latest_version)showUpdatePrompt(r);if(r.update_available&&showToast&&old!==r.latest_version)toast(updateText(`نسخه جدید ${r.latest_version} آماده است`,`Version ${r.latest_version} is available`));}return r}catch(e){return null}finally{__updateCheckBusy=false}}
+async function checkPanelUpdateWithNotify(showToast=false){if(__updateCheckBusy)return __updateInfo;__updateCheckBusy=true;try{const r=await api('/api/update/check');if(r&&r.ok){const old=__updateInfo&&__updateInfo.latest_version;__updateInfo=r;setVersionLabels(r.current_version||'1.4.2',r.latest_version||r.current_version);renderNotifications();if(r.update_available&&old!==r.latest_version)showUpdatePrompt(r);if(r.update_available&&showToast&&old!==r.latest_version)toast(updateText(`نسخه جدید ${r.latest_version} آماده است`,`Version ${r.latest_version} is available`));}return r}catch(e){return null}finally{__updateCheckBusy=false}}
 function showUpdatePrompt(r){const modal=document.getElementById('updatePromptModal');if(!modal||!r||!r.update_available)return;if(modal.parentElement!==document.body)document.body.appendChild(modal);const version=String(r.latest_version||'');if(!version)return;let seen='';let snooze=0;try{seen=localStorage.getItem('onex_update_prompt_seen')||'';snooze=Number(localStorage.getItem('onex_update_prompt_snooze')||0)}catch(e){}if(seen===version&&Date.now()<snooze)return;const title=document.getElementById('updatePromptTitle'),text=document.getElementById('updatePromptText'),ver=document.getElementById('updatePromptVersion'),yes=document.getElementById('updatePromptConfirm'),later=document.getElementById('updatePromptLater');if(title)title.textContent=r.title||updateText('بروزرسانی جدید در دسترس است','New update is available');if(text)text.textContent=r.message||updateText('نسخه جدید پنل آماده است. آیا می‌خواهید پنل را بروزرسانی کنید؟','A new panel version is available. Would you like to update the panel?');if(ver)ver.textContent=updateText(`نسخه فعلی: ${r.current_version||'—'}  →  نسخه جدید: ${version}`,`Current: ${r.current_version||'—'}  →  New: ${version}`);modal.classList.add('open');modal.setAttribute('aria-hidden','false');const close=()=>{modal.classList.remove('open');modal.setAttribute('aria-hidden','true');try{localStorage.setItem('onex_update_prompt_seen',version);localStorage.setItem('onex_update_prompt_snooze',String(Date.now()+6*3600*1000))}catch(e){}};if(later)later.onclick=close;if(yes)yes.onclick=()=>{try{localStorage.setItem('onex_update_prompt_seen',version)}catch(e){}modal.classList.remove('open');modal.setAttribute('aria-hidden','true');deployPanelUpdate();}}
 function startUpdateNotificationPolling(){if(__updatePollTimer)clearInterval(__updatePollTimer);checkPanelUpdateWithNotify(false);__updatePollTimer=setInterval(()=>checkPanelUpdateWithNotify(false),45000)}
 async function checkPanelUpdate(showToast=true){
@@ -14095,7 +14095,7 @@ async function checkPanelUpdate(showToast=true){
   try{
     const r=await api('/api/update/check');
     if(r&&r.ok){
-      const previousVersion=__updateInfo&&__updateInfo.latest_version;__updateInfo=r;setVersionLabels(r.current_version||'1.4.4',r.latest_version||r.current_version);renderNotifications();
+      const previousVersion=__updateInfo&&__updateInfo.latest_version;__updateInfo=r;setVersionLabels(r.current_version||'1.4.2',r.latest_version||r.current_version);renderNotifications();
       if(r.update_available&&showToast&&previousVersion!==r.latest_version){toast(updateText(`نسخه جدید ${r.latest_version} آماده است`, `Version ${r.latest_version} is available`));}
     }
     return r;
@@ -14417,7 +14417,7 @@ function setCfgSort(v,el){cfgSortMode=v;document.querySelectorAll('#cfgFilterRow
 function configExpired(l){return !!l.expired||(l.expires_at&&new Date(l.expires_at).getTime()<=Date.now())||(Number(l.limit_bytes)>0&&Number(l.used_bytes||0)>=Number(l.limit_bytes))}
 function getFilteredConfigs(){const q=(document.getElementById('cfgSearch')?.value||'').trim().toLowerCase();let a=__allLinks.filter(l=>{const dead=configExpired(l),active=l.active!==false&&!dead;if(cfgStatusFilter==='active'&&!active)return false;if(cfgStatusFilter==='expired'&&!dead)return false;if(cfgStatusFilter==='expiring'&&!(window.homeIsExpiring&&homeIsExpiring(l)&&!dead))return false;if(!q)return true;return [l.label,l.name,l.protocol,l.protocol_label,l.uuid,l.id,l.sub,l.sub_url,l.vless,l.vless_full].map(x=>String(x||'').toLowerCase()).some(x=>x.includes(q))});a.sort((x,y)=>cfgSortMode==='name'?String(x.label||x.name||'').localeCompare(String(y.label||y.name||'')):cfgSortMode==='usage'?Number(y.used_bytes||0)-Number(x.used_bytes||0):String(y.created_at||'').localeCompare(String(x.created_at||'')));return a}
 function filterConfigs(){renderConfigCards(getFilteredConfigs())}
-function protocolUi(id){const m={'vless-ws':['ONEX WB','/api/protocol-icon/vless-ws.png?v=1.4.4'],'xhttp-packet-up':['ONEX Xhttp','/api/protocol-icon/xhttp-packet-up.png?v=1.4.4'],'xhttp-stream-up':['ONEX GAMING','/api/protocol-icon/xhttp-stream-up.png?v=1.4.4'],'trojan':['Trojan','/api/protocol-icon/trojan.png?v=1.4.4'],'shadowsocks':['Shadowsocks','/api/protocol-icon/shadowsocks.png?v=1.4.4'],'socks5':['SOCKS5','/api/protocol-icon/socks5.png?v=1.4.4'],'http':['HTTP Proxy','/api/protocol-icon/http.png?v=1.4.4'],'hysteria2':['Hysteria2','/api/protocol-icon/hysteria2.png?v=1.4.4'],'vless-reality':['VLESS Reality','/api/protocol-icon/vless-reality.png?v=1.4.4'],'vless-grpc-reality':['VLESS gRPC Reality','/api/protocol-icon/vless-grpc-reality.png?v=1.4.4'],'vmess':['VMess','/api/protocol-icon/vmess.png?v=1.4.4'],'tuic':['TUIC','/api/protocol-icon/tuic.png?v=1.4.4'],'anytls':['AnyTLS','/api/protocol-icon/anytls.png?v=1.4.4'],'naive':['NaiveProxy','/api/protocol-icon/naive.png?v=1.4.4'],'shadowtls':['ShadowTLS','/api/protocol-icon/shadowtls.png?v=1.4.4'],'snell':['Snell','/api/protocol-icon/snell.png?v=1.4.4'],'hysteria':['Hysteria','/api/protocol-icon/hysteria.png?v=1.4.4']};return m[id]||[String(id||'').toUpperCase(),'/api/protocol-icon/vless-ws.png?v=1.4.4']}
+function protocolUi(id){const m={'vless-ws':['ONEX WB','/api/protocol-icon/vless-ws.png?v=1.4.2'],'xhttp-packet-up':['ONEX Xhttp','/api/protocol-icon/xhttp-packet-up.png?v=1.4.2'],'xhttp-stream-up':['ONEX GAMING','/api/protocol-icon/xhttp-stream-up.png?v=1.4.2'],'trojan':['Trojan','/api/protocol-icon/trojan.png?v=1.4.2'],'shadowsocks':['Shadowsocks','/api/protocol-icon/shadowsocks.png?v=1.4.2'],'socks5':['SOCKS5','/api/protocol-icon/socks5.png?v=1.4.2'],'http':['HTTP Proxy','/api/protocol-icon/http.png?v=1.4.2'],'hysteria2':['Hysteria2','/api/protocol-icon/hysteria2.png?v=1.4.2'],'vless-reality':['VLESS Reality','/api/protocol-icon/vless-reality.png?v=1.4.2'],'vless-grpc-reality':['VLESS gRPC Reality','/api/protocol-icon/vless-grpc-reality.png?v=1.4.2'],'vmess':['VMess','/api/protocol-icon/vmess.png?v=1.4.2'],'tuic':['TUIC','/api/protocol-icon/tuic.png?v=1.4.2'],'anytls':['AnyTLS','/api/protocol-icon/anytls.png?v=1.4.2'],'naive':['NaiveProxy','/api/protocol-icon/naive.png?v=1.4.2'],'shadowtls':['ShadowTLS','/api/protocol-icon/shadowtls.png?v=1.4.2'],'snell':['Snell','/api/protocol-icon/snell.png?v=1.4.2'],'hysteria':['Hysteria','/api/protocol-icon/hysteria.png?v=1.4.2']};return m[id]||[String(id||'').toUpperCase(),'/api/protocol-icon/vless-ws.png?v=1.4.2']}
 function cfgDate(v){if(!v)return 'بدون انقضا';try{return new Date(v).toLocaleDateString('fa-IR',{year:'numeric',month:'2-digit',day:'2-digit'})}catch(e){return String(v).slice(0,10)}}
 function updateConfigStats(){const total=__allLinks.length,expired=__allLinks.filter(configExpired).length,active=__allLinks.filter(l=>l.active!==false&&!configExpired(l)).length,used=__allLinks.reduce((n,l)=>n+Number(l.used_bytes||0),0),set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};set('cfgStatTotal',total);set('cfgStatUsed',fmtB(used));set('cfgStatActive',active);set('cfgStatExpired',expired);set('cfgVisibleCount',`${getFilteredConfigs().length} مورد`)}
 let __openConfigMenuUid='';
@@ -14513,7 +14513,7 @@ function groupProtocolLabel(id){
   return labels[id]||id;
 }
 function groupProtocolIcon(id){
-  const map={'vless-ws':'/api/protocol-icon/vless-ws.png?v=1.4.4','xhttp-packet-up':'/api/protocol-icon/xhttp-packet-up.png?v=1.4.4','xhttp-stream-up':'/api/protocol-icon/xhttp-stream-up.png?v=1.4.4','xhttp-stream-one':'/api/protocol-icon/xhttp-stream-one.png?v=1.4.4'};
+  const map={'vless-ws':'/api/protocol-icon/vless-ws.png?v=1.4.2','xhttp-packet-up':'/api/protocol-icon/xhttp-packet-up.png?v=1.4.2','xhttp-stream-up':'/api/protocol-icon/xhttp-stream-up.png?v=1.4.2','xhttp-stream-one':'/api/protocol-icon/xhttp-stream-one.png?v=1.4.2'};
   return map[id]||'';
 }
 function setGroupFilter(f,btn){__groupFilter=f;document.querySelectorAll('.group-filter').forEach(x=>x.classList.toggle('on',x===btn));renderGroupList()}
@@ -14752,7 +14752,7 @@ const PROTOCOL_PICKER_GROUPS=[
 ];
 const PROTOCOL_PICKER_NAMES={"vless-ws":"ONEX Base","siderail-vless-xhttp":"ONEX XHTTP","vmess-ws":"ONEX VMess","trojan-ws":"ONEX Trojan","vless-httpupgrade":"ONEX HTTPUpgrade","xhttp-packet-up":"ONEX Xhttp","xhttp-stream-up":"ONEX Gaming","xhttp-stream-one":"ONEX Stream","trojan":"Trojan","shadowsocks":"Shadowsocks","socks5":"SOCKS5","http":"HTTP Proxy","hysteria2":"Hysteria2","vless-reality":"VLESS Reality","vless-grpc-reality":"VLESS gRPC Reality","vmess":"VMess","tuic":"TUIC","anytls":"AnyTLS","naive":"NaiveProxy","shadowtls":"ShadowTLS","snell":"Snell","hysteria":"Hysteria"};
 const PROTOCOL_PICKER_DESCS={"vless-ws":"VLESS WebSocket","siderail-vless-xhttp":"VLESS XHTTP","vmess-ws":"VMess WebSocket","trojan-ws":"Trojan WebSocket","vless-httpupgrade":"VLESS HTTPUpgrade","xhttp-packet-up":"VLESS + XHTTP","xhttp-stream-up":"VLESS + XHTTP","xhttp-stream-one":"VLESS + XHTTP stream-one","trojan":"Trojan + TLS","shadowsocks":"Shadowsocks","socks5":"SOCKS5","http":"HTTP Proxy","hysteria2":"Hysteria2 + QUIC","vless-reality":"VLESS + Reality","vless-grpc-reality":"VLESS + gRPC + Reality","vmess":"VMess + TLS","tuic":"TUIC + QUIC","anytls":"AnyTLS + TLS","naive":"NaiveProxy + TLS","shadowtls":"ShadowTLS v3","snell":"Snell v5","hysteria":"Hysteria + QUIC"};
-const PROTOCOL_ICON_DATA={"vless-ws":"/api/protocol-icon/vless-ws.png?v=1.4.4","siderail-vless-xhttp":"/api/protocol-icon/vless-ws.png?v=1.4.4","vmess-ws":"/api/protocol-icon/vmess.png?v=1.4.4","trojan-ws":"/api/protocol-icon/trojan.png?v=1.4.4","vless-httpupgrade":"/api/protocol-icon/vless-ws.png?v=1.4.4","xhttp-packet-up":"/api/protocol-icon/xhttp-packet-up.png?v=1.4.4","xhttp-stream-up":"/api/protocol-icon/xhttp-stream-up.png?v=1.4.4","xhttp-stream-one":"/api/protocol-icon/xhttp-stream-one.png?v=1.4.4","trojan":"/api/protocol-icon/trojan.png?v=1.4.4","shadowsocks":"/api/protocol-icon/shadowsocks.png?v=1.4.4","socks5":"/api/protocol-icon/socks5.png?v=1.4.4","http":"/api/protocol-icon/http.png?v=1.4.4","hysteria2":"/api/protocol-icon/hysteria2.png?v=1.4.4","vless-reality":"/api/protocol-icon/vless-reality.png?v=1.4.4","vless-grpc-reality":"/api/protocol-icon/vless-grpc-reality.png?v=1.4.4","vmess":"/api/protocol-icon/vmess.png?v=1.4.4","tuic":"/api/protocol-icon/tuic.png?v=1.4.4","anytls":"/api/protocol-icon/anytls.png?v=1.4.4","naive":"/api/protocol-icon/naive.png?v=1.4.4","shadowtls":"/api/protocol-icon/shadowtls.png?v=1.4.4","snell":"/api/protocol-icon/snell.png?v=1.4.4","hysteria":"/api/protocol-icon/hysteria.png?v=1.4.4"};
+const PROTOCOL_ICON_DATA={"vless-ws":"/api/protocol-icon/vless-ws.png?v=1.4.2","siderail-vless-xhttp":"/api/protocol-icon/vless-ws.png?v=1.4.2","vmess-ws":"/api/protocol-icon/vmess.png?v=1.4.2","trojan-ws":"/api/protocol-icon/trojan.png?v=1.4.2","vless-httpupgrade":"/api/protocol-icon/vless-ws.png?v=1.4.2","xhttp-packet-up":"/api/protocol-icon/xhttp-packet-up.png?v=1.4.2","xhttp-stream-up":"/api/protocol-icon/xhttp-stream-up.png?v=1.4.2","xhttp-stream-one":"/api/protocol-icon/xhttp-stream-one.png?v=1.4.2","trojan":"/api/protocol-icon/trojan.png?v=1.4.2","shadowsocks":"/api/protocol-icon/shadowsocks.png?v=1.4.2","socks5":"/api/protocol-icon/socks5.png?v=1.4.2","http":"/api/protocol-icon/http.png?v=1.4.2","hysteria2":"/api/protocol-icon/hysteria2.png?v=1.4.2","vless-reality":"/api/protocol-icon/vless-reality.png?v=1.4.2","vless-grpc-reality":"/api/protocol-icon/vless-grpc-reality.png?v=1.4.2","vmess":"/api/protocol-icon/vmess.png?v=1.4.2","tuic":"/api/protocol-icon/tuic.png?v=1.4.2","anytls":"/api/protocol-icon/anytls.png?v=1.4.2","naive":"/api/protocol-icon/naive.png?v=1.4.2","shadowtls":"/api/protocol-icon/shadowtls.png?v=1.4.2","snell":"/api/protocol-icon/snell.png?v=1.4.2","hysteria":"/api/protocol-icon/hysteria.png?v=1.4.2"};
 function protocolPickerLabel(id){const p=__protocolPickerOptions.find(x=>x.id===id);return PROTOCOL_PICKER_NAMES[id]||p?.label||id||'Vortex Link'}
 function protocolPickerShort(id){return PROTOCOL_PICKER_NAMES[id]||id}
 function protocolIconMarkup(id){
@@ -15595,7 +15595,7 @@ html.light .sidebar .nav-label{color:inherit!important}
   .main,.main.expanded{padding-top:10px!important}
 }
 </style>
-<style id="onex-notify-fix">/* 1.4.4: panel is moved to <body> by JS and positioned under the bell,
+<style id="onex-notify-fix">/* 1.4.2: panel is moved to <body> by JS and positioned under the bell,
    so parent stacking contexts (backdrop-filter/transform) can't hide it behind the dashboard. */
 .top-notify-panel{position:fixed!important;right:24px;top:70px;width:320px;max-width:calc(100vw - 24px)!important;max-height:min(70vh,520px);overflow:auto;z-index:2147483000!important}
 .top-notify-panel[hidden]{display:none!important}
