@@ -14,7 +14,10 @@ fi
 command -v git >/dev/null || { echo "git is required"; exit 1; }
 command -v "$PYTHON" >/dev/null || { echo "python3 is required"; exit 1; }
 
-mkdir -p "$APP_DIR" "$APP_DIR/data"
+mkdir -p "$APP_DIR" "$APP_DIR/data" /etc/onex
+if ! id onex >/dev/null 2>&1; then
+  useradd --system --home-dir "$APP_DIR" --shell /usr/sbin/nologin onex
+fi
 if [[ -n "$REPO" ]]; then
   tmp="$(mktemp -d)"
   trap 'rm -rf "$tmp"' EXIT
@@ -33,6 +36,9 @@ DATA_DIR=$APP_DIR/data
 PYTHONUNBUFFERED=1
 EOF
 chmod 600 "$APP_DIR/.env"
-
-exec env $(tr '\n' ' ' < "$APP_DIR/.env") \
-  "$APP_DIR/.venv/bin/python" main.py
+cp "$APP_DIR/.env" /etc/onex/onex.env
+chown -R onex:onex "$APP_DIR"
+install -m 0644 systemd/onex.service /etc/systemd/system/onex.service
+systemctl daemon-reload
+systemctl enable --now onex.service
+systemctl --no-pager --full status onex.service || true
