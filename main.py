@@ -10368,43 +10368,57 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
 #page-dash{--bg:#070a12;--surface:color-mix(in srgb, rgb(23 23 23) 92%, var(--accent));--surface2:color-mix(in srgb, rgb(34 34 34) 88%, var(--accent));--line:rgba(var(--accent2-rgb),.16);--text:#eff7ff;--muted:color-mix(in srgb, rgb(175 175 175) 82%, var(--accent));--dim:color-mix(in srgb, rgb(125 125 125) 82%, var(--accent));--p:#38d9ff;--s:#8b5cf6;--ok:#48e39d;--warn:#ffc857;--bad:var(--accent2);--sb:272px;--ease:cubic-bezier(.16,1,.3,1)}
 #page-dash button{font:inherit;color:inherit;cursor:pointer}#page-dash canvas{display:block}#page-dash .mono{font-family:"JetBrains Mono",monospace;direction:ltr}#page-dash .glass{background:linear-gradient(145deg,color-mix(in srgb, rgb(37 37 37 / .88) 88%, var(--accent)),color-mix(in srgb, rgb(15 15 15 / .9) 92%, var(--accent)));border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.06);backdrop-filter:blur(18px);border-radius:22px}#page-dash .badge{margin-inline-start:auto;color:var(--p);font:700 11px "JetBrains Mono"}#page-dash .bars{position:relative;width:20px;height:20px;display:block;margin:auto}#page-dash .bars i{position:absolute;left:1px;right:1px;height:2.5px;border-radius:4px;background:color-mix(in srgb, rgb(18 18 18) 92%, var(--accent));transition:transform .5s var(--ease),opacity .2s}#page-dash .bars i:nth-child(1){top:4px}#page-dash .bars i:nth-child(2){top:9px}#page-dash .bars i:nth-child(3){top:14px}@keyframes spin{to{transform:rotate(360deg)}}#page-dash .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok);flex:none}#page-dash .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:"hero hero chart chart" "dock dock chart chart" "metrics metrics metrics metrics" "health telegram recent recent" "info quick recent recent";gap:16px}#page-dash .area{min-width:0}#page-dash .hero{grid-area:hero;padding:24px;display:flex;flex-direction:column;gap:14px}#page-dash .hero h1{font-size:clamp(25px,3vw,37px);line-height:1.35;margin:0}#page-dash .hero h1 span{color:var(--p)}#page-dash .hero p{margin:0;color:var(--muted);font-size:13px}#page-dash .versions{display:flex;gap:9px;flex-wrap:wrap}#page-dash .version{padding:9px 12px;border:1px solid var(--line);background:rgba(0,0,0,.18);border-radius:11px;font-size:11px;color:var(--muted)}#page-dash .version b{color:var(--text);font:700 12px "JetBrains Mono";direction:ltr;margin-inline-start:5px}#page-dash .alert{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(255,200,87,.35);background:rgba(255,200,87,.08);border-radius:12px;color:var(--muted);font-size:12px}#page-dash .alert b{color:var(--warn)}#page-dash .alert button{margin-inline-start:auto;border:0;background:var(--warn);color:#17120a;border-radius:8px;padding:7px 10px;font-weight:800;font-size:11px}#page-dash .actions{display:flex;gap:9px}#page-dash .primary{border:0!important;background:linear-gradient(135deg,var(--p),var(--s))!important;color:color-mix(in srgb, rgb(18 18 18) 92%, var(--accent))!important;font-weight:900}#page-dash .hero .actions button{padding:11px 15px;border-radius:12px}#page-dash .dock{grid-area:dock;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:10px}#page-dash .dock button{display:flex;align-items:center;gap:10px;text-align:start;padding:13px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.035);transition:transform .25s var(--ease),border-color .2s}#page-dash .dock button:hover{transform:translateY(-3px);border-color:rgba(var(--accent2-rgb),.5)}#page-dash .dock strong{display:block;font-size:12.5px}#page-dash .dock small{display:block;color:var(--dim);font:10px "JetBrains Mono";margin-top:3px}#page-dash .icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:rgba(var(--accent2-rgb),.13);color:var(--p);font-weight:900;flex:none}#page-dash .metrics{grid-area:metrics;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;padding:1px}#page-dash .metric{padding:19px;border-inline-end:1px solid var(--line)}#page-dash .metric:last-child{border:0}#page-dash .metric label{display:block;color:var(--muted);font-size:12px}#page-dash .metric strong{display:block;font:700 25px "JetBrains Mono";direction:ltr;margin-top:8px}#page-dash .metric small{color:var(--dim);font-size:11px}#page-dash .chart{grid-area:chart;padding:20px}#page-dash .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}#page-dash .head h2{font-size:15px;margin:0}#page-dash .range{display:flex;gap:3px;padding:3px;border-radius:9px;background:rgba(0,0,0,.2)}#page-dash .range button{border:0;background:transparent;color:var(--muted);border-radius:7px;padding:6px 8px;font-size:11px}#page-dash .range button.active{background:rgba(var(--accent2-rgb),.18);color:var(--text)}#page-dash #traffic{width:100%;height:230px}#page-dash .health{grid-area:health;padding:20px}#page-dash .rows{display:grid;gap:13px}#page-dash .healthrow{display:grid;grid-template-columns:38px 1fr 40px;gap:10px;align-items:center}#page-dash .healthrow .tag{height:30px;border-radius:9px;background:rgba(var(--accent2-rgb),.1);border:1px solid rgba(var(--accent2-rgb),.25);display:grid;place-items:center;color:var(--p);font:700 10px "JetBrains Mono"}#page-dash .track{height:6px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden}#page-dash .track i{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--p),var(--s));border-radius:inherit}#page-dash .healthrow label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}#page-dash .healthrow b{font:600 11px "JetBrains Mono";direction:ltr}#page-dash .telegram{grid-area:telegram;padding:20px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(circle at 50% 0,rgba(var(--accent2-rgb),.18),transparent 44%),linear-gradient(145deg,color-mix(in srgb, rgb(45 45 45 / .9) 88%, var(--accent)),color-mix(in srgb, rgb(16 16 16 / .95) 92%, var(--accent)))}#page-dash .tgmark{width:82px;height:82px;border-radius:50%;margin:5px auto 16px;display:grid;place-items:center;background:linear-gradient(145deg,var(--accent),var(--accent));box-shadow:0 0 35px rgba(var(--accent-rgb),.5);font-size:35px}#page-dash .telegram h3{text-align:center;font-size:14px;margin:0}#page-dash .telegram p{text-align:center;color:var(--muted);font-size:11px;margin:5px 0 17px}#page-dash .telegram a{display:block;text-align:center;text-decoration:none;color:#fff;background:var(--accent);border-radius:11px;padding:10px;font-size:12px;font-weight:800}#page-dash .recent{grid-area:recent;padding:20px}#page-dash .table{display:grid;gap:0}#page-dash .tr{display:grid;grid-template-columns:1.2fr 1fr 1.2fr 70px 42px;gap:12px;align-items:center;padding:13px 8px;border-bottom:1px solid var(--line);font-size:12px}#page-dash .tr.headrow{color:var(--dim);font-size:10px}#page-dash .tr:last-child{border:0}#page-dash .proto{color:var(--muted);font:11px "JetBrains Mono";direction:ltr}#page-dash .usage .bar{height:5px;background:rgba(255,255,255,.08);border-radius:8px;margin-top:6px;overflow:hidden}#page-dash .usage i{display:block;height:100%;background:var(--p);width:var(--w);border-radius:8px}#page-dash .quick{grid-area:quick;padding:20px}#page-dash .quicklist{display:grid;gap:9px}#page-dash .quickitem{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.03);font-size:12px}#page-dash .quickitem:hover{border-color:rgba(var(--accent2-rgb),.4)}#page-dash .info{grid-area:info;padding:20px}#page-dash .kv{display:grid;grid-template-columns:auto 1fr;gap:11px;font-size:11px}#page-dash .kv dt{color:var(--dim)}#page-dash .kv dd{margin:0;text-align:left;direction:ltr;color:var(--muted);font-family:"JetBrains Mono";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:1150px){#page-dash .grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"hero hero" "dock dock" "metrics metrics" "chart chart" "health telegram" "recent recent" "quick info"}}@media(max-width:800px){#page-dash .open .sidebar{transform:none}#page-dash .grid{grid-template-columns:1fr;grid-template-areas:"hero" "dock" "metrics" "chart" "health" "telegram" "recent" "quick" "info"}#page-dash .metrics{grid-template-columns:1fr 1fr}#page-dash .metric{border-bottom:1px solid var(--line)}#page-dash .dock{grid-template-columns:1fr}#page-dash .picker{display:none}}
 
-<style id="onex-dashboard-cleanup">
-/* Dashboard controls are compact and remain available on every viewport. */
-#page-dash .dock,#page-dash .metrics{display:none!important}
-#page-dash .grid{grid-template-areas:"hero hero chart chart" "health telegram recent recent" "info quick recent recent"}
-.dashboard-mini-actions{display:flex;align-items:center;gap:5px;flex:0 1 auto;min-width:0}
-.dashboard-mini-actions button{height:36px;min-width:64px;padding:3px 7px;border:1px solid rgba(var(--accent2-rgb),.22);border-radius:10px;background:rgba(var(--accent-rgb),.08);color:var(--t1);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px;white-space:nowrap;cursor:pointer}
-.dashboard-mini-actions b{font-size:9px;line-height:1.2}.dashboard-mini-actions small{font:6px "JetBrains Mono";color:var(--t3);letter-spacing:.08em}
-@media(max-width:1150px){#page-dash .grid{grid-template-areas:"hero hero" "chart chart" "health telegram" "recent recent" "quick info"}}
-@media(max-width:800px){#page-dash .grid{grid-template-areas:"hero" "chart" "health" "telegram" "recent" "quick" "info"}}
-@media(max-width:640px){
-  #page-dash .grid{display:block!important;width:100%!important}
-  #page-dash .grid>section{display:block!important;width:100%!important;min-width:0!important;margin:0 0 8px!important}
-  #page-dash .hero{width:100%!important;min-height:0!important;padding:14px!important;display:block!important}
-  #page-dash .hero h1{font-size:22px!important;line-height:1.45!important;white-space:normal!important;word-break:normal!important}
-  #page-dash .hero p{font-size:10px!important;white-space:normal!important}
-  #page-dash .versions{display:flex!important;gap:6px!important;flex-wrap:wrap!important}
-  #page-dash .version{padding:7px 8px!important;font-size:9px!important}
-  #page-dash .chart,#page-dash .health,#page-dash .telegram,#page-dash .recent,#page-dash .quick,#page-dash .info{padding:12px!important}
+</style>
 
-  /* Header layout matches the login page: compact palette + language + alerts. */
-  .onex-topbar{height:auto!important;min-height:96px!important;max-height:none!important;display:grid!important;grid-template-columns:1fr auto!important;grid-template-areas:"server actions" "mini mini"!important;gap:6px!important;padding:7px!important;overflow:visible!important}
-  .onex-topbar-brand{display:none!important}
-  .top-server{grid-area:server!important;order:1!important;align-self:center!important;min-width:0!important;gap:4px!important;overflow:hidden!important;white-space:nowrap!important}
-  .top-server b{font-size:9px!important;overflow:hidden;text-overflow:ellipsis!important}.top-server small{display:none!important}.top-sep{display:none!important}
-  .top-actions{grid-area:actions!important;order:2!important;display:flex!important;align-items:center!important;gap:4px!important;min-width:0!important}
-  .hexa-swatches{display:flex!important;gap:4px!important;padding:3px!important;max-width:none!important;overflow:visible!important;flex-wrap:nowrap!important}
-  .hexa-swatches button{width:22px!important;height:22px!important;flex:0 0 22px!important}
-  .top-setting-group{display:flex!important;gap:1px!important;padding:2px!important;border-radius:8px!important}
-  .top-setting-btn{padding:6px 5px!important;font-size:8px!important;border-radius:6px!important}
-  .top-notify-wrap{display:block!important;flex:0 0 auto!important}.top-notify-btn{width:30px!important;height:30px!important;padding:0!important;justify-content:center!important;border-radius:8px!important}
-  .top-notify-btn .notify-label{display:none!important}.notify-bell{font-size:13px!important}
-  .dashboard-mini-actions{grid-area:mini!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;width:100%!important}
-  .dashboard-mini-actions button{height:34px!important;min-width:0!important;padding:3px 2px!important;border-radius:9px!important}
-  .dashboard-mini-actions b{font-size:8px!important;overflow:hidden;text-overflow:ellipsis;max-width:100%}.dashboard-mini-actions small{font-size:5px!important}
-  .top-notify-panel{right:0!important;top:calc(100% + 7px)!important;width:270px!important;max-width:calc(100vw - 16px)!important}
+<style id="onex-final-responsive-fix">
+html body:has(.page){overflow-x:hidden!important}
+html body:has(.page) .main{min-width:0!important;box-sizing:border-box!important}
+html body:has(.page) .onex-topbar{min-width:0!important;box-sizing:border-box!important;overflow:hidden!important}
+html body:has(.page) .onex-topbar .top-brand,html body:has(.page) .mob-bar .mob-brand{min-width:0!important;max-width:55vw!important;overflow:hidden!important}
+html body:has(.page) .onex-topbar .top-brand img,html body:has(.page) .mob-bar .mob-brand img{width:92px!important;height:38px!important;max-width:92px!important;object-fit:contain!important}
+html body:has(.page) .top-avatar{width:42px!important;height:38px!important;flex:0 0 42px!important}
+html body:has(.page) .dashboard-hero{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-areas:"hero version"!important;align-items:center!important;min-width:0!important;box-sizing:border-box!important}
+html body:has(.page) .dashboard-hero .hero-main{grid-area:hero!important;min-width:0!important}
+html body:has(.page) .dashboard-hero .hero-version-strip{grid-area:version!important;min-width:0!important;display:flex!important;flex-wrap:wrap!important;justify-content:flex-end!important}
+html body:has(.page) .dashboard-hero .hero-actions{display:none!important}
+html body:has(.page) .version-mini-card{min-width:118px!important;max-width:160px!important;min-height:54px!important;padding:8px!important;box-sizing:border-box!important}
+html body:has(.page) .version-mini-copy{min-width:0!important;overflow:hidden!important}
+html body:has(.page) .version-mini-copy b,html body:has(.page) .version-mini-copy strong{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+html body:has(.page) .onex-control-dock{min-width:0!important;box-sizing:border-box!important}
+html body:has(.page) .onex-3d-control{min-width:0!important;overflow:hidden!important}
+html body:has(.page) .onex-3d-control span{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+@media(max-width:900px){
+ html body:has(.page) .sidebar{display:none!important}
+ html body:has(.page) .mob-bar{display:flex!important;min-height:58px!important;height:58px!important;max-height:58px!important;padding:8px 10px!important;box-sizing:border-box!important;overflow:hidden!important}
+ html body:has(.page) .main,html body:has(.page) .main.expanded{margin-right:0!important;padding:76px 12px 28px!important;width:100%!important;max-width:100%!important}
+ html body:has(.page) .mob-brand{gap:5px!important;min-width:0!important}
+ html body:has(.page) .mob-brand-icon{width:92px!important;height:38px!important;flex:0 0 92px!important;border-radius:0!important}
+ html body:has(.page) .mob-brand-icon img{width:100%!important;height:100%!important;object-fit:contain!important}
+ html body:has(.page) .mob-brand-text{display:none!important}
+ html body:has(.page) .mob-actions{display:flex!important;align-items:center!important;gap:5px!important;min-width:0!important}
+ html body:has(.page) .mob-actions button{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;padding:0!important}
 }
-@media(max-width:390px){.hexa-swatches{gap:2px!important}.hexa-swatches button{width:19px!important;height:19px!important;flex-basis:19px!important}.top-setting-btn{padding-inline:4px!important;font-size:7px!important}.dashboard-mini-actions b{font-size:7px!important}}
+@media(max-width:640px){
+ html body:has(.page) #page-dash .dashboard-hero{display:grid!important;grid-template-columns:1fr!important;grid-template-areas:"hero" "version"!important;gap:10px!important;padding:14px!important;margin:0 0 10px!important;align-items:stretch!important}
+ html body:has(.page) #page-dash .dashboard-hero .hero-version-strip{grid-area:version!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;justify-content:stretch!important}
+ html body:has(.page) #page-dash .version-mini-card{min-width:0!important;max-width:none!important;min-height:48px!important;padding:6px!important;border-radius:11px!important}
+ html body:has(.page) #page-dash .version-mini-icon{width:25px!important;height:25px!important;flex-basis:25px!important}
+ html body:has(.page) #page-dash .version-mini-copy b{font-size:7px!important}
+ html body:has(.page) #page-dash .version-mini-copy strong{font-size:10px!important}
+ html body:has(.page) #page-dash .hero-title{font-size:20px!important;line-height:1.45!important;overflow-wrap:anywhere!important}
+ html body:has(.page) #page-dash .hero-sub{font-size:9px!important;line-height:1.7!important}
+ html body:has(.page) #page-dash .onex-control-dock{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;padding:7px!important;margin:-2px 0 12px!important}
+ html body:has(.page) #page-dash .onex-3d-control{min-height:58px!important;padding:7px 4px!important;gap:4px!important;font-size:9px!important;text-align:center!important}
+ html body:has(.page) #page-dash .onex-3d-control .control-icon{width:25px!important;height:25px!important;flex:0 0 25px!important}
+ html body:has(.page) #page-dash .onex-3d-control span{font-size:8px!important}
+ html body:has(.page) #page-dash .onex-metric .metric-label{font-size:8px!important}
+ html body:has(.page) #page-dash .onex-metric .metric-val{font-size:15px!important}
+}
+@media(max-width:380px){
+ html body:has(.page) #page-dash .dashboard-hero .hero-version-strip{grid-template-columns:1fr!important}
+ html body:has(.page) #page-dash .onex-control-dock{grid-template-columns:1fr!important}
+ html body:has(.page) #page-dash .onex-3d-control{min-height:48px!important;flex-direction:row!important;justify-content:flex-start!important;padding-inline:10px!important}
+}
 </style>
 </head>
 <body>
@@ -10523,47 +10537,98 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
         <div id="notifyList" class="notify-list"><div class="notify-empty">اعلان جدیدی وجود ندارد.</div></div>
       </div>
     </div>
-    <div class="dashboard-mini-actions" aria-label="Dashboard controls">
-      <button type="button" onclick="toggleTheme()"><b id="dashThemeText">تم روشن</b><small>THEME</small></button>
-      <button type="button" onclick="homeRefresh(true)"><b data-i18n="refresh_stats">بروزرسانی آمار</b><small>STATS</small></button>
-      <button type="button" onclick="panelUpdate()"><b data-i18n="refresh_panel">بروزرسانی پنل</b><small>UPDATE</small></button>
-    </div>
   </div>
 </div>
 
-<style id="onex-signal-grid">
-#page-dash{--sg-bg:#0b1420;--sg-card:#102331;--sg-card2:#122b3c;--sg-line:#29485c;--sg-text:#eef7ff;--sg-muted:#8aa1b6;--sg-cyan:#57d9ff;--sg-violet:#9b78ff;--sg-green:#54e4ad;--sg-warn:#ffd166}
-#page-dash{width:100%;max-width:1440px;margin:0 auto;color:var(--sg-text)}
-#page-dash .sg-shell{display:grid;grid-template-columns:218px minmax(0,1fr);min-width:0;border:1px solid var(--sg-line);border-radius:22px;overflow:hidden;background:var(--sg-bg);box-shadow:0 24px 70px rgba(0,0,0,.24)}
-#page-dash .sg-side{background:#0a1420;border-inline-end:1px solid #203b4d;display:flex;flex-direction:column;min-width:0}
-#page-dash .sg-side-head{display:flex;align-items:center;gap:9px;padding:18px 14px;border-bottom:1px solid #1f3748}
-#page-dash .sg-mark{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--sg-cyan),var(--sg-violet));color:#07121b;font:900 19px "JetBrains Mono";box-shadow:0 0 20px rgba(87,217,255,.28)}
-#page-dash .sg-side-head b{font:800 11px "JetBrains Mono";letter-spacing:.04em}#page-dash .sg-side-head small{color:#7790a7;font:9px "JetBrains Mono"}
-#page-dash .sg-nav{padding:13px 10px;display:grid;gap:5px}.sg-nav-label{margin:13px 9px 3px;color:#587188;font-size:9px}
-#page-dash .sg-nav button{display:flex;align-items:center;gap:9px;width:100%;padding:10px 11px;border:1px solid transparent;border-radius:11px;background:none;color:#86a0b7;text-align:start;font:500 11px Vazirmatn;cursor:pointer}
-#page-dash .sg-nav button:hover,#page-dash .sg-nav button.active{background:linear-gradient(90deg,#17364d,#12283a);border-color:#2e6784;color:#f7fcff}.sg-nav button.active svg{color:var(--sg-cyan)}.sg-nav button span{flex:1}.sg-side-foot{margin-top:auto;padding:13px;border-top:1px solid #1f3748;color:#8ea6ba;font-size:10px}
-#page-dash .sg-main{min-width:0;padding:18px;background:linear-gradient(145deg,#0d1a27,#0b1520)}
-#page-dash .sg-mobile-head{display:none}.sg-topline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.sg-topline small{color:#6e879d;font-size:10px}.sg-topline b{font-size:12px}.sg-online{display:flex;align-items:center;gap:7px;color:var(--sg-green);font-size:10px}.sg-online i,.sg-core i{width:7px;height:7px;border-radius:50%;background:var(--sg-green);box-shadow:0 0 10px var(--sg-green);display:inline-block}
-#page-dash .sg-welcome{position:relative;display:flex;align-items:center;gap:16px;min-height:135px;padding:22px;border:1px solid #2d5369;border-radius:20px;overflow:hidden;background:radial-gradient(circle at 0 20%,rgba(40,130,166,.38),transparent 46%),linear-gradient(145deg,#173346,#102432)}
-#page-dash .sg-welcome:after{content:"X";position:absolute;left:8%;top:-22px;color:rgba(87,217,255,.05);font:900 190px "JetBrains Mono";transform:rotate(-15deg)}
-#page-dash .sg-welcome>*{position:relative;z-index:1}.sg-eyebrow,.sg-panel small{color:var(--sg-cyan);font:700 9px "JetBrains Mono";letter-spacing:.13em}.sg-welcome h1{margin:8px 0 5px;font-size:27px;line-height:1.35}.sg-welcome h1 b{color:var(--sg-cyan)}.sg-welcome h1 em{color:#b7c7d6;font-style:normal;font-weight:500}.sg-welcome p{margin:0;color:#8ba4b7;font-size:11px}.sg-welcome-actions{margin-inline-start:auto;display:flex;gap:8px}.sg-welcome-actions button{height:42px;padding:0 14px;border-radius:11px;border:1px solid #3b5c70;background:#173243;color:#eaf5ff;font:700 11px Vazirmatn;cursor:pointer}.sg-welcome-actions .primary{border:0;background:linear-gradient(135deg,var(--sg-cyan),var(--sg-violet));color:#07121b}.sg-state{position:absolute;right:22px;bottom:14px;color:var(--sg-green);font-size:10px}.sg-state b{color:#9db2c4;font-weight:500;margin-inline-start:5px}
-#page-dash .sg-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:13px 0}.sg-stat{padding:14px;border:1px solid #26465b;border-radius:16px;background:linear-gradient(145deg,#122b3a,#102331);min-width:0}.sg-stat-icon{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;background:#173b50;color:var(--sg-cyan);font-size:16px}.sg-stat label{display:block;margin-top:8px;color:#8ca4b7;font-size:10px}.sg-stat strong{display:block;margin-top:5px;color:#f4f9ff;font:700 22px "JetBrains Mono";white-space:nowrap}.sg-stat small{display:block;margin-top:4px;color:#668097;font-size:9px}
-#page-dash .sg-grid{display:grid;grid-template-columns:1.45fr 1fr;gap:12px}.sg-panel{min-width:0;border:1px solid #26465b;border-radius:18px;background:linear-gradient(145deg,#112838,#10212d);padding:16px}.sg-traffic{grid-row:span 2}.sg-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.sg-panel-head h2{margin:5px 0 0;font-size:16px}.sg-range{display:flex;gap:2px;padding:3px;border-radius:8px;background:#0a1823}.sg-range button{border:0;background:none;color:#7b94a9;padding:5px 7px;border-radius:6px;font-size:9px}.sg-range button.on{background:#20536e;color:#67ddff}.sg-legend{display:flex;gap:15px;margin:16px 0 7px;color:#86a0b4;font-size:10px}.sg-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-inline-end:4px}.sg-down{background:var(--sg-cyan)}.sg-up{background:var(--sg-violet)}.sg-chart{height:278px;position:relative}.sg-chart-grid{position:absolute;inset:12px 0 25px;background:repeating-linear-gradient(to bottom,transparent 0 24%,rgba(101,144,168,.12) 24.5% 25%,transparent 25.5%)}.sg-chart svg{position:absolute;inset:12px 0 25px;width:100%;height:calc(100% - 37px)}.sg-chart .axis{position:absolute;bottom:0;inset-inline:0;display:flex;justify-content:space-between;color:#648096;font:9px "JetBrains Mono"}.sg-health{display:grid;gap:13px}.sg-core{padding:5px 8px;border:1px solid #2d675e;border-radius:99px;color:var(--sg-green);font:9px "JetBrains Mono"}.sg-health-row{display:grid;grid-template-columns:29px minmax(0,1fr) auto;align-items:center;gap:8px}.sg-health-icon{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;background:#17394c;color:var(--sg-cyan)}.sg-health-row b{display:block;font-size:10px}.sg-health-row strong{font:10px "JetBrains Mono"}.sg-track{height:5px;margin-top:6px;border-radius:99px;background:#223d4c;overflow:hidden}.sg-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--sg-cyan),var(--sg-violet))}.sg-configs,.sg-quick{padding:16px}.sg-config-row{display:grid;grid-template-columns:8px minmax(0,1fr) auto 16px;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #1d3949}.sg-config-row:last-child{border:0}.sg-status{width:8px;height:8px;border-radius:50%;background:var(--sg-green)}.sg-status.warn{background:var(--sg-warn)}.sg-config-row b{display:block;font-size:11px}.sg-config-row small{display:block;color:#6d8499;font-size:9px;margin-top:2px}.sg-expiry{color:#70d9aa;font-size:9px}.sg-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}.sg-quick-grid button{display:flex;align-items:center;gap:7px;padding:10px;border:1px solid #2b4b60;border-radius:11px;background:#122c3b;color:#cbd9e6;font-size:10px;text-align:start}.sg-quick-grid button b{flex:1;font-weight:700}.sg-quick-grid button small{display:block;margin-top:2px;color:#71889d;font-size:8px}.sg-quick-grid svg{color:var(--sg-cyan)}
-@media(max-width:1000px){#page-dash .sg-shell{grid-template-columns:180px minmax(0,1fr)}#page-dash .sg-welcome h1{font-size:23px}.sg-welcome-actions{gap:5px}.sg-welcome-actions button{padding:0 10px}.sg-stat strong{font-size:18px}}
-@media(max-width:760px){#page-dash{width:100%}#page-dash .sg-shell{display:block;border-radius:16px}#page-dash .sg-side{display:none}#page-dash .sg-main{padding:10px;background:#0b1722}#page-dash .sg-mobile-head{display:flex;align-items:center;gap:9px;margin-bottom:9px}.sg-mobile-head button{width:34px;height:34px;border:1px solid #2a5269;border-radius:10px;background:#143044;color:var(--sg-cyan)}.sg-mobile-head div{flex:1}.sg-mobile-head b{display:block;font-size:15px}.sg-mobile-head small{color:#6e879d;font:8px "JetBrains Mono"}.sg-mobile-online{color:var(--sg-green);font-size:9px}.sg-topline{display:none}#page-dash .sg-welcome{display:block;min-height:0;padding:15px;border-radius:16px}.sg-welcome h1{font-size:21px!important;line-height:1.45}.sg-welcome p{font-size:10px}.sg-welcome-actions{display:grid;grid-template-columns:1fr 1fr;margin-top:14px}.sg-welcome-actions button{height:39px;padding:0 6px;font-size:10px}.sg-state{position:static;margin-top:12px;font-size:9px}#page-dash .sg-stats{grid-template-columns:1fr 1fr;gap:7px;margin:9px 0}.sg-stat{padding:11px;border-radius:13px}.sg-stat strong{font-size:17px}.sg-stat label{font-size:9px}.sg-stat small{font-size:8px}.sg-grid{display:block!important}.sg-panel{margin-bottom:8px;padding:12px;border-radius:15px}.sg-panel-head h2{font-size:14px}.sg-chart{height:220px}.sg-chart-grid{inset:10px 0 22px}.sg-chart svg{inset:10px 0 22px;height:calc(100% - 32px)}.sg-health-row{grid-template-columns:27px minmax(0,1fr) auto}.sg-quick-grid{gap:6px}.sg-quick-grid button{padding:9px 7px;font-size:9px}.sg-quick-grid button small{font-size:7px}}
-@media(max-width:390px){.sg-welcome h1{font-size:19px!important}.sg-stat strong{font-size:15px}.sg-legend{font-size:9px}.sg-range button{padding-inline:5px}}
-</style>
+<div class="onex-control-dock" aria-label="کنترل‌های سریع ONEX">
+  <button type="button" class="onex-3d-control" onclick="toggleTheme()">
+    <span class="control-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
+    <span class="control-copy"><span class="control-title" id="themeLabel" data-i18n="theme">تم روشن</span><span class="control-sub">THEME CONTROL</span></span>
+  </button>
+  <button type="button" class="onex-3d-control" onclick="refreshAll()">
+    <span class="control-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.1-3.4L23 10M1 14l5.4 4.4A9 9 0 0 0 20.5 15"/></svg></span>
+    <span class="control-copy"><span class="control-title" data-i18n="refresh_stats">بروزرسانی آمار</span><span class="control-sub">LIVE STATISTICS</span></span>
+  </button>
+  <button type="button" class="onex-3d-control" onclick="panelUpdate()">
+    <span class="control-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg></span>
+    <span class="control-copy"><span class="control-title" data-i18n="refresh_panel">بروزرسانی پنل</span><span class="control-sub">PANEL UPDATE</span></span>
+  </button>
+</div>
 <section class="page on" id="page-dash">
-<div class="sg-shell">
-<aside class="sg-side"><div class="sg-side-head"><div class="sg-mark">X</div><div><b>ONEX</b> <small>PANEL</small></div></div><nav class="sg-nav"><button class="active"><span>داشبورد</span><span>⌂</span></button><button><span>کانفیگ‌ها</span><span>⌘</span></button><button><span>گروه‌ها</span><span>◉</span></button><button><span>ساخت کانفیگ</span><span>✦</span></button><button><span>آمار</span><span>⌁</span></button><button><span>لاگ فعالیت</span><span>▣</span></button><div class="sg-nav-label">سیستم</div><button><span>ربات ONEX</span><span>◈</span></button><button><span>فروشگاه</span><span>◌</span></button><button><span>تنظیمات</span><span>⚙</span></button></nav><div class="sg-side-foot">admin · Administrator</div></aside>
-<main class="sg-main"><div class="sg-mobile-head"><button>☰</button><div><b>داشبورد</b><small>ONEX PANEL</small></div><span class="sg-mobile-online"><i class="sg-online i"></i> آنلاین</span></div><div class="sg-topline"><span><small>CONTROL CENTER / 01</small><b>داشبورد مدیریت ONEX</b></span><span class="sg-online"><i/> سرور آنلاین</span></div>
-<section class="sg-welcome"><div><span class="sg-eyebrow">CONTROL CENTER / 01</span><h1><span data-i18n="home_welcome">خوش آمدی به</span> <b>ONEX</b><em class="home-user" id="homeUser"></em></h1><p>همه‌چیز برای مدیریت سریع و امن کانفیگ‌ها، یکجا.</p></div><div class="sg-welcome-actions"><button class="primary" onclick="goPage('create')">＋ ساخت کانفیگ</button><button onclick="homeRefresh(true)">↻ بروزرسانی</button></div><div class="sg-state"><i/> هسته فعال <b id="homeCoreVer">sing-box</b></div></section>
-<section class="sg-stats"><div class="sg-stat"><div class="sg-stat-icon">◎</div><label data-i18n="home_conns">اتصالات فعال</label><strong id="homeConns">—</strong><small data-i18n="home_live">لحظه‌ای</small></div><div class="sg-stat"><div class="sg-stat-icon">⌁</div><label data-i18n="home_traffic">ترافیک کل</label><strong id="homeTraffic">—</strong><small id="homeTrafficSub">—</small></div><div class="sg-stat"><div class="sg-stat-icon">◈</div><label data-i18n="home_links">کانفیگ‌های فعال</label><strong id="homeLinks">—</strong><small id="homeLinksSub">—</small></div><div class="sg-stat"><div class="sg-stat-icon">∿</div><label data-i18n="home_uptime">آپتایم سرور</label><strong id="homeUptime">—</strong><small data-i18n="home_since">از آخرین راه‌اندازی</small></div></section>
-<div class="sg-grid"><section class="sg-panel sg-traffic"><div class="sg-panel-head"><div><small>LIVE TELEMETRY</small><h2 data-i18n="home_chart">توزیع ساعتی ترافیک</h2></div><div class="sg-range"><button class="on">روز</button><button>هفته</button><button>ماه</button></div></div><div class="sg-legend"><span><i class="sg-down"/> دانلود</span><span><i class="sg-up"/> آپلود</span></div><div class="sg-chart"><div class="sg-chart-grid"/><svg viewBox="0 0 700 220" preserveAspectRatio="none"><defs><linearGradient id="sgFill" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#57d9ff" stop-opacity=".32"/><stop offset="1" stop-color="#57d9ff" stop-opacity="0"/></linearGradient></defs><path d="M0 185 C45 165 55 175 90 150 S140 168 175 125 S220 150 260 110 S315 145 350 92 S410 130 450 102 S505 140 550 75 S620 105 700 40 V220 H0Z" fill="url(#sgFill)"/><path d="M0 185 C45 165 55 175 90 150 S140 168 175 125 S220 150 260 110 S315 145 350 92 S410 130 450 102 S505 140 550 75 S620 105 700 40" fill="none" stroke="#57d9ff" stroke-width="4" stroke-linecap="round"/></svg><div class="axis"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>اکنون</span></div></div><canvas id="traffic" hidden></canvas><div id="homeChartTip" hidden></div></section>
-<section class="sg-panel sg-health"><div class="sg-panel-head"><div><small>INFRASTRUCTURE</small><h2 data-i18n="home_health">وضعیت سرور</h2></div><span class="sg-core"><i/> NATIVE CORE</span></div><div class="sg-health-row"><div class="sg-health-icon">CPU</div><div><b data-i18n="home_cpu">پردازنده</b><div class="sg-track"><i id="homeCpuBar" style="width:0%"/></div></div><strong id="homeCpu">—</strong></div><div class="sg-health-row"><div class="sg-health-icon">RAM</div><div><b data-i18n="home_ram">حافظه</b><div class="sg-track"><i id="homeRamBar" style="width:0%"/></div></div><strong id="homeRam">—</strong></div><div class="sg-health-row"><div class="sg-health-icon">SSD</div><div><b data-i18n="home_disk">دیسک</b><div class="sg-track"><i id="homeDiskBar" style="width:0%"/></div></div><strong id="homeDisk">—</strong></div><div class="sg-health-row"><div class="sg-health-icon">NET</div><div><b data-i18n="home_net">شبکه</b><div class="sg-track"><i id="homeNetBar" style="width:0%"/></div></div><strong id="homeNet">—</strong></div></section>
-<section class="sg-panel sg-configs"><div class="sg-panel-head"><div><small>RECENT ACTIVITY</small><h2 data-i18n="home_recent">کانفیگ‌های اخیر</h2></div><button class="home-link-btn" onclick="goPage('configs')">مشاهده همه ←</button></div><div id="homeRecent"><div class="home-empty">در حال بارگذاری...</div></div></section>
-<section class="sg-panel sg-quick"><div class="sg-panel-head"><div><small>SHORTCUTS</small><h2 data-i18n="home_quick">عملیات سریع</h2></div></div><div class="sg-quick-grid"><button onclick="goPage('create')"><span>＋</span><b>ساخت کانفیگ<small>ایجاد کانفیگ جدید</small></b><span>‹</span></button><button onclick="goPage('configs')"><span>☷</span><b>مدیریت کانفیگ‌ها<small>مشاهده و ویرایش</small></b><span>‹</span></button><button onclick="goPage('groups')"><span>◉</span><b>گروه‌ها<small>گروه‌های اشتراک</small></b><span>‹</span></button><button onclick="goPage('telegram')"><span>➤</span><b>ربات ONEX<small>مدیریت ربات</small></b><span>‹</span></button></div></section>
-</div></main></div></section>
+<div class="grid" id="onexHome">
+<section class="hero glass area">
+  <h1><span data-i18n="home_welcome">خوش آمدی به</span> <span class="home-brand">ONEX</span><em class="home-user" id="homeUser"></em></h1>
+  <p><span data-i18n="home_last">آخرین بروزرسانی</span> <b class="mono" id="lastUpd">--:--:--</b></p>
+  <div class="versions">
+    <div class="version"><span data-i18n="home_ver_panel">نسخه پنل</span> <b id="homePanelVer">v__ONEX_VERSION__</b></div>
+    <div class="version"><span data-i18n="home_ver_core">هسته</span> <b id="homeCoreVer">sing-box</b></div>
+    <div class="version"><span data-i18n="home_core_state">وضعیت هسته</span> <b id="homeCoreState">—</b></div>
+  </div>
+  <div class="alert" id="homeAlert" hidden>⚠ <span id="homeAlertText"></span><button type="button" onclick="homeShowExpiring()" data-i18n="home_alert_btn">مشاهده</button></div>
+  <div class="actions">
+    <button type="button" class="primary" onclick="goPage('create')">＋ <span data-i18n="nav_create">ساخت کانفیگ</span></button>
+    <button type="button" id="heroRefresh" onclick="homeRefresh(true)">↻ <span data-i18n="home_refresh">بروزرسانی</span></button>
+  </div>
+</section>
+<section class="dock glass area">
+  <button type="button" onclick="toggleTheme()"><span class="icon">◐</span><span><strong id="homeThemeLbl">تم روشن</strong><small>THEME CONTROL</small></span></button>
+  <button type="button" onclick="homeRefresh(true)"><span class="icon">↻</span><span><strong data-i18n="refresh_stats">بروزرسانی آمار</strong><small>LIVE STATISTICS</small></span></button>
+  <button type="button" onclick="panelUpdate()"><span class="icon">⇩</span><span><strong data-i18n="refresh_panel">بروزرسانی پنل</strong><small>PANEL UPDATE</small></span></button>
+</section>
+<section class="metrics glass area">
+  <div class="metric"><label data-i18n="home_conns">اتصالات فعال</label><strong id="homeConns">—</strong><small data-i18n="home_live">لحظه‌ای</small></div>
+  <div class="metric"><label data-i18n="home_traffic">ترافیک کل</label><strong id="homeTraffic">—</strong><small id="homeTrafficSub">—</small></div>
+  <div class="metric"><label data-i18n="home_links">کانفیگ‌ها</label><strong id="homeLinks">—</strong><small id="homeLinksSub">—</small></div>
+  <div class="metric"><label data-i18n="home_uptime">آپتایم سرور</label><strong id="homeUptime">—</strong><small data-i18n="home_since">از آخرین راه‌اندازی</small></div>
+</section>
+<section class="chart glass area">
+  <div class="head"><h2 data-i18n="home_chart">توزیع ساعتی ترافیک</h2>
+    <div class="home-legend"><span><i class="lg-d"></i><em data-i18n="home_down">دانلود</em></span><span><i class="lg-u"></i><em data-i18n="home_up">آپلود</em></span><button type="button" class="home-link-btn" onclick="goPage('stats')"><span data-i18n="home_full_stats">آمار کامل</span> ←</button></div>
+  </div>
+  <div class="home-chart-wrap"><canvas id="traffic"></canvas><div class="home-chart-tip" id="homeChartTip" hidden></div></div>
+</section>
+<section class="health glass area">
+  <div class="head"><h2 data-i18n="home_health">وضعیت سرور</h2><span class="mono home-core-pill" id="homeCorePill">NATIVE CORE</span></div>
+  <div class="rows">
+    <div class="healthrow"><span class="tag">CPU</span><div><label data-i18n="home_cpu">پردازنده</label><div class="track"><i id="homeCpuBar" style="--w:0%"></i></div></div><b id="homeCpu">—</b></div>
+    <div class="healthrow"><span class="tag">RAM</span><div><label data-i18n="home_ram">حافظه</label><div class="track"><i id="homeRamBar" style="--w:0%"></i></div></div><b id="homeRam">—</b></div>
+    <div class="healthrow"><span class="tag">SSD</span><div><label data-i18n="home_disk">دیسک</label><div class="track"><i id="homeDiskBar" style="--w:0%"></i></div></div><b id="homeDisk">—</b></div>
+    <div class="healthrow"><span class="tag">NET</span><div><label data-i18n="home_net">شبکه</label><div class="track"><i id="homeNetBar" style="--w:0%"></i></div></div><b id="homeNet">—</b></div>
+  </div>
+</section>
+<section class="telegram glass area">
+  <div><div class="tgmark">➤</div><h3 data-i18n="home_tg_title">کانال رسمی ONEX</h3><p data-i18n="home_tg_sub">اطلاعیه‌ها، نسخه‌های جدید و پشتیبانی مستقیم</p></div>
+  <a href="https://t.me/V2rayTun0" target="_blank" rel="noopener" data-i18n="home_tg_join">عضویت در کانال · @V2rayTun0</a>
+</section>
+<section class="recent glass area">
+  <div class="head"><h2 data-i18n="home_recent">کانفیگ‌های اخیر</h2><button type="button" class="home-link-btn" onclick="goPage('configs')"><span data-i18n="home_view_all">مشاهده همه</span> ←</button></div>
+  <div class="table">
+    <div class="tr headrow"><span data-i18n="home_col_name">نام</span><span data-i18n="home_col_proto">پروتکل</span><span data-i18n="home_col_usage">مصرف</span><span data-i18n="home_col_exp">انقضا</span><span></span></div>
+    <div id="homeRecent"><div class="home-empty">…</div></div>
+  </div>
+</section>
+<section class="quick glass area">
+  <div class="head"><h2 data-i18n="home_quick">عملیات سریع</h2></div>
+  <div class="quicklist">
+    <button type="button" class="quickitem" onclick="goPage('create')"><span class="icon">＋</span><span><span data-i18n="nav_create">ساخت کانفیگ</span><br><small data-i18n="home_q_create_sub">ایجاد کانفیگ جدید</small></span></button>
+    <button type="button" class="quickitem" onclick="goPage('configs')"><span class="icon">☷</span><span><span data-i18n="home_q_configs">مدیریت کانفیگ‌ها</span><br><small data-i18n="home_q_configs_sub">مشاهده و ویرایش</small></span></button>
+    <button type="button" class="quickitem" onclick="goPage('groups')"><span class="icon">◉</span><span><span data-i18n="nav_groups">گروه‌ها</span><br><small data-i18n="home_q_groups_sub">گروه‌های اشتراک</small></span></button>
+    <button type="button" class="quickitem" onclick="goPage('telegram')"><span class="icon">➤</span><span><span data-i18n="nav_telegram">ربات ONEX</span><br><small data-i18n="home_q_bot_sub">مدیریت ربات</small></span></button>
+  </div>
+</section>
+<section class="info glass area">
+  <div class="head"><h2 data-i18n="home_info">اطلاعات سرور</h2></div>
+  <dl class="kv">
+    <dt data-i18n="home_host">میزبان</dt><dd id="homeHost">—</dd>
+    <dt data-i18n="home_domain">دامنه</dt><dd id="homeDomain">—</dd>
+    <dt data-i18n="home_core">هسته</dt><dd id="homeCore">—</dd>
+    <dt data-i18n="home_region">منطقه</dt><dd id="homeRegion">—</dd>
+    <dt data-i18n="home_os">سیستم</dt><dd id="homeOs">—</dd>
+  </dl>
+</section>
+</div>
+  <div class="onex-footer"><span><b>Fast · Secure · Stable</b></span><span>ساخته‌شده توسط <b>Mehtif</b> · کانال رسمی <b>@V2rayTun0</b></span></div>
+</section>
 <section class="page" id="page-configs">
 <div class="ocx-root">
   <header class="ocx-top">
@@ -13462,9 +13527,8 @@ function applyLang(){
   document.getElementById('htmlRoot').dir=lang==='fa'?'rtl':'ltr';
   document.body.classList.toggle('en',lang==='en');
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(I18N[lang][k])el.textContent=I18N[lang][k]});
-  const themeText=document.documentElement.classList.contains('light')?t('theme_dark'):t('theme_light');
-  const tl=document.getElementById('themeLabel'); if(tl) tl.textContent=themeText;
-  const dt=document.getElementById('dashThemeText'); if(dt) dt.textContent=themeText;
+  const tl=document.getElementById('themeLabel');
+  if(tl) tl.textContent=document.documentElement.classList.contains('light')?t('theme_dark'):t('theme_light');
   const lf=document.getElementById('topLangFa'),le=document.getElementById('topLangEn');
   if(lf)lf.classList.toggle('active',lang==='fa'); if(le)le.classList.toggle('active',lang==='en');
   const nb=document.getElementById('topNotifyBtn'); if(nb){const label=nb.querySelector('.notify-label');if(label)label.textContent=lang==='fa'?'اعلان‌ها':'Notifications';}
@@ -13481,8 +13545,7 @@ function setTheme(mode){
 }
 function toggleTheme(){
   const isLight=document.documentElement.classList.contains('light');
-  if(typeof setOnexThemeMode==='function') setOnexThemeMode(isLight?'dark':'light');
-  else setTheme(isLight?'dark':'light');
+  setTheme(isLight?'dark':'light');
 }
 (function(){const th=localStorage.getItem('px_theme')||'dark';setTheme(th)})();
 
@@ -14991,7 +15054,7 @@ window.addEventListener('storage',e=>{if(e.key==='onex_theme_v2')loadOnexTheme()
         if(dead)parts.push(fa()?`<b>${dead} کانفیگ</b> منقضی/تمام‌شده`:`<b>${dead}</b> expired / depleted`);
         at.innerHTML=parts.join(' · ');al.dataset.mode=exp?'expiring':'expired';}
     }
-    const dt=$('dashThemeText');if(dt)dt.textContent=document.documentElement.classList.contains('light')?t('theme_dark'):t('theme_light');
+    const tl=$('homeThemeLbl');if(tl)tl.textContent=document.documentElement.classList.contains('light')?t('theme_dark'):t('theme_light');
   }
   function renderMetrics(){
     const s=H.stats||{};
@@ -16265,115 +16328,7 @@ h2{font-size:22px;font-weight:900}p{margin-top:10px;color:#a3abc6;font-size:13.5
 a{display:inline-block;margin-top:20px;padding:12px 20px;border-radius:14px;text-decoration:none;font-weight:800;color:#0b0d14;background:linear-gradient(135deg,#38d9ff,#8b5cf6)}
 small{display:block;margin-top:16px;font:500 11px "JetBrains Mono",monospace;color:#6d7594}
 </style></head>
-<body><div class="box"><div class="ic">!</div><h2>خطای داخلی پنل ONEX</h2><p>مشکلی پیش آمد. لطفاً لاگ سرور (Railway) را بررسی کنید و دوباره تلاش کنید.</p><a href="/dashboard">بازگشت به پنل</a><small>ONEX · internal error</small></div>
-<style id="onex-final-dashboard-layout">
-/* Final dashboard layout: header first, theme strip below it, actions below theme. */
-.onex-topbar{
-  height:auto!important;min-height:66px!important;display:grid!important;
-  grid-template-columns:auto minmax(0,1fr)!important;
-  grid-template-areas:"brand server" "actions actions"!important;
-  align-items:center!important;gap:8px!important;padding:8px 12px!important;
-}
-.onex-topbar-brand{grid-area:brand!important;display:flex!important}
-.onex-topbar .top-server{grid-area:server!important;justify-self:end!important}
-.onex-topbar .top-actions{
-  grid-area:actions!important;width:100%!important;display:flex!important;
-  align-items:center!important;justify-content:flex-start!important;gap:8px!important;
-  flex-wrap:wrap!important;padding:7px 8px!important;border:1px solid rgba(var(--accent2-rgb),.16)!important;
-  border-radius:16px!important;background:rgba(var(--accent-rgb),.045)!important;
-}
-.onex-topbar .hexa-swatches{order:1!important;flex:0 0 auto!important}
-.onex-topbar .top-setting-group{order:2!important;flex:0 0 auto!important}
-.onex-topbar .top-notify-wrap{order:3!important;flex:0 0 auto!important}
-.onex-topbar .dashboard-mini-actions{order:4!important;flex:1 1 auto!important;min-width:250px!important;justify-content:flex-end!important}
-.dashboard-mini-actions{display:flex!important;align-items:center!important;gap:6px!important}
-.dashboard-mini-actions button{height:38px!important;min-width:92px!important;padding:4px 9px!important;border:1px solid rgba(var(--accent2-rgb),.25)!important;border-radius:10px!important;background:rgba(var(--accent-rgb),.10)!important;color:var(--t1)!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important;white-space:nowrap!important}
-.dashboard-mini-actions b{font-size:10px!important;line-height:1.2!important}.dashboard-mini-actions small{font:6px "JetBrains Mono"!important;color:var(--t3)!important;letter-spacing:.08em!important}
-@media(max-width:760px){
-  /* The separate mobile header already contains ONEX and the menu button. */
-  .onex-topbar{display:block!important;min-height:0!important;padding:7px 8px!important;margin-bottom:8px!important}
-  .onex-topbar-brand,.onex-topbar .top-server{display:none!important}
-  .onex-topbar .top-actions{display:flex!important;width:100%!important;gap:5px!important;padding:6px!important;justify-content:flex-start!important;flex-wrap:wrap!important}
-  .onex-topbar .hexa-swatches{order:1!important;display:flex!important;gap:4px!important;padding:3px!important;flex:1 1 auto!important;justify-content:center!important;min-width:0!important}
-  .onex-topbar .hexa-swatches button{width:23px!important;height:23px!important;flex:0 0 23px!important}
-  .onex-topbar .top-setting-group{order:2!important;display:flex!important;padding:2px!important;gap:1px!important}
-  .onex-topbar .top-setting-btn{font-size:8px!important;padding:6px 5px!important}
-  .onex-topbar .top-notify-wrap{order:3!important}
-  .onex-topbar .top-notify-btn{width:30px!important;height:30px!important;padding:0!important;justify-content:center!important}
-  .onex-topbar .notify-label{display:none!important}
-  .onex-topbar .dashboard-mini-actions{order:4!important;flex:0 0 100%!important;width:100%!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;justify-content:stretch!important}
-  .onex-topbar .dashboard-mini-actions button{width:100%!important;min-width:0!important;height:35px!important;padding:3px 2px!important;border-radius:9px!important}
-  .onex-topbar .dashboard-mini-actions b{font-size:8px!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important}
-  .onex-topbar .dashboard-mini-actions small{font-size:5px!important}
-}
-@media(max-width:390px){
-  .onex-topbar .hexa-swatches{gap:2px!important}.onex-topbar .hexa-swatches button{width:20px!important;height:20px!important;flex-basis:20px!important}
-  .onex-topbar .top-setting-btn{font-size:7px!important;padding-inline:4px!important}
-  .onex-topbar .dashboard-mini-actions b{font-size:7px!important}
-}
-</style>
-
-<style id="onex-signal-final-lock">
-/* Final lock: prevent legacy panel rules from resizing or recoloring Signal Grid. */
-#page-dash{--sg-bg:color-mix(in srgb,var(--bg,#0b1420) 88%,var(--accent,#38d9ff));--sg-card:color-mix(in srgb,var(--card,#102331) 88%,var(--accent,#38d9ff));--sg-card2:color-mix(in srgb,var(--card,#102331) 78%,var(--accent,#38d9ff));--sg-line:color-mix(in srgb,var(--accent,#38d9ff) 30%,#29485c);--sg-text:var(--t1,#eef7ff);--sg-muted:var(--t3,#8aa1b6);--sg-cyan:var(--accent,#57d9ff);--sg-violet:var(--purple,#9b78ff);--sg-green:#54e4ad;--sg-warn:#ffd166;box-sizing:border-box;overflow:visible!important}
-#page-dash *{box-sizing:border-box}
-#page-dash .sg-shell{width:100%!important;max-width:100%!important;overflow:hidden!important;background:var(--sg-bg)!important;border-color:var(--sg-line)!important}
-#page-dash .sg-main{background:linear-gradient(145deg,var(--sg-bg),color-mix(in srgb,var(--sg-bg) 88%,var(--accent,#38d9ff)))!important}
-#page-dash .sg-side{background:color-mix(in srgb,var(--sg-bg) 82%,#000)!important;border-color:var(--sg-line)!important}
-#page-dash .sg-welcome,#page-dash .sg-panel,#page-dash .sg-stat{background:linear-gradient(145deg,var(--sg-card2),var(--sg-card))!important;border-color:var(--sg-line)!important;color:var(--sg-text)!important}
-#page-dash .sg-stat label,#page-dash .sg-stat small,#page-dash .sg-welcome p,#page-dash .sg-panel small{color:var(--sg-muted)!important}
-#page-dash .sg-welcome h1,#page-dash .sg-panel h2,#page-dash .sg-stat strong,#page-dash .sg-welcome b{color:var(--sg-text)}
-#page-dash .sg-welcome h1 b,#page-dash .sg-eyebrow,#page-dash .sg-panel small,#page-dash .sg-stat-icon,#page-dash .sg-health-icon{color:var(--sg-cyan)!important}
-#page-dash .sg-welcome-actions .primary{background:linear-gradient(135deg,var(--accent,#57d9ff),var(--purple,#9b78ff))!important;color:var(--on,#07121b)!important}
-#page-dash .sg-mark{background:linear-gradient(135deg,var(--accent,#57d9ff),var(--purple,#9b78ff))!important}
-#page-dash .sg-stat-icon,#page-dash .sg-health-icon,#page-dash .sg-quick-grid button{background:color-mix(in srgb,var(--accent,#57d9ff) 16%,var(--sg-card))!important}
-#page-dash .sg-track{background:color-mix(in srgb,var(--accent,#57d9ff) 12%,#223d4c)!important}
-#page-dash .sg-track i{background:linear-gradient(90deg,var(--accent,#57d9ff),var(--purple,#9b78ff))!important}
-#page-dash .sg-nav button.active,#page-dash .sg-nav button:hover{background:linear-gradient(90deg,color-mix(in srgb,var(--accent,#57d9ff) 20%,var(--sg-bg)),var(--sg-card))!important;border-color:var(--sg-line)!important}
-#page-dash .sg-quick-grid button{border-color:var(--sg-line)!important;color:var(--sg-text)!important}
-#page-dash .sg-welcome-actions button{background:var(--sg-card)!important;border-color:var(--sg-line)!important;color:var(--sg-text)!important}
-#page-dash .sg-welcome-actions .primary{background:linear-gradient(135deg,var(--accent,#57d9ff),var(--purple,#9b78ff))!important}
-#page-dash .sg-topline,#page-dash .sg-mobile-head{color:var(--sg-text)}
-/* Main shell must never become wider than the content column. */
-.main{min-width:0!important;overflow-x:hidden!important}.onex-topbar{max-width:100%!important;min-width:0!important}
-@media(min-width:761px){
-  #page-dash .sg-shell{grid-template-columns:218px minmax(0,1fr)!important}
-  #page-dash .sg-main{min-width:0!important;padding:18px!important}
-}
-@media(max-width:760px){
-  .main{padding:8px 7px 30px!important;margin:0!important;width:100%!important}
-  .onex-topbar{margin:0 0 8px!important;width:100%!important}
-  #page-dash{width:100%!important;max-width:100%!important;margin:0!important}
-  #page-dash .sg-shell{display:block!important;width:100%!important;max-width:100%!important;border-radius:16px!important}
-  #page-dash .sg-main{width:100%!important;padding:9px!important;overflow:hidden!important}
-  #page-dash .sg-welcome{width:100%!important;min-width:0!important;display:block!important;padding:15px!important;margin:0!important}
-  #page-dash .sg-welcome h1{font-size:clamp(18px,5.4vw,23px)!important;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important}
-  #page-dash .sg-welcome-actions{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;margin-top:13px!important}
-  #page-dash .sg-welcome-actions button{width:100%!important;min-width:0!important;height:40px!important;padding:0 5px!important;font-size:10px!important}
-  #page-dash .sg-stats{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important}
-  #page-dash .sg-stat{min-width:0!important;width:100%!important;padding:11px!important;overflow:hidden!important}
-  #page-dash .sg-stat strong{font-size:clamp(15px,4.5vw,20px)!important;overflow:hidden!important;text-overflow:ellipsis!important}
-  #page-dash .sg-grid{display:block!important;width:100%!important}
-  #page-dash .sg-panel{width:100%!important;min-width:0!important;margin:0 0 8px!important;overflow:hidden!important}
-  #page-dash .sg-chart{width:100%!important;height:220px!important}
-  #page-dash .sg-chart svg{max-width:100%!important}
-  #page-dash .sg-mobile-head{display:flex!important;width:100%!important}
-  /* Login-sized dashboard controls: no giant empty strip. */
-  .onex-topbar{display:block!important;height:auto!important;min-height:0!important;padding:6px!important}
-  .onex-topbar .top-actions{display:flex!important;width:100%!important;min-width:0!important;gap:5px!important;padding:5px!important;flex-wrap:wrap!important;overflow:hidden!important}
-  .onex-topbar .hexa-swatches{display:flex!important;flex:1 1 100%!important;justify-content:center!important;gap:4px!important;min-width:0!important;overflow:hidden!important}
-  .onex-topbar .hexa-swatches button{width:22px!important;height:22px!important;flex:0 0 22px!important}
-  .onex-topbar .top-setting-group{display:flex!important;order:2!important;flex:0 0 auto!important}
-  .onex-topbar .top-notify-wrap{display:block!important;order:3!important;flex:0 0 auto!important}
-  .onex-topbar .dashboard-mini-actions{display:grid!important;order:4!important;flex:1 1 auto!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;width:100%!important;gap:5px!important}
-  .onex-topbar .dashboard-mini-actions button{min-width:0!important;width:100%!important;height:34px!important;padding:2px!important;font-size:8px!important}
-}
-html.light #page-dash{--sg-bg:#eef4f7;--sg-card:#fff;--sg-card2:#f8fbfc;--sg-line:color-mix(in srgb,var(--accent,#2563eb) 20%,#b8c9d4);--sg-text:#152536;--sg-muted:#536979}
-html.light #page-dash .sg-main{background:linear-gradient(145deg,#eef4f7,#f8fbfc)!important}
-html.light #page-dash .sg-side{background:#f5f9fb!important}
-html.light #page-dash .sg-welcome,#page-dash html.light .sg-panel,html.light #page-dash .sg-panel,html.light #page-dash .sg-stat{box-shadow:0 10px 26px rgba(35,63,82,.12)!important}
-</style>
-</body>
+<body><div class="box"><div class="ic">!</div><h2>خطای داخلی پنل ONEX</h2><p>مشکلی پیش آمد. لطفاً لاگ سرور (Railway) را بررسی کنید و دوباره تلاش کنید.</p><a href="/dashboard">بازگشت به پنل</a><small>ONEX · internal error</small></div></body>
 </html>
 """,
         status_code=500,
