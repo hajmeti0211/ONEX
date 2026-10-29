@@ -3056,9 +3056,9 @@ html.light .update-prompt-modal{background:#fff;border-color:rgba(37,99,235,.16)
   .mob-brand-icon{width:118px!important;height:48px!important;flex-basis:118px!important;}
 }
 <style id="onex-compact-dashboard-fix">
-.top-theme-toggle{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 10px;border:1px solid var(--card-b);border-radius:10px;background:rgba(var(--accent-rgb),.08);color:var(--t2);cursor:pointer;font:700 10px Vazirmatn}.top-theme-toggle span{font-size:17px;color:var(--accent2)}.top-theme-toggle:hover{border-color:var(--accent);color:var(--t1)}
+#hexaSwatches{display:flex;align-items:center;gap:7px;padding:5px 8px;border:1px solid var(--card-b);border-radius:14px;background:rgba(var(--accent-rgb),.05)}#hexaSwatches button{width:22px;height:22px;border:0;border-radius:50%;cursor:pointer;background:linear-gradient(135deg,var(--sw-p,var(--accent)),var(--sw-s,var(--accent2)));box-shadow:0 0 0 1px rgba(255,255,255,.16) inset;transition:transform .18s,box-shadow .18s}#hexaSwatches button:hover{transform:scale(1.12)}#hexaSwatches button.active{box-shadow:0 0 0 2px var(--bg2),0 0 0 4px var(--t1),0 0 14px rgba(var(--accent-rgb),.65)}
 html.light .onex-topbar,html.light .top-theme-toggle,html.light .top-notify-btn{color:#1e293b;border-color:rgba(30,64,175,.16)}html.light .onex-topbar{background:rgba(255,255,255,.92)}html.light .top-server{color:#334155}html.light .top-theme-toggle{background:rgba(59,130,246,.08)}html.light .top-theme-toggle span{color:#2563eb}html.light .top-notify-btn{background:rgba(255,255,255,.82)}
-#page-dash .dashboard-hero{margin-top:0}#page-dash .grid{gap:12px}@media(max-width:640px){.top-theme-toggle b{display:none}.top-theme-toggle{width:36px;justify-content:center;padding:0}.onex-topbar{min-height:58px;height:58px}.onex-topbar .top-actions{gap:5px}.dashboard-hero{margin-top:0!important}.onex-footer{margin-top:10px}}
+#page-dash .dashboard-hero{margin-top:0}#page-dash .grid{gap:12px}@media(max-width:640px){.onex-topbar{min-height:58px;height:58px}.onex-topbar .top-actions{gap:5px}.dashboard-hero{margin-top:0!important}.onex-footer{margin-top:10px}}
 </style>
 </style>
 </head>
@@ -10473,7 +10473,14 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
   </div>
   <div class="top-server"><span class="top-dot"></span><b>سرور آنلاین</b><span class="top-sep"></span><small id="topHost">—</small><span class="top-sep"></span><small id="topUptime">Uptime: —</small></div>
   <div class="top-actions">
-    <button type="button" class="top-theme-toggle" id="topThemeToggle" onclick="toggleTheme()" aria-label="تغییر تم"><span>◐</span><b id="topThemeLabel">تم تاریک</b></button>
+    <div class="hexa-swatches" id="hexaSwatches" aria-label="رنگ‌بندی داشبورد">
+      <button type="button" data-theme="aurora" data-p="#38d9ff" data-s="#8b5cf6" class="active" aria-label="Aurora"></button>
+      <button type="button" data-theme="lime" data-p="#d4f24a" data-s="#ffb84d" aria-label="Lime"></button>
+      <button type="button" data-theme="rose" data-p="#ff3d8b" data-s="#ff8a3d" aria-label="Rose"></button>
+      <button type="button" data-theme="emerald" data-p="#34f5a0" data-s="#22c1ee" aria-label="Emerald"></button>
+      <button type="button" data-theme="violet" data-p="#b57bff" data-s="#ff5ecf" aria-label="Violet"></button>
+      <button type="button" data-theme="gold" data-p="#ffc94d" data-s="#ff7a45" aria-label="Gold"></button>
+    </div>
     <div class="top-setting-group" aria-label="Language controls">
       <button type="button" class="top-setting-btn" id="topLangFa" onclick="setLang('fa')">فارسی</button>
       <button type="button" class="top-setting-btn" id="topLangEn" onclick="setLang('en')">EN</button>
@@ -10488,6 +10495,11 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
   </div>
 </div>
 
+<div class="onex-control-dock" aria-label="کنترل‌های سریع ONEX">
+  <button type="button" class="onex-3d-control" onclick="toggleTheme()"><span class="control-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span><span class="control-copy"><span class="control-title" id="themeLabel" data-i18n="theme">تم روشن</span><span class="control-sub">THEME CONTROL</span></span></button>
+  <button type="button" class="onex-3d-control" onclick="refreshAll()"><span class="control-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.1-3.4L23 10M1 14l5.4 4.4A9 9 0 0 0 20.5 15"/></svg></span><span class="control-copy"><span class="control-title" data-i18n="refresh_stats">بروزرسانی آمار</span><span class="control-sub">LIVE STATISTICS</span></span></button>
+  <button type="button" class="onex-3d-control" onclick="panelUpdate()"><span class="control-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg></span><span class="control-copy"><span class="control-title" data-i18n="refresh_panel">بروزرسانی پنل</span><span class="control-sub">PANEL UPDATE</span></span></button>
+</div>
 <section class="page on" id="page-dash">
 <div class="grid" id="onexHome">
 <section class="hero glass area">
@@ -10496,7 +10508,6 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
   <div class="alert" id="homeAlert" hidden>⚠ <span id="homeAlertText"></span><button type="button" onclick="homeShowExpiring()" data-i18n="home_alert_btn">مشاهده</button></div>
   <div class="actions">
     <button type="button" class="primary" onclick="goPage('create')">＋ <span data-i18n="nav_create">ساخت کانفیگ</span></button>
-    <button type="button" id="heroRefresh" onclick="homeRefresh(true)">↻ <span data-i18n="home_refresh">بروزرسانی</span></button>
   </div>
 </section>
 <section class="chart glass area">
