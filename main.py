@@ -3055,6 +3055,11 @@ html.light .update-prompt-modal{background:#fff;border-color:rgba(37,99,235,.16)
 @media(max-width:380px){
   .mob-brand-icon{width:118px!important;height:48px!important;flex-basis:118px!important;}
 }
+<style id="onex-compact-dashboard-fix">
+.top-theme-toggle{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 10px;border:1px solid var(--card-b);border-radius:10px;background:rgba(var(--accent-rgb),.08);color:var(--t2);cursor:pointer;font:700 10px Vazirmatn}.top-theme-toggle span{font-size:17px;color:var(--accent2)}.top-theme-toggle:hover{border-color:var(--accent);color:var(--t1)}
+html.light .onex-topbar,html.light .top-theme-toggle,html.light .top-notify-btn{color:#1e293b;border-color:rgba(30,64,175,.16)}html.light .onex-topbar{background:rgba(255,255,255,.92)}html.light .top-server{color:#334155}html.light .top-theme-toggle{background:rgba(59,130,246,.08)}html.light .top-theme-toggle span{color:#2563eb}html.light .top-notify-btn{background:rgba(255,255,255,.82)}
+#page-dash .dashboard-hero{margin-top:0}#page-dash .grid{gap:12px}@media(max-width:640px){.top-theme-toggle b{display:none}.top-theme-toggle{width:36px;justify-content:center;padding:0}.onex-topbar{min-height:58px;height:58px}.onex-topbar .top-actions{gap:5px}.dashboard-hero{margin-top:0!important}.onex-footer{margin-top:10px}}
+</style>
 </style>
 </head>
 
@@ -10468,13 +10473,7 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
   </div>
   <div class="top-server"><span class="top-dot"></span><b>سرور آنلاین</b><span class="top-sep"></span><small id="topHost">—</small><span class="top-sep"></span><small id="topUptime">Uptime: —</small></div>
   <div class="top-actions">
-    <div class="hexa-swatches" id="hexaSwatches" aria-label="رنگ‌بندی داشبورد">
-      <button type="button" data-p="#38d9ff" data-s="#8b5cf6" class="active" aria-label="Aurora"></button>
-      <button type="button" data-p="#d4f24a" data-s="#ffb84d" aria-label="Lime"></button>
-      <button type="button" data-p="#ff3d8b" data-s="#ff8a3d" aria-label="Rose"></button>
-      <button type="button" data-p="#34f5a0" data-s="#22c1ee" aria-label="Emerald"></button>
-      <button type="button" data-p="#b57bff" data-s="#ff5ecf" aria-label="Violet"></button>
-    </div>
+    <button type="button" class="top-theme-toggle" id="topThemeToggle" onclick="toggleTheme()" aria-label="تغییر تم"><span>◐</span><b id="topThemeLabel">تم تاریک</b></button>
     <div class="top-setting-group" aria-label="Language controls">
       <button type="button" class="top-setting-btn" id="topLangFa" onclick="setLang('fa')">فارسی</button>
       <button type="button" class="top-setting-btn" id="topLangEn" onclick="setLang('en')">EN</button>
@@ -10489,46 +10488,16 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
   </div>
 </div>
 
-<div class="onex-control-dock" aria-label="کنترل‌های سریع ONEX">
-  <button type="button" class="onex-3d-control" onclick="toggleTheme()">
-    <span class="control-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
-    <span class="control-copy"><span class="control-title" id="themeLabel" data-i18n="theme">تم روشن</span><span class="control-sub">THEME CONTROL</span></span>
-  </button>
-  <button type="button" class="onex-3d-control" onclick="refreshAll()">
-    <span class="control-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.1-3.4L23 10M1 14l5.4 4.4A9 9 0 0 0 20.5 15"/></svg></span>
-    <span class="control-copy"><span class="control-title" data-i18n="refresh_stats">بروزرسانی آمار</span><span class="control-sub">LIVE STATISTICS</span></span>
-  </button>
-  <button type="button" class="onex-3d-control" onclick="panelUpdate()">
-    <span class="control-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg></span>
-    <span class="control-copy"><span class="control-title" data-i18n="refresh_panel">بروزرسانی پنل</span><span class="control-sub">PANEL UPDATE</span></span>
-  </button>
-</div>
 <section class="page on" id="page-dash">
 <div class="grid" id="onexHome">
 <section class="hero glass area">
   <h1><span data-i18n="home_welcome">خوش آمدی به</span> <span class="home-brand">ONEX</span><em class="home-user" id="homeUser"></em></h1>
   <p><span data-i18n="home_last">آخرین بروزرسانی</span> <b class="mono" id="lastUpd">--:--:--</b></p>
-  <div class="versions">
-    <div class="version"><span data-i18n="home_ver_panel">نسخه پنل</span> <b id="homePanelVer">v__ONEX_VERSION__</b></div>
-    <div class="version"><span data-i18n="home_ver_core">هسته</span> <b id="homeCoreVer">sing-box</b></div>
-    <div class="version"><span data-i18n="home_core_state">وضعیت هسته</span> <b id="homeCoreState">—</b></div>
-  </div>
   <div class="alert" id="homeAlert" hidden>⚠ <span id="homeAlertText"></span><button type="button" onclick="homeShowExpiring()" data-i18n="home_alert_btn">مشاهده</button></div>
   <div class="actions">
     <button type="button" class="primary" onclick="goPage('create')">＋ <span data-i18n="nav_create">ساخت کانفیگ</span></button>
     <button type="button" id="heroRefresh" onclick="homeRefresh(true)">↻ <span data-i18n="home_refresh">بروزرسانی</span></button>
   </div>
-</section>
-<section class="dock glass area">
-  <button type="button" onclick="toggleTheme()"><span class="icon">◐</span><span><strong id="homeThemeLbl">تم روشن</strong><small>THEME CONTROL</small></span></button>
-  <button type="button" onclick="homeRefresh(true)"><span class="icon">↻</span><span><strong data-i18n="refresh_stats">بروزرسانی آمار</strong><small>LIVE STATISTICS</small></span></button>
-  <button type="button" onclick="panelUpdate()"><span class="icon">⇩</span><span><strong data-i18n="refresh_panel">بروزرسانی پنل</strong><small>PANEL UPDATE</small></span></button>
-</section>
-<section class="metrics glass area">
-  <div class="metric"><label data-i18n="home_conns">اتصالات فعال</label><strong id="homeConns">—</strong><small data-i18n="home_live">لحظه‌ای</small></div>
-  <div class="metric"><label data-i18n="home_traffic">ترافیک کل</label><strong id="homeTraffic">—</strong><small id="homeTrafficSub">—</small></div>
-  <div class="metric"><label data-i18n="home_links">کانفیگ‌ها</label><strong id="homeLinks">—</strong><small id="homeLinksSub">—</small></div>
-  <div class="metric"><label data-i18n="home_uptime">آپتایم سرور</label><strong id="homeUptime">—</strong><small data-i18n="home_since">از آخرین راه‌اندازی</small></div>
 </section>
 <section class="chart glass area">
   <div class="head"><h2 data-i18n="home_chart">توزیع ساعتی ترافیک</h2>
@@ -10554,15 +10523,6 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
   <div class="table">
     <div class="tr headrow"><span data-i18n="home_col_name">نام</span><span data-i18n="home_col_proto">پروتکل</span><span data-i18n="home_col_usage">مصرف</span><span data-i18n="home_col_exp">انقضا</span><span></span></div>
     <div id="homeRecent"><div class="home-empty">…</div></div>
-  </div>
-</section>
-<section class="quick glass area">
-  <div class="head"><h2 data-i18n="home_quick">عملیات سریع</h2></div>
-  <div class="quicklist">
-    <button type="button" class="quickitem" onclick="goPage('create')"><span class="icon">＋</span><span><span data-i18n="nav_create">ساخت کانفیگ</span><br><small data-i18n="home_q_create_sub">ایجاد کانفیگ جدید</small></span></button>
-    <button type="button" class="quickitem" onclick="goPage('configs')"><span class="icon">☷</span><span><span data-i18n="home_q_configs">مدیریت کانفیگ‌ها</span><br><small data-i18n="home_q_configs_sub">مشاهده و ویرایش</small></span></button>
-    <button type="button" class="quickitem" onclick="goPage('groups')"><span class="icon">◉</span><span><span data-i18n="nav_groups">گروه‌ها</span><br><small data-i18n="home_q_groups_sub">گروه‌های اشتراک</small></span></button>
-    <button type="button" class="quickitem" onclick="goPage('telegram')"><span class="icon">➤</span><span><span data-i18n="nav_telegram">ربات ONEX</span><br><small data-i18n="home_q_bot_sub">مدیریت ربات</small></span></button>
   </div>
 </section>
 <section class="info glass area">
@@ -13478,6 +13438,7 @@ function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(I18N[lang][k])el.textContent=I18N[lang][k]});
   const tl=document.getElementById('themeLabel');
   if(tl) tl.textContent=document.documentElement.classList.contains('light')?t('theme_dark'):t('theme_light');
+  const topTl=document.getElementById('topThemeLabel');if(topTl)topTl.textContent=document.documentElement.classList.contains('light')?'تم روشن':'تم تاریک';
   const lf=document.getElementById('topLangFa'),le=document.getElementById('topLangEn');
   if(lf)lf.classList.toggle('active',lang==='fa'); if(le)le.classList.toggle('active',lang==='en');
   const nb=document.getElementById('topNotifyBtn'); if(nb){const label=nb.querySelector('.notify-label');if(label)label.textContent=lang==='fa'?'اعلان‌ها':'Notifications';}
@@ -13493,8 +13454,12 @@ function setTheme(mode){
   applyLang();
 }
 function toggleTheme(){
-  const isLight=document.documentElement.classList.contains('light');
-  setTheme(isLight?'dark':'light');
+  let saved={};try{saved=JSON.parse(localStorage.getItem('onex_theme_v2')||'{}')}catch(e){}
+  const next=document.documentElement.classList.contains('light')?'dark':'light';
+  const key=saved.key||localStorage.getItem('onex_theme')||'aurora';
+  if(typeof setOnexThemeMode==='function')setOnexThemeMode(next);
+  else setTheme(next);
+  const label=document.getElementById('topThemeLabel');if(label)label.textContent=next==='light'?'تم روشن':'تم تاریک';
 }
 (function(){const th=localStorage.getItem('px_theme')||'dark';setTheme(th)})();
 
