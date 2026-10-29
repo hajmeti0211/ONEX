@@ -16296,7 +16296,54 @@ h2{font-size:22px;font-weight:900}p{margin-top:10px;color:#a3abc6;font-size:13.5
 a{display:inline-block;margin-top:20px;padding:12px 20px;border-radius:14px;text-decoration:none;font-weight:800;color:#0b0d14;background:linear-gradient(135deg,#38d9ff,#8b5cf6)}
 small{display:block;margin-top:16px;font:500 11px "JetBrains Mono",monospace;color:#6d7594}
 </style></head>
-<body><div class="box"><div class="ic">!</div><h2>خطای داخلی پنل ONEX</h2><p>مشکلی پیش آمد. لطفاً لاگ سرور (Railway) را بررسی کنید و دوباره تلاش کنید.</p><a href="/dashboard">بازگشت به پنل</a><small>ONEX · internal error</small></div></body>
+<body><div class="box"><div class="ic">!</div><h2>خطای داخلی پنل ONEX</h2><p>مشکلی پیش آمد. لطفاً لاگ سرور (Railway) را بررسی کنید و دوباره تلاش کنید.</p><a href="/dashboard">بازگشت به پنل</a><small>ONEX · internal error</small></div>
+<style id="onex-final-dashboard-layout">
+/* Final dashboard layout: header first, theme strip below it, actions below theme. */
+.onex-topbar{
+  height:auto!important;min-height:66px!important;display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  grid-template-areas:"brand server" "actions actions"!important;
+  align-items:center!important;gap:8px!important;padding:8px 12px!important;
+}
+.onex-topbar-brand{grid-area:brand!important;display:flex!important}
+.onex-topbar .top-server{grid-area:server!important;justify-self:end!important}
+.onex-topbar .top-actions{
+  grid-area:actions!important;width:100%!important;display:flex!important;
+  align-items:center!important;justify-content:flex-start!important;gap:8px!important;
+  flex-wrap:wrap!important;padding:7px 8px!important;border:1px solid rgba(var(--accent2-rgb),.16)!important;
+  border-radius:16px!important;background:rgba(var(--accent-rgb),.045)!important;
+}
+.onex-topbar .hexa-swatches{order:1!important;flex:0 0 auto!important}
+.onex-topbar .top-setting-group{order:2!important;flex:0 0 auto!important}
+.onex-topbar .top-notify-wrap{order:3!important;flex:0 0 auto!important}
+.onex-topbar .dashboard-mini-actions{order:4!important;flex:1 1 auto!important;min-width:250px!important;justify-content:flex-end!important}
+.dashboard-mini-actions{display:flex!important;align-items:center!important;gap:6px!important}
+.dashboard-mini-actions button{height:38px!important;min-width:92px!important;padding:4px 9px!important;border:1px solid rgba(var(--accent2-rgb),.25)!important;border-radius:10px!important;background:rgba(var(--accent-rgb),.10)!important;color:var(--t1)!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important;white-space:nowrap!important}
+.dashboard-mini-actions b{font-size:10px!important;line-height:1.2!important}.dashboard-mini-actions small{font:6px "JetBrains Mono"!important;color:var(--t3)!important;letter-spacing:.08em!important}
+@media(max-width:760px){
+  /* The separate mobile header already contains ONEX and the menu button. */
+  .onex-topbar{display:block!important;min-height:0!important;padding:7px 8px!important;margin-bottom:8px!important}
+  .onex-topbar-brand,.onex-topbar .top-server{display:none!important}
+  .onex-topbar .top-actions{display:flex!important;width:100%!important;gap:5px!important;padding:6px!important;justify-content:flex-start!important;flex-wrap:wrap!important}
+  .onex-topbar .hexa-swatches{order:1!important;display:flex!important;gap:4px!important;padding:3px!important;flex:1 1 auto!important;justify-content:center!important;min-width:0!important}
+  .onex-topbar .hexa-swatches button{width:23px!important;height:23px!important;flex:0 0 23px!important}
+  .onex-topbar .top-setting-group{order:2!important;display:flex!important;padding:2px!important;gap:1px!important}
+  .onex-topbar .top-setting-btn{font-size:8px!important;padding:6px 5px!important}
+  .onex-topbar .top-notify-wrap{order:3!important}
+  .onex-topbar .top-notify-btn{width:30px!important;height:30px!important;padding:0!important;justify-content:center!important}
+  .onex-topbar .notify-label{display:none!important}
+  .onex-topbar .dashboard-mini-actions{order:4!important;flex:0 0 100%!important;width:100%!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;justify-content:stretch!important}
+  .onex-topbar .dashboard-mini-actions button{width:100%!important;min-width:0!important;height:35px!important;padding:3px 2px!important;border-radius:9px!important}
+  .onex-topbar .dashboard-mini-actions b{font-size:8px!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .onex-topbar .dashboard-mini-actions small{font-size:5px!important}
+}
+@media(max-width:390px){
+  .onex-topbar .hexa-swatches{gap:2px!important}.onex-topbar .hexa-swatches button{width:20px!important;height:20px!important;flex-basis:20px!important}
+  .onex-topbar .top-setting-btn{font-size:7px!important;padding-inline:4px!important}
+  .onex-topbar .dashboard-mini-actions b{font-size:7px!important}
+}
+</style>
+</body>
 </html>
 """,
         status_code=500,
