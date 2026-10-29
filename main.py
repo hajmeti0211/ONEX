@@ -11099,60 +11099,16 @@ Cache-Control: no-cache"></textarea></div>
 </section>
 
 <style id="onex-edge-guide">
-#page-edge .edge-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 14px}
-#page-edge .edge-step{display:flex;align-items:center;gap:8px;padding:11px 10px;border:1px solid var(--card-b);border-radius:14px;background:rgba(var(--accent-rgb),.04);color:var(--t3);font-size:11px}
-#page-edge .edge-step b{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:rgba(var(--accent-rgb),.15);color:var(--accent2);font-family:"JetBrains Mono",monospace}
-#page-edge .edge-step strong{display:block;color:var(--t1);font-size:12px}
-#page-edge .edge-step small{display:block;margin-top:2px}
-#page-edge .edge-choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0 16px}
-#page-edge .edge-choice label{position:relative;display:block;padding:14px;border:1px solid var(--card-b);border-radius:15px;background:rgba(255,255,255,.03);cursor:pointer;transition:.2s ease}
-#page-edge .edge-choice label:hover{transform:translateY(-2px);border-color:rgba(var(--accent-rgb),.55)}
-#page-edge .edge-choice label:has(input:checked){border-color:var(--accent);background:linear-gradient(135deg,rgba(var(--accent-rgb),.18),rgba(var(--accent2-rgb),.08));box-shadow:0 8px 22px -16px rgba(var(--accent-rgb),.9)}
-#page-edge .edge-choice input{position:absolute;opacity:0}
-#page-edge .edge-choice strong{display:block;color:var(--t1);font-size:13px}.edge-choice small{display:block;color:var(--t3);line-height:1.8;margin-top:4px}
-#page-edge .edge-help{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid rgba(var(--accent-rgb),.2);border-radius:14px;background:rgba(var(--accent-rgb),.06);line-height:1.9;color:var(--t2);font-size:12px;margin-bottom:14px}
-#page-edge .edge-help .edge-help-icon{font-size:18px;line-height:1}
-#page-edge .edge-help a{color:var(--accent2);font-weight:800;text-decoration:none}.edge-help a:hover{text-decoration:underline}
-@media(max-width:640px){#page-edge .edge-steps{grid-template-columns:repeat(2,1fr)}#page-edge .edge-choice{grid-template-columns:1fr}}
+#page-edge .edge-hero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px 0 16px}#page-edge .edge-hero h1{margin:5px 0;font-size:27px}#page-edge .edge-hero p{margin:0;color:var(--t3);line-height:1.8;font-size:12px}.edge-mark{width:74px;height:74px;display:grid;place-items:center;border-radius:22px;background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;box-shadow:0 10px 28px rgba(var(--accent-rgb),.22)}.edge-mark svg{width:39px;height:39px}.edge-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(270px,.55fr);gap:13px}.edge-card{padding:15px;border:1px solid var(--card-b);border-radius:18px;background:rgba(var(--accent-rgb),.035);min-width:0}.edge-card h3{margin:0 0 12px;font-size:16px}.edge-card h3 small{color:var(--t3);font-size:10px;font-weight:500}.edge-status{padding:10px 12px;border-radius:12px;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.18);color:var(--t2);font-size:11px;line-height:1.8;overflow-wrap:anywhere}.edge-status.ok{border-color:rgba(34,197,94,.35);color:#6ee7b7}.edge-status.err{border-color:rgba(244,63,94,.35);color:#fda4af}.edge-token-help{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;margin:10px 0;border-radius:12px;background:rgba(99,102,241,.08);border:1px solid rgba(129,140,248,.22);color:var(--t2);font-size:11px;line-height:1.8}.edge-token-help a{color:var(--accent2);font-weight:800;text-decoration:none}.edge-token-help svg{width:17px;flex:none;color:var(--accent2);margin-top:2px}.edge-choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}.edge-choice label{position:relative;display:block;padding:12px;border:1px solid var(--card-b);border-radius:13px;cursor:pointer}.edge-choice label:has(input:checked){border-color:var(--accent);background:rgba(var(--accent-rgb),.1)}.edge-choice input{position:absolute;opacity:0}.edge-choice strong{display:block;font-size:12px;color:var(--t1)}.edge-choice small{display:block;color:var(--t3);font-size:10px;line-height:1.7;margin-top:4px}.edge-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.edge-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.edge-actions .btn{flex:1;min-width:115px}.edge-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.edge-metric{padding:12px;border-radius:13px;background:var(--bg3);border:1px solid var(--card-b)}.edge-metric span{display:block;color:var(--t3);font-size:10px}.edge-metric b{display:block;margin-top:7px;font-size:21px;color:var(--t1)}.edge-metric b.good{color:#4ade80}.edge-filter{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.edge-filter input{flex:1;min-width:150px}.edge-filter button{white-space:nowrap}.edge-table-wrap{max-height:430px;overflow:auto;border:1px solid var(--card-b);border-radius:12px}.edge-table{min-width:570px}.edge-table-head,.edge-ip-row{display:grid;grid-template-columns:1.7fr .8fr .85fr .7fr 48px;gap:8px;align-items:center;padding:9px 11px}.edge-table-head{position:sticky;top:0;background:var(--bg3);color:var(--t3);font-size:10px;z-index:1}.edge-ip-row{border-top:1px solid var(--card-b);font-size:11px}.edge-ip-row code{direction:ltr;overflow-wrap:anywhere;color:var(--t1)}.edge-ip-row .ms{direction:ltr;color:var(--t2)}.edge-check{width:20px;height:20px;accent-color:var(--accent)}.edge-pill{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:4px 7px;font-size:9px;white-space:nowrap}.edge-pill.ok{color:#4ade80;background:rgba(34,197,94,.1)}.edge-pill.bad{color:#fb7185;background:rgba(244,63,94,.1)}.edge-pill.wait{color:#fbbf24;background:rgba(245,158,11,.1)}.edge-scan-box{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:8px;align-items:end}.edge-scan-box .btn{height:39px}.edge-test-result{margin-top:9px;padding:10px;border-radius:11px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:#86efac;font-size:11px;display:none}.edge-test-result.show{display:block}.edge-apply{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;padding:12px;border-radius:13px;border:1px solid rgba(var(--purple-rgb),.22);background:rgba(var(--purple-rgb),.06)}.edge-apply p{margin:0;color:var(--t3);font-size:11px}.edge-apply b{color:var(--t1)}.edge-manual{display:flex;gap:8px;align-items:center;margin-top:9px}.edge-manual input{flex:1;min-width:0}.edge-muted{color:var(--t3);font-size:10px;line-height:1.7}@media(max-width:800px){#page-edge .edge-hero{align-items:flex-start}.edge-layout{grid-template-columns:1fr}.edge-row,.edge-scan-box{grid-template-columns:1fr}.edge-mark{width:58px;height:58px;border-radius:17px}.edge-mark svg{width:30px;height:30px}.edge-table-wrap{max-height:360px}.edge-actions .btn{flex-basis:45%}}
 </style>
 <section class="page" id="page-edge">
-  <div class="page-head"><div><div class="page-title"><span>Cloudflare Edge</span></div><div class="page-sub">یک مسیر دوم از شبکه‌ی کلودفلر برای کانفیگ‌ها. این راهنما قدم‌به‌قدم می‌گوید چه چیزی لازم است.</div></div></div>
-  <div class="card">
-    <div class="edge-steps">
-      <div class="edge-step"><b>۱</b><span><strong>توکن</strong><small>ساخت API Token</small></span></div>
-      <div class="edge-step"><b>۲</b><span><strong>دامنه</strong><small>Worker یا اختصاصی</small></span></div>
-      <div class="edge-step"><b>۳</b><span><strong>دیپلوی</strong><small>ساخت Edge</small></span></div>
-      <div class="edge-step"><b>۴</b><span><strong>تست</strong><small>ورود به اشتراک</small></span></div>
-    </div>
-    <div class="card-title">۱) اتصال به Cloudflare</div>
-    <div class="edge-help"><span class="edge-help-icon">☁️</span><div>اول از لینک رسمی زیر یک <b>API Token</b> بساز. مجوزهای لازم: <b>Workers Scripts: Edit</b>، <b>Workers Subdomain: Edit</b> و <b>Account: Read</b>. اگر دامنه اختصاصی می‌خواهی، <b>Zone: Read</b> و <b>Workers Domains: Edit</b> هم لازم است.<br><a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener">باز کردن صفحه ساخت API Token در Cloudflare ↗</a></div></div>
-    <div class="page-sub" id="edgeStatus" style="margin-bottom:10px"></div>
-    <div class="form-row">
-      <div class="field"><label>API Token <small>(ذخیره می‌شود و دوباره نمایش داده نمی‌شود)</small></label><input id="edgeToken" type="password" autocomplete="off" placeholder="توکن کلودفلر را اینجا وارد کن"></div>
-      <div class="field"><label>Account ID <small>(اختیاری)</small></label><input id="edgeAccount" dir="ltr" placeholder="خودکار تشخیص داده می‌شود"></div>
-    </div>
-    <div class="card-title" style="margin-top:14px">۲) نوع دامنه Edge</div>
-    <div class="edge-choice">
-      <label><input type="radio" name="edgeMode" value="worker" checked onchange="edgeDomainMode()"><strong>دامنه رایگان Worker</strong><small>پیشنهاد برای شروع. مثل onex-abc.workers.dev، بدون خرید یا تنظیم DNS.</small></label>
-      <label><input type="radio" name="edgeMode" value="custom" onchange="edgeDomainMode()"><strong>دامنه اختصاصی</strong><small>مثل edge.example.com. دامنه باید داخل همین Cloudflare Account باشد.</small></label>
-    </div>
-    <div class="field" id="edgeCustomDomainBox" hidden><label>دامنه اختصاصی</label><input id="edgeDomain" dir="ltr" placeholder="edge.example.com"><div class="scan-hint">قبل از Deploy، این دامنه را در Cloudflare اضافه کن و DNS آن را روی Cloudflare نگه دار.</div></div>
-    <div class="field" style="margin-top:12px"><label>آی‌پی تمیز <small>(اختیاری، حداکثر ۵ تا)</small></label><input id="edgeIps" dir="ltr" placeholder="104.16.0.1, 172.67.1.1"><div class="scan-hint">اگر خالی باشد، لینک‌ها با دامنه Worker ساخته می‌شوند. بعداً می‌توانی IPهای سالم Scanner را اینجا بگذاری.</div></div>
-    <label class="chk" style="margin-top:12px"><input type="checkbox" id="edgeInSub" checked> کپی Edge را داخل همه‌ی اشتراک‌ها بگذار</label>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-      <button class="btn" onclick="edgeSave()">ذخیره تنظیمات</button>
-      <button class="btn btn-p" onclick="edgeDeploy()">۳) دیپلوی Edge</button>
-      <button class="btn" onclick="edgeTest()">۴) تست اتصال</button>
-      <button class="btn" onclick="edgeRemove()">حذف Edge</button>
-    </div>
+  <div class="edge-hero"><div><div class="page-title"><span>ساخت کانفیگ کلودفلر با پنل ONEX</span></div><div class="page-sub">اتصال واقعی به Cloudflare، انتخاب دامنه، اسکن IP و اعمال مستقیم روی اشتراک‌ها.</div></div><div class="edge-mark" aria-label="Cloudflare Edge"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 35h22a8 8 0 0 0 1-16 13 13 0 0 0-24-2 9 9 0 0 0 1 18Z"/><path d="m18 27 5 5 9-10"/></svg></div></div>
+  <div class="edge-layout">
+    <div class="edge-card"><h3>اتصال واقعی به Cloudflare <small>توکن شما فقط روی سرور ذخیره می‌شود</small></h3><div id="edgeStatus" class="edge-status">در حال بررسی اتصال...</div><div class="edge-token-help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg><div>یک API Token بساز و اینجا وارد کن. برای دامنه اختصاصی، مجوزهای <b>Workers Scripts: Edit</b>، <b>Workers Subdomain: Edit</b>، <b>Account: Read</b>، <b>Zone: Read</b> و <b>Workers Domains: Edit</b> لازم است.<br><a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener">بازکردن صفحه ساخت Token در Cloudflare ↗</a></div></div><div class="edge-row"><div class="field"><label>API Token</label><input id="edgeToken" type="password" autocomplete="off" placeholder="توکن Cloudflare"></div><div class="field"><label>Account ID <small>(اختیاری)</small></label><input id="edgeAccount" dir="ltr" placeholder="خودکار تشخیص داده می‌شود"></div></div><div class="edge-actions"><button class="btn" onclick="edgeSave()">ذخیره Token و تنظیمات</button><button class="btn btn-p" onclick="edgeDeploy()">ساخت و Deploy Edge</button><button class="btn" onclick="edgeTest()">تست اتصال</button><button class="btn btn-d" onclick="edgeRemove()">حذف Edge</button></div></div>
+    <div class="edge-card"><h3>وضعیت Edge</h3><div class="edge-metrics"><div class="edge-metric"><span>وضعیت Worker</span><b id="edgeWorkerState">—</b></div><div class="edge-metric"><span>دامنه فعال</span><b id="edgeHostState" style="font-size:12px;overflow-wrap:anywhere">—</b></div><div class="edge-metric"><span>IPهای انتخاب‌شده</span><b id="edgeSelectedCount">0</b></div><div class="edge-metric"><span>اشتراک‌ها</span><b id="edgeSyncedCount">—</b></div></div><div class="field" style="margin-top:12px"><label>نوع دامنه</label><div class="edge-choice"><label><input type="radio" name="edgeMode" value="worker" checked onchange="edgeDomainMode()"><strong>دامنه رایگان Worker</strong><small>ساخت خودکار workers.dev</small></label><label><input type="radio" name="edgeMode" value="custom" onchange="edgeDomainMode()"><strong>دامنه اختصاصی</strong><small>دامنه داخل همین حساب Cloudflare</small></label></div></div><div class="field" id="edgeCustomDomainBox" hidden style="margin-top:9px"><label>دامنه اختصاصی</label><input id="edgeDomain" dir="ltr" placeholder="edge.example.com"></div><label class="chk" style="margin-top:10px"><input type="checkbox" id="edgeInSub" checked> افزودن کانفیگ Edge به اشتراک‌ها</label></div>
   </div>
-  <div class="card">
-    <div class="card-title">اسکنر SNI برای Reality</div>
-    <div class="page-sub">هر دامنه را از سرور تست می‌کنیم: TLS 1.3، پشتیبانی HTTP/2 و سرعت اتصال.</div>
-    <div class="field" style="margin-top:8px"><label>دامنه‌ها (خالی = لیست آماده)</label><textarea id="sniHosts" rows="3" placeholder="www.google.com"></textarea></div>
-    <button class="btn btn-p" onclick="sniScan()">شروع اسکن</button>
-    <div id="sniResults" style="margin-top:12px"></div>
-  </div>
+  <div class="edge-card" style="margin-top:13px"><h3>اسکن و انتخاب IP <small>نتیجه‌ها واقعی هستند و از داخل پنل تست می‌شوند</small></h3><div class="edge-scan-box"><div class="field"><label>تعداد تست</label><select id="edgeScanLimit"><option value="60">۶۰</option><option value="120" selected>۱۲۰</option><option value="500">۵۰۰</option><option value="1000">۱۰۰۰</option><option value="2048">حداکثر</option></select></div><div class="field"><label>SNI</label><input id="edgeScanSni" dir="ltr" value="www.cloudflare.com"></div><button class="btn btn-p" onclick="edgeScan()">شروع اسکن واقعی</button></div><div class="edge-manual"><input id="edgeManualIps" dir="ltr" placeholder="IP دستی برای تست، با کاما جدا کن"><button class="btn" onclick="edgeScanManual()">تست IP دستی</button></div><div id="edgeScanResult" class="edge-test-result"></div></div>
+  <div class="edge-card" style="margin-top:13px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0">لیست کامل نتایج IP</h3><div class="edge-actions" style="margin:0"><button class="btn btn-sm" onclick="edgeSelectAll(true)">انتخاب همه سالم‌ها</button><button class="btn btn-sm" onclick="edgeSelectAll(false)">لغو انتخاب</button><button class="btn btn-sm" onclick="edgeCopyIps()">کپی IPها</button><button class="btn btn-sm btn-d" onclick="edgeClearResults()">پاک‌کردن نتایج</button></div></div><div class="edge-filter"><input id="edgeIpSearch" dir="ltr" placeholder="جست‌وجوی IP یا موقعیت" oninput="edgeRender()"><span id="edgeResultCount" class="edge-muted">۰ نتیجه</span></div><div class="edge-table-wrap"><div class="edge-table"><div class="edge-table-head"><span>IP</span><span>موقعیت</span><span>وضعیت</span><span>سرعت</span><span>انتخاب</span></div><div id="edgeIpRows"><div class="edge-muted" style="padding:22px;text-align:center">هنوز اسکن انجام نشده است.</div></div></div></div><div class="edge-apply"><div><b id="edgeApplyText">۰ IP انتخاب شده</b><p>IPهای انتخابی روی Edge و لینک‌های اشتراک اعمال می‌شوند.</p></div><button class="btn btn-p" onclick="edgeApplySelected()">اعمال روی کانفیگ‌های Cloudflare</button></div></div>
 </section>
 
 <section class="page" id="page-theme">
@@ -15834,37 +15790,30 @@ html.light .sidebar .nav-label{color:inherit!important}
         <div style="display:flex;gap:6px">${x.receipt_file_id?`<a class="btn btn-sm" target="_blank" href="/api/sell/orders/${x.id}/receipt">رسید</a>`:''}${x.status==='pending_review'||x.status==='awaiting_receipt'?`<button class="btn btn-sm btn-p" onclick="sellApprove('${x.id}')">تأیید</button><button class="btn btn-sm" onclick="sellReject('${x.id}')">رد</button>`:''}</div></div>`).join(''):'<div class="page-sub">سفارشی ثبت نشده.</div>';
   }
 
-  // ---- edge
-  window.edgeDomainMode=function(){const custom=document.querySelector('input[name="edgeMode"]:checked')?.value==='custom';const box=document.getElementById('edgeCustomDomainBox');const input=document.getElementById('edgeDomain');if(box)box.hidden=!custom;if(input&&!custom)input.value='';};
+  // ---- Cloudflare Edge: real controls
+  window.__edgeResults=[];window.__edgeSelected=new Set();window.__edgeHasToken=false;
+  window.edgeDomainMode=function(){const custom=document.querySelector('input[name="edgeMode"]:checked')?.value==='custom';const box=document.getElementById('edgeCustomDomainBox');if(box)box.hidden=!custom;};
+  function edgeSetStatus(text,kind=''){const el=document.getElementById('edgeStatus');if(el){el.textContent=text;el.className='edge-status '+kind;}}
+  function edgeEsc(x){return esc2(String(x??''));}
   async function loadEdge(){
-    const e=await j('/api/cfedge'); if(!e)return;
-    window.__edgeHasToken=!!e.has_token;document.getElementById('edgeInSub').checked=e.include_in_sub!==false;
-    document.getElementById('edgeAccount').value=e.account_id||'';
-    document.getElementById('edgeDomain').value=e.custom_domain||'';
-    const custom=!!e.custom_domain;const mode=document.querySelector(`input[name="edgeMode"][value="${custom?'custom':'worker'}"]`);if(mode)mode.checked=true;edgeDomainMode();
-    document.getElementById('edgeIps').value=(e.clean_ips||[]).join(', ');
-    const st=document.getElementById('edgeStatus');
-    st.innerHTML=e.edge_host?`✅ دیپلوی شده: <code>${esc2(e.edge_host)}</code> · ${e.enabled?'فعال':'غیرفعال'} · توکن: ${esc2(e.token_masked||'—')}`:(e.last_error?`⚠️ ${esc2(e.last_error)}`:`هنوز دیپلوی نشده. توکن کلودفلر را وارد و ذخیره کنید.`);
+    const e=await j('/api/cfedge');if(!e)return;window.__edgeHasToken=!!e.has_token;
+    c('edgeInSub',e.include_in_sub!==false);v('edgeAccount',e.account_id||'');v('edgeDomain',e.custom_domain||'');
+    const custom=!!e.custom_domain,mode=document.querySelector(`input[name="edgeMode"][value="${custom?'custom':'worker'}"]`);if(mode)mode.checked=true;edgeDomainMode();
+    const state=document.getElementById('edgeWorkerState'),host=document.getElementById('edgeHostState');if(state)state.textContent=e.enabled?'فعال':'خاموش';if(host)host.textContent=e.edge_host||'—';
+    edgeSetStatus(e.edge_host?`Edge فعال است: ${e.edge_host} · Token: ${e.token_masked||'ثبت شده'}`:(e.last_error||'برای شروع API Token را وارد و ذخیره کن'),e.edge_host?'ok':(e.last_error?'err':''));
   }
-  window.edgeSave=async function(){
-    const mode=document.querySelector('input[name="edgeMode"]:checked')?.value||'worker';
-    const token=v('edgeToken');
-    const custom=mode==='custom'?v('edgeDomain'):'';
-    if(!token && !window.__edgeHasToken){toast('برای اتصال واقعی، API Token را وارد کن');return false;}
-    if(mode==='custom' && !custom){toast('دامنه اختصاصی را وارد کن');return false;}
-    const body={include_in_sub:c('edgeInSub'),account_id:v('edgeAccount'),custom_domain:custom,clean_ips:v('edgeIps')};
-    if(token)body.api_token=token;
-    const r=await j('/api/cfedge/settings','POST',body);
-    if(r){document.getElementById('edgeToken').value='';window.__edgeHasToken=!!r.has_token;toast('تنظیمات واقعی ذخیره شد');loadEdge();} 
-  };
-  window.edgeDeploy=async function(){
-    if(v('edgeToken')||window.__edgeHasToken){const saved=await edgeSave();if(saved===false)return;}else{toast('ابتدا API Token را وارد و ذخیره کن');return;}
-    toast('در حال دیپلوی واقعی روی کلودفلر…');
-    const r=await j('/api/cfedge/deploy','POST');
-    if(r){toast('Edge دیپلوی شد');loadEdge();}
-  };
-  window.edgeTest=async function(){const r=await j('/api/cfedge/test','POST');if(r)toast(r.ok?`✅ جواب داد (${r.ms}ms${r.colo?' · '+r.colo:''})`:('⚠️ '+(r.error||'بدون پاسخ')));};
-  window.edgeRemove=async function(){if(!confirm('Edge روی کلودفلر حذف شود؟'))return;const r=await j('/api/cfedge/remove','POST');if(r){toast('حذف شد');loadEdge();}};
+  window.edgeSave=async function(){const mode=document.querySelector('input[name="edgeMode"]:checked')?.value||'worker',token=v('edgeToken'),domain=mode==='custom'?v('edgeDomain'):'';if(!token&&!window.__edgeHasToken){edgeSetStatus('برای اتصال واقعی API Token لازم است','err');return false}if(mode==='custom'&&!domain){edgeSetStatus('دامنه اختصاصی را وارد کن','err');return false}const body={include_in_sub:c('edgeInSub'),account_id:v('edgeAccount'),custom_domain:domain,clean_ips:[...window.__edgeSelected]};if(token)body.api_token=token;const r=await j('/api/cfedge/settings','POST',body);if(r){document.getElementById('edgeToken').value='';window.__edgeHasToken=!!r.has_token;toast('تنظیمات واقعی ذخیره شد');await loadEdge();return true}return false;};
+  window.edgeDeploy=async function(){if(!await edgeSave())return;toast('در حال ساخت Worker واقعی در Cloudflare…');const r=await j('/api/cfedge/deploy','POST');if(r){toast('Edge واقعی Deploy شد');loadEdge()}};
+  window.edgeTest=async function(){const r=await j('/api/cfedge/test','POST');const out=document.getElementById('edgeScanResult');if(r){const msg=r.ok?`اتصال واقعی موفق است · ${r.ms}ms${r.colo?' · '+r.colo:''}`:(r.error||'اتصال ناموفق');if(out){out.textContent=msg;out.classList.add('show')}toast(msg)}};
+  window.edgeRemove=async function(){if(!confirm('Worker واقعی Cloudflare حذف شود؟'))return;const r=await j('/api/cfedge/remove','POST');if(r){toast('Worker حذف شد');loadEdge()}};
+  function edgeStatusHtml(x){return x.ok?'<span class="edge-pill ok">● سالم</span>':'<span class="edge-pill bad">● خراب</span>'}
+  window.edgeRender=function(){const q=(v('edgeIpSearch')||'').toLowerCase(),rows=(window.__edgeResults||[]).filter(x=>!q||String(x.host||'').toLowerCase().includes(q)||String(x.colo||'').toLowerCase().includes(q));const box=document.getElementById('edgeIpRows');if(!box)return;document.getElementById('edgeResultCount').textContent=`${rows.length} نتیجه از ${(window.__edgeResults||[]).length}`;box.innerHTML=rows.length?rows.map(x=>{const key=String(x.host||'');return `<div class="edge-ip-row"><code>${edgeEsc(key)}</code><span>${edgeEsc(x.colo||'—')}</span>${edgeStatusHtml(x)}<span class="ms">${x.latency_ms!=null?edgeEsc(x.latency_ms)+'ms':'—'}</span><input class="edge-check" type="checkbox" ${window.__edgeSelected.has(key)?'checked':''} onchange="edgeToggle('${edgeEsc(key)}',this.checked)"></div>`}).join(''):'<div class="edge-muted" style="padding:22px;text-align:center">نتیجه‌ای پیدا نشد.</div>';document.getElementById('edgeSelectedCount').textContent=window.__edgeSelected.size;document.getElementById('edgeApplyText').textContent=`${window.__edgeSelected.size} IP انتخاب شده`};
+  window.edgeToggle=function(ip,on){on?window.__edgeSelected.add(ip):window.__edgeSelected.delete(ip);edgeRender()};window.edgeSelectAll=function(on){(window.__edgeResults||[]).filter(x=>on?x.ok:true).forEach(x=>on?window.__edgeSelected.add(String(x.host)):window.__edgeSelected.delete(String(x.host)));edgeRender()};
+  window.edgeScan=async function(){const limit=Number(v('edgeScanLimit')||120),sni=v('edgeScanSni')||'www.cloudflare.com';toast(`در حال اسکن ${limit} IP…`);const r=await j('/api/scanner/edge/scan','POST',{source:'cloudflare',mode:limit>128?'full':'sample',limit,sni,ports:[443]});if(r){window.__edgeResults=r.results||[];window.__edgeSelected=new Set(window.__edgeResults.filter(x=>x.ok).map(x=>String(x.host)));document.getElementById('edgeScanResult').textContent=`اسکن تمام شد · ${r.good} سالم از ${r.count} · SNI: ${sni}`;document.getElementById('edgeScanResult').classList.add('show');edgeRender()}};
+  window.edgeScanManual=async function(){const raw=v('edgeManualIps');const candidates=raw.split(/[\s,]+/).map(x=>x.trim()).filter(Boolean);if(!candidates.length){toast('حداقل یک IP وارد کن');return}const r=await j('/api/scanner/edge/scan','POST',{source:'cloudflare',mode:'sample',limit:candidates.length,candidates,sni:v('edgeScanSni')||'www.cloudflare.com',ports:[443]});if(r){window.__edgeResults=r.results||[];window.__edgeSelected=new Set(window.__edgeResults.filter(x=>x.ok).map(x=>String(x.host)));document.getElementById('edgeScanResult').textContent=`تست دستی تمام شد · ${r.good} سالم از ${r.count}`;document.getElementById('edgeScanResult').classList.add('show');edgeRender()}};
+  window.edgeCopyIps=function(){const ips=[...window.__edgeSelected];if(!ips.length){toast('IPی انتخاب نشده');return}navigator.clipboard?.writeText(ips.join('\n'));toast(`${ips.length} IP کپی شد`)};
+  window.edgeClearResults=async function(){window.__edgeResults=[];window.__edgeSelected.clear();edgeRender();const r=await j('/api/scanner/edge/clear','POST',{source:'cloudflare'});if(r)toast('نتایج پاک شد')};
+  window.edgeApplySelected=async function(){const ips=[...window.__edgeSelected];if(!ips.length){toast('ابتدا IP انتخاب کن');return}const r=await j('/api/scanner/edge/apply','POST',{source:'cloudflare',ips});if(r){document.getElementById('edgeSyncedCount').textContent=r.updated;await j('/api/cfedge/settings','POST',{clean_ips:ips});toast(`${ips.length} IP روی ${r.updated} کانفیگ اعمال شد`)}else{toast('اعمال IPها ناموفق بود')}};
 
   // ---- SNI
   window.sniScan=async function(){
@@ -16049,7 +15998,7 @@ async def edge_scan(request: Request, _=Depends(require_auth)):
     if not targets:
         raise HTTPException(400, "مقصدی برای اسکن پیدا نشد")
     results = await _scan_public_targets(targets, sni=sni, timeout=timeout, concurrency=32)
-    good = [r for r in results if r.get("ok")][:20]
+    good = [r for r in results if r.get("ok")]
     EDGE_SCAN_STATE[source] = good
     EDGE_SCAN_STATE["updated_at"] = datetime.now().isoformat()
     EDGE_SCAN_STATE.setdefault("stats", {})[source] = {
@@ -16089,7 +16038,7 @@ async def edge_scan_apply(request: Request, _=Depends(require_perm("configs"))):
     src = str(body.get("source") or "").lower()
     source = src if src in {"cloudflare", "railway", "domain"} else "cloudflare"
     chosen = body.get("ips") or [x.get("host") for x in EDGE_SCAN_STATE.get(source, []) if x.get("ok")]
-    chosen = list(dict.fromkeys(str(x).strip() for x in chosen if str(x).strip()))[:10]
+    chosen = list(dict.fromkeys(str(x).strip() for x in chosen if str(x).strip()))[:50]
     link_ids = body.get("link_ids") or []
     if not chosen:
         raise HTTPException(400, "ابتدا یک اسکن موفق انجام دهید")
@@ -16106,7 +16055,7 @@ async def edge_scan_apply(request: Request, _=Depends(require_perm("configs"))):
 @app.get("/api/scanner/edge/best")
 async def edge_scan_best(source: str = "cloudflare", _=Depends(require_auth)):
     source = source if source in {"cloudflare", "railway", "domain"} else "cloudflare"
-    return {"ok": True, "source": source, "best": (EDGE_SCAN_STATE.get(source) or [])[:10], "stats": EDGE_SCAN_STATE.get("stats", {}).get(source, {})}
+    return {"ok": True, "source": source, "best": (EDGE_SCAN_STATE.get(source) or [])[:50], "stats": EDGE_SCAN_STATE.get("stats", {}).get(source, {})}
 
 
 async def _resolve_public_hosts(host: str, port: int = 443) -> list[tuple[str, int]]:
