@@ -265,7 +265,7 @@ def extra_uris(uris: list[str]) -> list[str]:
     if not host:
         return []
     limit = int(cfg.get("edge_ip_limit") or 5)
-    limit = max(1, min(10, limit))
+    limit = max(1, min(50, limit))
     addresses = [a for a in (cfg.get("clean_ips") or []) if a][:limit] or [host]
     out: list[str] = []
     for uri in uris:
@@ -286,7 +286,7 @@ async def _sync_clean_ips_to_links(clean_ips: list[str]) -> int:
         async with m.LINKS_LOCK:
             for link in m.LINKS.values():
                 old = list(link.get("clean_ips") or [])
-                merged = list(dict.fromkeys([str(x) for x in clean_ips if str(x).strip()]))[:10]
+                merged = list(dict.fromkeys([str(x) for x in clean_ips if str(x).strip()]))[:50]
                 if merged != old:
                     link["clean_ips"] = merged
                     changed += 1
@@ -308,7 +308,7 @@ def build_router(require_perm) -> APIRouter:
             x = str(x).strip().lower()
             if x and (_IP_RE.match(x) or _HOST_RE.match(x)) and x not in out:
                 out.append(x)
-        return out[:10]
+        return out[:50]
 
     @r.get("")
     async def get_cfg(_=dep):
@@ -334,11 +334,11 @@ def build_router(require_perm) -> APIRouter:
             cfg["include_in_sub"] = bool(body.get("include_in_sub"))
         if "edge_ip_limit" in body:
             try:
-                cfg["edge_ip_limit"] = max(1, min(10, int(body.get("edge_ip_limit") or 5)))
+                cfg["edge_ip_limit"] = max(1, min(50, int(body.get("edge_ip_limit") or 5)))
             except (TypeError, ValueError):
                 raise HTTPException(400, "سقف IP باید ۳، ۵ یا ۱۰ باشد")
-            if cfg["edge_ip_limit"] not in {3, 5, 10}:
-                raise HTTPException(400, "سقف IP باید ۳، ۵ یا ۱۰ باشد")
+            if not 1 <= cfg["edge_ip_limit"] <= 50:
+                raise HTTPException(400, "سقف IP باید بین ۱ تا ۵۰ باشد")
         synced_links = 0
         if "clean_ips" in body:
             cfg["clean_ips"] = _clean_ips(body.get("clean_ips"))
