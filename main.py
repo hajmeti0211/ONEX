@@ -71,7 +71,6 @@ if __name__ == "__main__":
 # Designed by @Mehtif
 # ============================================================
 import asyncio
-from contextlib import asynccontextmanager
 import base64
 import hashlib
 import hmac
@@ -221,33 +220,6 @@ DEPLOY_BRANCH = (os.environ.get("ONEX_DEPLOY_BRANCH", "").strip()
 
 
 # ============================================================
-# FASTAPI LIFESPAN
-# ============================================================
-
-@asynccontextmanager
-async def app_lifespan(application):
-    """Run ONEX startup/shutdown hooks using FastAPI's supported lifespan API."""
-    try:
-        await startup()
-        await start_siderail_core()
-        await start_native_core()
-        await _self_update_mark_healthy()
-        await start_optional_telegram()
-        yield
-    finally:
-        # Stop optional integrations first, but never let their failure prevent
-        # the core state/client cleanup.
-        try:
-            await _tg_stop_bot()
-        except Exception as exc:
-            logger.warning("Telegram shutdown warning: %s", exc)
-        try:
-            await shutdown()
-        except Exception as exc:
-            logger.exception("ONEX shutdown failed: %s", exc)
-
-
-# ============================================================
 # FASTAPI
 # ============================================================
 
@@ -256,7 +228,6 @@ app = FastAPI(
     version=APP_VERSION,
     docs_url=None,
     redoc_url=None,
-    lifespan=app_lifespan,
 )
 
 
@@ -2604,6 +2575,7 @@ async def remove_sub_group(
 # STARTUP
 # ============================================================
 
+@app.on_event("startup")
 async def startup():
 
     global http_client
@@ -2658,6 +2630,7 @@ async def startup():
     )
 
 
+@app.on_event("shutdown")
 async def shutdown():
 
     await save_state()
@@ -7417,6 +7390,7 @@ async def sync_siderail_core():
         return False
 
 
+@app.on_event("startup")
 async def start_siderail_core():
     if SIDERAIL_CORE:
         asyncio.create_task(sync_siderail_core())
@@ -7440,6 +7414,7 @@ async def sync_native_core():
         return False
 
 
+@app.on_event("startup")
 async def start_native_core():
     if NATIVE_CORE:
         asyncio.create_task(sync_native_core())
@@ -8140,6 +8115,7 @@ async def self_update_from_github(remote: dict) -> dict:
         return {"path": str(cur)}
 
 
+@app.on_event("startup")
 async def _self_update_mark_healthy():
     if os.environ.get("ONEX_SELF_UPDATED_BOOT") != "1":
         return
@@ -8884,6 +8860,7 @@ except Exception:
         return None
 
 
+@app.on_event("startup")
 async def start_optional_telegram():
 
     try:
