@@ -10369,13 +10369,15 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
 #page-dash button{font:inherit;color:inherit;cursor:pointer}#page-dash canvas{display:block}#page-dash .mono{font-family:"JetBrains Mono",monospace;direction:ltr}#page-dash .glass{background:linear-gradient(145deg,color-mix(in srgb, rgb(37 37 37 / .88) 88%, var(--accent)),color-mix(in srgb, rgb(15 15 15 / .9) 92%, var(--accent)));border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.06);backdrop-filter:blur(18px);border-radius:22px}#page-dash .badge{margin-inline-start:auto;color:var(--p);font:700 11px "JetBrains Mono"}#page-dash .bars{position:relative;width:20px;height:20px;display:block;margin:auto}#page-dash .bars i{position:absolute;left:1px;right:1px;height:2.5px;border-radius:4px;background:color-mix(in srgb, rgb(18 18 18) 92%, var(--accent));transition:transform .5s var(--ease),opacity .2s}#page-dash .bars i:nth-child(1){top:4px}#page-dash .bars i:nth-child(2){top:9px}#page-dash .bars i:nth-child(3){top:14px}@keyframes spin{to{transform:rotate(360deg)}}#page-dash .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok);flex:none}#page-dash .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:"hero hero chart chart" "dock dock chart chart" "metrics metrics metrics metrics" "health telegram recent recent" "info quick recent recent";gap:16px}#page-dash .area{min-width:0}#page-dash .hero{grid-area:hero;padding:24px;display:flex;flex-direction:column;gap:14px}#page-dash .hero h1{font-size:clamp(25px,3vw,37px);line-height:1.35;margin:0}#page-dash .hero h1 span{color:var(--p)}#page-dash .hero p{margin:0;color:var(--muted);font-size:13px}#page-dash .versions{display:flex;gap:9px;flex-wrap:wrap}#page-dash .version{padding:9px 12px;border:1px solid var(--line);background:rgba(0,0,0,.18);border-radius:11px;font-size:11px;color:var(--muted)}#page-dash .version b{color:var(--text);font:700 12px "JetBrains Mono";direction:ltr;margin-inline-start:5px}#page-dash .alert{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(255,200,87,.35);background:rgba(255,200,87,.08);border-radius:12px;color:var(--muted);font-size:12px}#page-dash .alert b{color:var(--warn)}#page-dash .alert button{margin-inline-start:auto;border:0;background:var(--warn);color:#17120a;border-radius:8px;padding:7px 10px;font-weight:800;font-size:11px}#page-dash .actions{display:flex;gap:9px}#page-dash .primary{border:0!important;background:linear-gradient(135deg,var(--p),var(--s))!important;color:color-mix(in srgb, rgb(18 18 18) 92%, var(--accent))!important;font-weight:900}#page-dash .hero .actions button{padding:11px 15px;border-radius:12px}#page-dash .dock{grid-area:dock;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:10px}#page-dash .dock button{display:flex;align-items:center;gap:10px;text-align:start;padding:13px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.035);transition:transform .25s var(--ease),border-color .2s}#page-dash .dock button:hover{transform:translateY(-3px);border-color:rgba(var(--accent2-rgb),.5)}#page-dash .dock strong{display:block;font-size:12.5px}#page-dash .dock small{display:block;color:var(--dim);font:10px "JetBrains Mono";margin-top:3px}#page-dash .icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:rgba(var(--accent2-rgb),.13);color:var(--p);font-weight:900;flex:none}#page-dash .metrics{grid-area:metrics;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;padding:1px}#page-dash .metric{padding:19px;border-inline-end:1px solid var(--line)}#page-dash .metric:last-child{border:0}#page-dash .metric label{display:block;color:var(--muted);font-size:12px}#page-dash .metric strong{display:block;font:700 25px "JetBrains Mono";direction:ltr;margin-top:8px}#page-dash .metric small{color:var(--dim);font-size:11px}#page-dash .chart{grid-area:chart;padding:20px}#page-dash .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}#page-dash .head h2{font-size:15px;margin:0}#page-dash .range{display:flex;gap:3px;padding:3px;border-radius:9px;background:rgba(0,0,0,.2)}#page-dash .range button{border:0;background:transparent;color:var(--muted);border-radius:7px;padding:6px 8px;font-size:11px}#page-dash .range button.active{background:rgba(var(--accent2-rgb),.18);color:var(--text)}#page-dash #traffic{width:100%;height:230px}#page-dash .health{grid-area:health;padding:20px}#page-dash .rows{display:grid;gap:13px}#page-dash .healthrow{display:grid;grid-template-columns:38px 1fr 40px;gap:10px;align-items:center}#page-dash .healthrow .tag{height:30px;border-radius:9px;background:rgba(var(--accent2-rgb),.1);border:1px solid rgba(var(--accent2-rgb),.25);display:grid;place-items:center;color:var(--p);font:700 10px "JetBrains Mono"}#page-dash .track{height:6px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden}#page-dash .track i{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--p),var(--s));border-radius:inherit}#page-dash .healthrow label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}#page-dash .healthrow b{font:600 11px "JetBrains Mono";direction:ltr}#page-dash .telegram{grid-area:telegram;padding:20px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(circle at 50% 0,rgba(var(--accent2-rgb),.18),transparent 44%),linear-gradient(145deg,color-mix(in srgb, rgb(45 45 45 / .9) 88%, var(--accent)),color-mix(in srgb, rgb(16 16 16 / .95) 92%, var(--accent)))}#page-dash .tgmark{width:82px;height:82px;border-radius:50%;margin:5px auto 16px;display:grid;place-items:center;background:linear-gradient(145deg,var(--accent),var(--accent));box-shadow:0 0 35px rgba(var(--accent-rgb),.5);font-size:35px}#page-dash .telegram h3{text-align:center;font-size:14px;margin:0}#page-dash .telegram p{text-align:center;color:var(--muted);font-size:11px;margin:5px 0 17px}#page-dash .telegram a{display:block;text-align:center;text-decoration:none;color:#fff;background:var(--accent);border-radius:11px;padding:10px;font-size:12px;font-weight:800}#page-dash .recent{grid-area:recent;padding:20px}#page-dash .table{display:grid;gap:0}#page-dash .tr{display:grid;grid-template-columns:1.2fr 1fr 1.2fr 70px 42px;gap:12px;align-items:center;padding:13px 8px;border-bottom:1px solid var(--line);font-size:12px}#page-dash .tr.headrow{color:var(--dim);font-size:10px}#page-dash .tr:last-child{border:0}#page-dash .proto{color:var(--muted);font:11px "JetBrains Mono";direction:ltr}#page-dash .usage .bar{height:5px;background:rgba(255,255,255,.08);border-radius:8px;margin-top:6px;overflow:hidden}#page-dash .usage i{display:block;height:100%;background:var(--p);width:var(--w);border-radius:8px}#page-dash .quick{grid-area:quick;padding:20px}#page-dash .quicklist{display:grid;gap:9px}#page-dash .quickitem{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.03);font-size:12px}#page-dash .quickitem:hover{border-color:rgba(var(--accent2-rgb),.4)}#page-dash .info{grid-area:info;padding:20px}#page-dash .kv{display:grid;grid-template-columns:auto 1fr;gap:11px;font-size:11px}#page-dash .kv dt{color:var(--dim)}#page-dash .kv dd{margin:0;text-align:left;direction:ltr;color:var(--muted);font-family:"JetBrains Mono";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:1150px){#page-dash .grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"hero hero" "dock dock" "metrics metrics" "chart chart" "health telegram" "recent recent" "quick info"}}@media(max-width:800px){#page-dash .open .sidebar{transform:none}#page-dash .grid{grid-template-columns:1fr;grid-template-areas:"hero" "dock" "metrics" "chart" "health" "telegram" "recent" "quick" "info"}#page-dash .metrics{grid-template-columns:1fr 1fr}#page-dash .metric{border-bottom:1px solid var(--line)}#page-dash .dock{grid-template-columns:1fr}#page-dash .picker{display:none}}
 
 <style id="onex-dashboard-cleanup">
-/* Dashboard: one compact top control row, like the login screen. */
-.onex-control-dock,#page-dash .dock,#page-dash .metrics{display:none!important}
+/* Dashboard controls are compact and remain available on every viewport. */
+#page-dash .dock,#page-dash .metrics{display:none!important}
 #page-dash .grid{grid-template-areas:"hero hero chart chart" "health telegram recent recent" "info quick recent recent"}
+.dashboard-mini-actions{display:flex;align-items:center;gap:5px;flex:0 1 auto;min-width:0}
+.dashboard-mini-actions button{height:36px;min-width:64px;padding:3px 7px;border:1px solid rgba(var(--accent2-rgb),.22);border-radius:10px;background:rgba(var(--accent-rgb),.08);color:var(--t1);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px;white-space:nowrap;cursor:pointer}
+.dashboard-mini-actions b{font-size:9px;line-height:1.2}.dashboard-mini-actions small{font:6px "JetBrains Mono";color:var(--t3);letter-spacing:.08em}
 @media(max-width:1150px){#page-dash .grid{grid-template-areas:"hero hero" "chart chart" "health telegram" "recent recent" "quick info"}}
 @media(max-width:800px){#page-dash .grid{grid-template-areas:"hero" "chart" "health" "telegram" "recent" "quick" "info"}}
 @media(max-width:640px){
-  /* Never let the dashboard grid squeeze the hero into a narrow RTL column. */
   #page-dash .grid{display:block!important;width:100%!important}
   #page-dash .grid>section{display:block!important;width:100%!important;min-width:0!important;margin:0 0 8px!important}
   #page-dash .hero{width:100%!important;min-height:0!important;padding:14px!important;display:block!important}
@@ -10385,31 +10387,24 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
   #page-dash .version{padding:7px 8px!important;font-size:9px!important}
   #page-dash .chart,#page-dash .health,#page-dash .telegram,#page-dash .recent,#page-dash .quick,#page-dash .info{padding:12px!important}
 
-  /* Keep every top-bar item visible and compact on one line. */
-  .onex-topbar{height:58px!important;min-height:58px!important;max-height:58px!important;display:flex!important;flex-wrap:nowrap!important;gap:5px!important;padding:6px 7px!important;overflow:visible!important}
-  .onex-topbar-brand{display:flex!important;min-width:0!important;width:auto!important;flex:0 0 auto!important;height:42px!important;padding:3px 7px!important;gap:5px!important}
-  .onex-topbar-mark{width:30px!important;height:30px!important;flex-basis:30px!important}
-  .onex-topbar-copy .onex-brand-word{font-size:14px!important;letter-spacing:.02em!important}
-  .onex-topbar-copy .brand-vpn{font-size:7px!important;margin-inline-start:4px!important}
-  .top-server{order:2!important;flex:1 1 auto!important;min-width:0!important;gap:3px!important;overflow:hidden!important;white-space:nowrap!important}
-  .top-server b{font-size:8px!important;overflow:hidden;text-overflow:ellipsis!important}
-  .top-server small{display:none!important}.top-sep{display:none!important}
-  .top-actions{order:3!important;display:flex!important;align-items:center!important;gap:3px!important;flex:0 0 auto!important;min-width:0!important}
-  .hexa-swatches{display:flex!important;gap:3px!important;padding:3px!important;max-width:none!important;overflow:visible!important;flex-wrap:nowrap!important}
-  .hexa-swatches button{width:20px!important;height:20px!important;flex:0 0 20px!important}
-  .top-setting-group{display:flex!important;gap:1px!important;padding:2px!important;border-radius:7px!important}
-  .top-setting-btn{padding:5px 4px!important;font-size:7px!important;border-radius:5px!important}
-  .top-notify-wrap{display:block!important;flex:0 0 auto!important}
-  .top-notify-btn{width:28px!important;height:28px!important;padding:0!important;justify-content:center!important;border-radius:8px!important}
-  .top-notify-btn .notify-label{display:none!important}.notify-bell{font-size:12px!important}
+  /* Header layout matches the login page: compact palette + language + alerts. */
+  .onex-topbar{height:auto!important;min-height:96px!important;max-height:none!important;display:grid!important;grid-template-columns:1fr auto!important;grid-template-areas:"server actions" "mini mini"!important;gap:6px!important;padding:7px!important;overflow:visible!important}
+  .onex-topbar-brand{display:none!important}
+  .top-server{grid-area:server!important;order:1!important;align-self:center!important;min-width:0!important;gap:4px!important;overflow:hidden!important;white-space:nowrap!important}
+  .top-server b{font-size:9px!important;overflow:hidden;text-overflow:ellipsis!important}.top-server small{display:none!important}.top-sep{display:none!important}
+  .top-actions{grid-area:actions!important;order:2!important;display:flex!important;align-items:center!important;gap:4px!important;min-width:0!important}
+  .hexa-swatches{display:flex!important;gap:4px!important;padding:3px!important;max-width:none!important;overflow:visible!important;flex-wrap:nowrap!important}
+  .hexa-swatches button{width:22px!important;height:22px!important;flex:0 0 22px!important}
+  .top-setting-group{display:flex!important;gap:1px!important;padding:2px!important;border-radius:8px!important}
+  .top-setting-btn{padding:6px 5px!important;font-size:8px!important;border-radius:6px!important}
+  .top-notify-wrap{display:block!important;flex:0 0 auto!important}.top-notify-btn{width:30px!important;height:30px!important;padding:0!important;justify-content:center!important;border-radius:8px!important}
+  .top-notify-btn .notify-label{display:none!important}.notify-bell{font-size:13px!important}
+  .dashboard-mini-actions{grid-area:mini!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;width:100%!important}
+  .dashboard-mini-actions button{height:34px!important;min-width:0!important;padding:3px 2px!important;border-radius:9px!important}
+  .dashboard-mini-actions b{font-size:8px!important;overflow:hidden;text-overflow:ellipsis;max-width:100%}.dashboard-mini-actions small{font-size:5px!important}
   .top-notify-panel{right:0!important;top:calc(100% + 7px)!important;width:270px!important;max-width:calc(100vw - 16px)!important}
 }
-@media(max-width:390px){
-  .onex-topbar-brand{padding-inline:4px!important}.onex-topbar-mark{width:27px!important;height:27px!important;flex-basis:27px!important}
-  .onex-topbar-copy .onex-brand-word{font-size:12px!important}.onex-topbar-copy .brand-vpn{display:none!important}
-  .hexa-swatches button{width:17px!important;height:17px!important;flex-basis:17px!important}
-  .top-setting-btn{padding-inline:3px!important;font-size:6px!important}
-}
+@media(max-width:390px){.hexa-swatches{gap:2px!important}.hexa-swatches button{width:19px!important;height:19px!important;flex-basis:19px!important}.top-setting-btn{padding-inline:4px!important;font-size:7px!important}.dashboard-mini-actions b{font-size:7px!important}}
 </style>
 </head>
 <body>
@@ -10527,6 +10522,11 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
         <div class="notify-panel-head"><b id="notifyPanelTitle">اعلان‌ها</b><button type="button" onclick="toggleNotifications(false)">×</button></div>
         <div id="notifyList" class="notify-list"><div class="notify-empty">اعلان جدیدی وجود ندارد.</div></div>
       </div>
+    </div>
+    <div class="dashboard-mini-actions" aria-label="Dashboard controls">
+      <button type="button" onclick="toggleTheme()"><b id="dashThemeText">تم روشن</b><small>THEME</small></button>
+      <button type="button" onclick="homeRefresh(true)"><b data-i18n="refresh_stats">بروزرسانی آمار</b><small>STATS</small></button>
+      <button type="button" onclick="panelUpdate()"><b data-i18n="refresh_panel">بروزرسانی پنل</b><small>UPDATE</small></button>
     </div>
   </div>
 </div>
@@ -13493,8 +13493,9 @@ function applyLang(){
   document.getElementById('htmlRoot').dir=lang==='fa'?'rtl':'ltr';
   document.body.classList.toggle('en',lang==='en');
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(I18N[lang][k])el.textContent=I18N[lang][k]});
-  const tl=document.getElementById('themeLabel');
-  if(tl) tl.textContent=document.documentElement.classList.contains('light')?t('theme_dark'):t('theme_light');
+  const themeText=document.documentElement.classList.contains('light')?t('theme_dark'):t('theme_light');
+  const tl=document.getElementById('themeLabel'); if(tl) tl.textContent=themeText;
+  const dt=document.getElementById('dashThemeText'); if(dt) dt.textContent=themeText;
   const lf=document.getElementById('topLangFa'),le=document.getElementById('topLangEn');
   if(lf)lf.classList.toggle('active',lang==='fa'); if(le)le.classList.toggle('active',lang==='en');
   const nb=document.getElementById('topNotifyBtn'); if(nb){const label=nb.querySelector('.notify-label');if(label)label.textContent=lang==='fa'?'اعلان‌ها':'Notifications';}
@@ -15021,7 +15022,7 @@ window.addEventListener('storage',e=>{if(e.key==='onex_theme_v2')loadOnexTheme()
         if(dead)parts.push(fa()?`<b>${dead} کانفیگ</b> منقضی/تمام‌شده`:`<b>${dead}</b> expired / depleted`);
         at.innerHTML=parts.join(' · ');al.dataset.mode=exp?'expiring':'expired';}
     }
-    const tl=$('homeThemeLbl');if(tl)tl.textContent=document.documentElement.classList.contains('light')?t('theme_dark'):t('theme_light');
+    const dt=$('dashThemeText');if(dt)dt.textContent=document.documentElement.classList.contains('light')?t('theme_dark'):t('theme_light');
   }
   function renderMetrics(){
     const s=H.stats||{};
