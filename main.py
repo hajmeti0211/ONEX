@@ -3118,6 +3118,23 @@ html.light .update-prompt-modal{background:#fff;border-color:rgba(37,99,235,.16)
   .onex-3d-control .control-title{font-size:8px!important}
 }
 </style>
+
+<style id="onex-remove-dashboard-color-picker">
+/* The dashboard color picker is intentionally removed. Keep language and notifications. */
+#hexaSwatches{display:none!important}
+@media(max-width:640px){
+  .onex-topbar .top-actions{
+    grid-column:1/-1!important;
+    display:flex!important;
+    justify-content:flex-end!important;
+    align-items:center!important;
+    gap:7px!important;
+    padding-top:6px!important;
+  }
+  .onex-topbar .top-setting-group{margin-inline-start:auto!important}
+  .onex-topbar .top-notify-wrap{flex:0 0 auto!important}
+}
+</style>
 </head>
 
 <body>
@@ -10530,13 +10547,6 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
   </div>
   <div class="top-server"><span class="top-dot"></span><b>سرور آنلاین</b><span class="top-sep"></span><small id="topHost">—</small><span class="top-sep"></span><small id="topUptime">Uptime: —</small></div>
   <div class="top-actions">
-    <div class="hexa-swatches" id="hexaSwatches" aria-label="رنگ‌بندی داشبورد">
-      <button type="button" data-p="#38d9ff" data-s="#8b5cf6" class="active" aria-label="Aurora"></button>
-      <button type="button" data-p="#d4f24a" data-s="#ffb84d" aria-label="Lime"></button>
-      <button type="button" data-p="#ff3d8b" data-s="#ff8a3d" aria-label="Rose"></button>
-      <button type="button" data-p="#34f5a0" data-s="#22c1ee" aria-label="Emerald"></button>
-      <button type="button" data-p="#b57bff" data-s="#ff5ecf" aria-label="Violet"></button>
-    </div>
     <div class="top-setting-group" aria-label="Language controls">
       <button type="button" class="top-setting-btn" id="topLangFa" onclick="setLang('fa')">فارسی</button>
       <button type="button" class="top-setting-btn" id="topLangEn" onclick="setLang('en')">EN</button>
