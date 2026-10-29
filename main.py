@@ -9801,9 +9801,51 @@ html.light #page-logs .logs-detail-head>button{background:#fff}
   .hero-title{font-size:22px}.hero-kicker{font-size:8px}.version-mini-card{min-width:104px;min-height:44px;padding:5px}.version-mini-copy b{font-size:6.5px}.version-mini-copy strong{font-size:10px}.dashboard-hero .hero-actions{width:100%;justify-content:stretch}.hero-actions .btn{flex:1;font-size:9px}
   .onex-metric{min-height:100px;padding:9px}.onex-metric .metric-label{font-size:8px}.onex-metric .metric-val{font-size:18px}
   .card{padding:12px}.card-title{font-size:10px}.quick-grid{grid-template-columns:1fr}
+
   .table-wrap table{min-width:560px}
 }
 
+/* ONEX mobile corrective pass: prevent legacy desktop scaling from
+   shrinking controls and keep dashboard/Edge content fully reachable. */
+@media (max-width:640px){
+  html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+  .main,.main.expanded{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important}
+  .page,#page-edge{width:100%!important;max-width:100%!important;min-width:0!important}
+  .dashboard-hero{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"hero" "version" "actions"!important;align-items:stretch!important}
+  .dashboard-hero .hero-main{grid-area:hero;min-width:0}
+  .hero-version-strip{grid-area:version;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .version-mini-card{min-width:0!important;width:100%}
+  .dashboard-hero .hero-actions{grid-area:actions;display:flex!important;flex-wrap:wrap;gap:8px}
+  .dashboard-hero .hero-actions .btn{flex:1 1 135px;min-width:0;white-space:normal}
+  .onex-topbar,.onex-control-dock,.dashboard-grid,.onex-metrics,.metrics{min-width:0!important;width:100%!important}
+  .onex-control-dock{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .onex-3d-control{min-width:0!important}
+  .edge-layout{grid-template-columns:minmax(0,1fr)!important}
+  #page-edge .edge-card{width:100%;min-width:0;padding:13px}
+  #page-edge .edge-hero{align-items:center;gap:10px;flex-wrap:wrap}
+  #page-edge .edge-hero>div:first-child{flex:1 1 220px;min-width:0}
+  #page-edge .edge-hero .page-title{font-size:clamp(17px,4.5vw,22px)}
+  #page-edge .edge-row,#page-edge .edge-scan-box{grid-template-columns:minmax(0,1fr)!important}
+  #page-edge .edge-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  #page-edge .edge-actions .btn{width:100%;min-width:0;flex:auto;white-space:normal}
+  #page-edge .edge-filter{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
+  #page-edge .edge-filter input{grid-column:1/-1;width:100%!important;min-width:0!important;max-width:100%;min-height:46px;font-size:16px}
+  #page-edge .edge-filter button{grid-column:2;grid-row:2;min-width:92px}\n  #page-edge .edge-filter span{grid-column:1;grid-row:2;text-align:right}
+  #page-edge .edge-manual{display:grid;grid-template-columns:minmax(0,1fr);width:100%}
+  #page-edge .edge-manual input{width:100%;min-width:0;min-height:46px;font-size:16px}
+  #page-edge .edge-manual .btn{width:100%}
+  #page-edge .edge-table-wrap{width:100%;max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch}
+  #page-edge .edge-table{min-width:540px}
+  #page-edge .edge-apply{align-items:stretch;flex-direction:column}
+  #page-edge .edge-apply .btn{width:100%;white-space:normal}
+  #page-edge .edge-sni-grid{grid-template-columns:minmax(0,1fr)!important}
+  #page-edge .edge-sni-grid textarea{width:100%;min-width:0;font-size:16px}
+  #page-edge .edge-sni-side{width:100%;min-width:0}
+}
+@media (max-width:380px){
+  .hero-version-strip{grid-template-columns:1fr!important}
+  #page-edge .edge-actions{grid-template-columns:1fr}
+}
 
 /* ============================================================
    ONEX 3D NAV ICONS — polished animated icon set
@@ -11144,7 +11186,7 @@ Cache-Control: no-cache"></textarea></div>
     <div class="edge-card"><h3>وضعیت Edge</h3><div class="edge-metrics"><div class="edge-metric"><span>وضعیت Worker</span><b id="edgeWorkerState">—</b></div><div class="edge-metric"><span>دامنه فعال</span><b id="edgeHostState" style="font-size:12px;overflow-wrap:anywhere">—</b></div><div class="edge-metric"><span>IPهای انتخاب‌شده</span><b id="edgeSelectedCount">0</b></div><div class="edge-metric"><span>اشتراک‌ها</span><b id="edgeSyncedCount">—</b></div></div><div class="field" style="margin-top:12px"><label>نوع دامنه</label><div class="edge-choice"><label><input type="radio" name="edgeMode" value="worker" checked onchange="edgeDomainMode()"><strong>دامنه رایگان Worker</strong><small>ساخت خودکار workers.dev</small></label><label><input type="radio" name="edgeMode" value="custom" onchange="edgeDomainMode()"><strong>دامنه اختصاصی</strong><small>دامنه داخل همین حساب Cloudflare</small></label></div></div><div class="field" id="edgeCustomDomainBox" hidden style="margin-top:9px"><label>دامنه اختصاصی</label><input id="edgeDomain" dir="ltr" placeholder="edge.example.com"></div><label class="chk" style="margin-top:10px"><input type="checkbox" id="edgeInSub" checked> افزودن کانفیگ Edge به اشتراک‌ها</label></div>
   </div>
   <div class="edge-card" style="margin-top:13px"><h3>اسکن و انتخاب IP <small>نتیجه‌ها واقعی هستند و از داخل پنل تست می‌شوند</small></h3><div class="edge-scan-box"><div class="field"><label>تعداد تست</label><select id="edgeScanLimit"><option value="60">۶۰</option><option value="120" selected>۱۲۰</option><option value="500">۵۰۰</option><option value="1000">۱۰۰۰</option><option value="2048">حداکثر</option></select></div><div class="field"><label>SNI</label><input id="edgeScanSni" dir="ltr" value="www.cloudflare.com"></div><button class="btn btn-p" onclick="edgeScan()">شروع اسکن واقعی</button></div><div class="edge-manual"><input id="edgeManualIps" dir="ltr" placeholder="IP دستی برای تست، با کاما جدا کن"><button class="btn" onclick="edgeScanManual()">تست IP دستی</button></div><div id="edgeScanResult" class="edge-test-result"></div></div>
-  <div class="edge-card" style="margin-top:13px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0">لیست کامل نتایج IP</h3><div class="edge-actions" style="margin:0"><button class="btn btn-sm" onclick="edgeSelectAll(true)">انتخاب همه سالم‌ها</button><button class="btn btn-sm" onclick="edgeSelectAll(false)">لغو انتخاب</button><button class="btn btn-sm" onclick="edgeCopyIps()">کپی IPها</button><button class="btn btn-sm btn-d" onclick="edgeClearResults()">پاک‌کردن نتایج</button></div></div><div class="edge-filter"><input id="edgeIpSearch" dir="ltr" placeholder="جست‌وجوی IP یا موقعیت" oninput="edgeRender()"><span id="edgeResultCount" class="edge-muted">۰ نتیجه</span></div><div class="edge-table-wrap"><div class="edge-table"><div class="edge-table-head"><span>IP</span><span>موقعیت</span><span>وضعیت</span><span>سرعت</span><span>انتخاب</span></div><div id="edgeIpRows"><div class="edge-muted" style="padding:22px;text-align:center">هنوز اسکن انجام نشده است.</div></div></div></div><div class="edge-apply"><div><b id="edgeApplyText">۰ IP انتخاب شده</b><p>IPهای انتخابی روی Edge و لینک‌های اشتراک اعمال می‌شوند.</p></div><button class="btn btn-p" onclick="edgeApplySelected()">اعمال روی کانفیگ‌های Cloudflare</button></div></div>
+  <div class="edge-card" style="margin-top:13px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0">لیست کامل نتایج IP</h3><div class="edge-actions" style="margin:0"><button class="btn btn-sm" onclick="edgeSelectAll(true)">انتخاب همه سالم‌ها</button><button class="btn btn-sm" onclick="edgeSelectAll(false)">لغو انتخاب</button><button class="btn btn-sm" onclick="edgeCopyIps()">کپی IPها</button><button class="btn btn-sm btn-d" onclick="edgeClearResults()">پاک‌کردن نتایج</button></div></div><div class="edge-filter"><input id="edgeIpSearch" dir="ltr" placeholder="جست‌وجوی IP یا موقعیت" oninput="edgeRender()"><button class="btn btn-sm" type="button" onclick="edgeRender()">جست‌وجو</button><span id="edgeResultCount" class="edge-muted">۰ نتیجه</span></div><div class="edge-table-wrap"><div class="edge-table"><div class="edge-table-head"><span>IP</span><span>موقعیت</span><span>وضعیت</span><span>سرعت</span><span>انتخاب</span></div><div id="edgeIpRows"><div class="edge-muted" style="padding:22px;text-align:center">هنوز اسکن انجام نشده است.</div></div></div></div><div class="edge-apply"><div><b id="edgeApplyText">۰ IP انتخاب شده</b><p>IPهای انتخابی روی Edge و لینک‌های اشتراک اعمال می‌شوند.</p></div><button class="btn btn-p" onclick="edgeApplySelected()">اعمال روی کانفیگ‌های Cloudflare</button></div></div>
   <div class="edge-card edge-sni-card" style="margin-top:13px"><div class="edge-sni-head"><div><h3 style="margin:0">اسکنر SNI برای Reality</h3><p class="edge-muted">دامنه‌ها را از نظر TLS 1.3، HTTP/2 و سرعت اتصال بررسی کن. نتیجه‌ها برای انتخاب Handshake مناسب قابل کپی هستند.</p></div><span class="edge-sni-badge">TLS / H2</span></div><div class="edge-sni-grid"><div class="field"><label>لیست دامنه‌ها</label><textarea id="sniHosts" rows="4" dir="ltr" placeholder="www.cloudflare.com
 www.google.com
 cloudflare.com"></textarea></div><div class="edge-sni-side"><label>تنظیمات تست</label><div class="edge-sni-info"><span>پروتکل</span><b>TLS 1.3 + HTTP/2</b></div><div class="edge-sni-info"><span>هدف</span><b>Reality Handshake</b></div><button class="btn btn-p" onclick="sniScan()">شروع اسکن SNI</button></div></div><div class="edge-sni-actions"><button class="btn btn-sm" onclick="sniFillDefaults()">لیست پیشنهادی</button><button class="btn btn-sm" onclick="sniCopyGood()">کپی دامنه‌های سالم</button><span id="sniResultsSummary" class="edge-muted"></span></div><div id="sniResults" class="edge-sni-results"><div class="edge-muted" style="padding:14px;text-align:center">هنوز تست SNI انجام نشده است.</div></div></div>
