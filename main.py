@@ -4078,7 +4078,8 @@ async def create_auto_link(
 # ============================================================
 
 @app.get("/api/protocols")
-async def api_protocols(request: Request, _token=Depends(require_auth)):
+async def api_protocols(request: Request):
+    require_auth(request)
     native_ready = bool(NATIVE_CORE and getattr(NATIVE_CORE, "is_runtime_ready", lambda: False)())
     return {
         "protocols": [{"id": p, "label": PROTOCOL_LABELS.get(p, p), "backend": "native" if p in getattr(NATIVE_CORE, "SUPPORTED", ()) else "panel"} for p in PROTOCOLS],
@@ -9800,52 +9801,9 @@ html.light #page-logs .logs-detail-head>button{background:#fff}
   .hero-title{font-size:22px}.hero-kicker{font-size:8px}.version-mini-card{min-width:104px;min-height:44px;padding:5px}.version-mini-copy b{font-size:6.5px}.version-mini-copy strong{font-size:10px}.dashboard-hero .hero-actions{width:100%;justify-content:stretch}.hero-actions .btn{flex:1;font-size:9px}
   .onex-metric{min-height:100px;padding:9px}.onex-metric .metric-label{font-size:8px}.onex-metric .metric-val{font-size:18px}
   .card{padding:12px}.card-title{font-size:10px}.quick-grid{grid-template-columns:1fr}
-
   .table-wrap table{min-width:560px}
 }
 
-/* ONEX mobile corrective pass: prevent legacy desktop scaling from
-   shrinking controls and keep dashboard/Edge content fully reachable. */
-@media (max-width:640px){
-  html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
-  .main,.main.expanded{width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important}
-  .page,#page-edge{width:100%!important;max-width:100%!important;min-width:0!important}
-  .dashboard-hero{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-areas:"hero" "version" "actions"!important;align-items:stretch!important}
-  .dashboard-hero .hero-main{grid-area:hero;min-width:0}
-  .hero-version-strip{grid-area:version;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-  .version-mini-card{min-width:0!important;width:100%}
-  .dashboard-hero .hero-actions{grid-area:actions;display:flex!important;flex-wrap:wrap;gap:8px}
-  .dashboard-hero .hero-actions .btn{flex:1 1 135px;min-width:0;white-space:normal}
-  .onex-topbar,.onex-control-dock,.dashboard-grid,.onex-metrics,.metrics{min-width:0!important;width:100%!important}
-  .onex-control-dock{grid-template-columns:repeat(3,minmax(0,1fr))!important}
-  .onex-3d-control{min-width:0!important}
-  .edge-layout{grid-template-columns:minmax(0,1fr)!important}
-  #page-edge .edge-card{width:100%;min-width:0;padding:13px}
-  #page-edge .edge-hero{align-items:center;gap:10px;flex-wrap:wrap}
-  #page-edge .edge-hero>div:first-child{flex:1 1 220px;min-width:0}
-  #page-edge .edge-hero .page-title{font-size:clamp(17px,4.5vw,22px)}
-  #page-edge .edge-row,#page-edge .edge-scan-box{grid-template-columns:minmax(0,1fr)!important}
-  #page-edge .edge-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
-  #page-edge .edge-actions .btn{width:100%;min-width:0;flex:auto;white-space:normal}
-  #page-edge .edge-filter{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px}
-  #page-edge .edge-filter input{grid-column:1/-1;width:100%!important;min-width:0!important;max-width:100%;min-height:46px;font-size:16px}
-  #page-edge .edge-filter button{grid-column:2;grid-row:2;min-width:92px}
-  #page-edge .edge-filter span{grid-column:1;grid-row:2;text-align:right}
-  #page-edge .edge-manual{display:grid;grid-template-columns:minmax(0,1fr);width:100%}
-  #page-edge .edge-manual input{width:100%;min-width:0;min-height:46px;font-size:16px}
-  #page-edge .edge-manual .btn{width:100%}
-  #page-edge .edge-table-wrap{width:100%;max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch}
-  #page-edge .edge-table{min-width:540px}
-  #page-edge .edge-apply{align-items:stretch;flex-direction:column}
-  #page-edge .edge-apply .btn{width:100%;white-space:normal}
-  #page-edge .edge-sni-grid{grid-template-columns:minmax(0,1fr)!important}
-  #page-edge .edge-sni-grid textarea{width:100%;min-width:0;font-size:16px}
-  #page-edge .edge-sni-side{width:100%;min-width:0}
-}
-@media (max-width:380px){
-  .hero-version-strip{grid-template-columns:1fr!important}
-  #page-edge .edge-actions{grid-template-columns:1fr}
-}
 
 /* ============================================================
    ONEX 3D NAV ICONS — polished animated icon set
@@ -10410,42 +10368,6 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
 #page-dash{--bg:#070a12;--surface:color-mix(in srgb, rgb(23 23 23) 92%, var(--accent));--surface2:color-mix(in srgb, rgb(34 34 34) 88%, var(--accent));--line:rgba(var(--accent2-rgb),.16);--text:#eff7ff;--muted:color-mix(in srgb, rgb(175 175 175) 82%, var(--accent));--dim:color-mix(in srgb, rgb(125 125 125) 82%, var(--accent));--p:#38d9ff;--s:#8b5cf6;--ok:#48e39d;--warn:#ffc857;--bad:var(--accent2);--sb:272px;--ease:cubic-bezier(.16,1,.3,1)}
 #page-dash button{font:inherit;color:inherit;cursor:pointer}#page-dash canvas{display:block}#page-dash .mono{font-family:"JetBrains Mono",monospace;direction:ltr}#page-dash .glass{background:linear-gradient(145deg,color-mix(in srgb, rgb(37 37 37 / .88) 88%, var(--accent)),color-mix(in srgb, rgb(15 15 15 / .9) 92%, var(--accent)));border:1px solid var(--line);box-shadow:0 18px 50px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.06);backdrop-filter:blur(18px);border-radius:22px}#page-dash .badge{margin-inline-start:auto;color:var(--p);font:700 11px "JetBrains Mono"}#page-dash .bars{position:relative;width:20px;height:20px;display:block;margin:auto}#page-dash .bars i{position:absolute;left:1px;right:1px;height:2.5px;border-radius:4px;background:color-mix(in srgb, rgb(18 18 18) 92%, var(--accent));transition:transform .5s var(--ease),opacity .2s}#page-dash .bars i:nth-child(1){top:4px}#page-dash .bars i:nth-child(2){top:9px}#page-dash .bars i:nth-child(3){top:14px}@keyframes spin{to{transform:rotate(360deg)}}#page-dash .dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 12px var(--ok);flex:none}#page-dash .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-areas:"hero hero chart chart" "dock dock chart chart" "metrics metrics metrics metrics" "health telegram recent recent" "info quick recent recent";gap:16px}#page-dash .area{min-width:0}#page-dash .hero{grid-area:hero;padding:24px;display:flex;flex-direction:column;gap:14px}#page-dash .hero h1{font-size:clamp(25px,3vw,37px);line-height:1.35;margin:0}#page-dash .hero h1 span{color:var(--p)}#page-dash .hero p{margin:0;color:var(--muted);font-size:13px}#page-dash .versions{display:flex;gap:9px;flex-wrap:wrap}#page-dash .version{padding:9px 12px;border:1px solid var(--line);background:rgba(0,0,0,.18);border-radius:11px;font-size:11px;color:var(--muted)}#page-dash .version b{color:var(--text);font:700 12px "JetBrains Mono";direction:ltr;margin-inline-start:5px}#page-dash .alert{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid rgba(255,200,87,.35);background:rgba(255,200,87,.08);border-radius:12px;color:var(--muted);font-size:12px}#page-dash .alert b{color:var(--warn)}#page-dash .alert button{margin-inline-start:auto;border:0;background:var(--warn);color:#17120a;border-radius:8px;padding:7px 10px;font-weight:800;font-size:11px}#page-dash .actions{display:flex;gap:9px}#page-dash .primary{border:0!important;background:linear-gradient(135deg,var(--p),var(--s))!important;color:color-mix(in srgb, rgb(18 18 18) 92%, var(--accent))!important;font-weight:900}#page-dash .hero .actions button{padding:11px 15px;border-radius:12px}#page-dash .dock{grid-area:dock;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:10px}#page-dash .dock button{display:flex;align-items:center;gap:10px;text-align:start;padding:13px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.035);transition:transform .25s var(--ease),border-color .2s}#page-dash .dock button:hover{transform:translateY(-3px);border-color:rgba(var(--accent2-rgb),.5)}#page-dash .dock strong{display:block;font-size:12.5px}#page-dash .dock small{display:block;color:var(--dim);font:10px "JetBrains Mono";margin-top:3px}#page-dash .icon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:rgba(var(--accent2-rgb),.13);color:var(--p);font-weight:900;flex:none}#page-dash .metrics{grid-area:metrics;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;padding:1px}#page-dash .metric{padding:19px;border-inline-end:1px solid var(--line)}#page-dash .metric:last-child{border:0}#page-dash .metric label{display:block;color:var(--muted);font-size:12px}#page-dash .metric strong{display:block;font:700 25px "JetBrains Mono";direction:ltr;margin-top:8px}#page-dash .metric small{color:var(--dim);font-size:11px}#page-dash .chart{grid-area:chart;padding:20px}#page-dash .head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}#page-dash .head h2{font-size:15px;margin:0}#page-dash .range{display:flex;gap:3px;padding:3px;border-radius:9px;background:rgba(0,0,0,.2)}#page-dash .range button{border:0;background:transparent;color:var(--muted);border-radius:7px;padding:6px 8px;font-size:11px}#page-dash .range button.active{background:rgba(var(--accent2-rgb),.18);color:var(--text)}#page-dash #traffic{width:100%;height:230px}#page-dash .health{grid-area:health;padding:20px}#page-dash .rows{display:grid;gap:13px}#page-dash .healthrow{display:grid;grid-template-columns:38px 1fr 40px;gap:10px;align-items:center}#page-dash .healthrow .tag{height:30px;border-radius:9px;background:rgba(var(--accent2-rgb),.1);border:1px solid rgba(var(--accent2-rgb),.25);display:grid;place-items:center;color:var(--p);font:700 10px "JetBrains Mono"}#page-dash .track{height:6px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden}#page-dash .track i{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--p),var(--s));border-radius:inherit}#page-dash .healthrow label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}#page-dash .healthrow b{font:600 11px "JetBrains Mono";direction:ltr}#page-dash .telegram{grid-area:telegram;padding:20px;display:flex;flex-direction:column;justify-content:space-between;background:radial-gradient(circle at 50% 0,rgba(var(--accent2-rgb),.18),transparent 44%),linear-gradient(145deg,color-mix(in srgb, rgb(45 45 45 / .9) 88%, var(--accent)),color-mix(in srgb, rgb(16 16 16 / .95) 92%, var(--accent)))}#page-dash .tgmark{width:82px;height:82px;border-radius:50%;margin:5px auto 16px;display:grid;place-items:center;background:linear-gradient(145deg,var(--accent),var(--accent));box-shadow:0 0 35px rgba(var(--accent-rgb),.5);font-size:35px}#page-dash .telegram h3{text-align:center;font-size:14px;margin:0}#page-dash .telegram p{text-align:center;color:var(--muted);font-size:11px;margin:5px 0 17px}#page-dash .telegram a{display:block;text-align:center;text-decoration:none;color:#fff;background:var(--accent);border-radius:11px;padding:10px;font-size:12px;font-weight:800}#page-dash .recent{grid-area:recent;padding:20px}#page-dash .table{display:grid;gap:0}#page-dash .tr{display:grid;grid-template-columns:1.2fr 1fr 1.2fr 70px 42px;gap:12px;align-items:center;padding:13px 8px;border-bottom:1px solid var(--line);font-size:12px}#page-dash .tr.headrow{color:var(--dim);font-size:10px}#page-dash .tr:last-child{border:0}#page-dash .proto{color:var(--muted);font:11px "JetBrains Mono";direction:ltr}#page-dash .usage .bar{height:5px;background:rgba(255,255,255,.08);border-radius:8px;margin-top:6px;overflow:hidden}#page-dash .usage i{display:block;height:100%;background:var(--p);width:var(--w);border-radius:8px}#page-dash .quick{grid-area:quick;padding:20px}#page-dash .quicklist{display:grid;gap:9px}#page-dash .quickitem{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.03);font-size:12px}#page-dash .quickitem:hover{border-color:rgba(var(--accent2-rgb),.4)}#page-dash .info{grid-area:info;padding:20px}#page-dash .kv{display:grid;grid-template-columns:auto 1fr;gap:11px;font-size:11px}#page-dash .kv dt{color:var(--dim)}#page-dash .kv dd{margin:0;text-align:left;direction:ltr;color:var(--muted);font-family:"JetBrains Mono";overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:1150px){#page-dash .grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"hero hero" "dock dock" "metrics metrics" "chart chart" "health telegram" "recent recent" "quick info"}}@media(max-width:800px){#page-dash .open .sidebar{transform:none}#page-dash .grid{grid-template-columns:1fr;grid-template-areas:"hero" "dock" "metrics" "chart" "health" "telegram" "recent" "quick" "info"}#page-dash .metrics{grid-template-columns:1fr 1fr}#page-dash .metric{border-bottom:1px solid var(--line)}#page-dash .dock{grid-template-columns:1fr}#page-dash .picker{display:none}}
 
-/* ONEX mobile dashboard header cleanup: prevent crowded/overlapping controls. */
-@media (max-width: 640px){
-  .mob-bar{height:58px!important;padding:0 14px!important;gap:10px!important}
-  .mob-brand.onex-approved-mobile{flex:1!important;min-width:0!important;justify-content:center!important}
-  .mob-status{flex:0 0 auto!important;font-size:10px!important;white-space:nowrap!important}
-  .mob-menu-btn{flex:0 0 42px!important;width:42px!important;height:42px!important}
-  .main{padding:72px 12px 36px!important;margin:0!important;min-width:0!important}
-  .onex-topbar{height:auto!important;min-height:0!important;display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:0 0 10px!important;padding:9px!important;border-radius:16px!important}
-  .onex-topbar-brand{display:none!important}
-  .top-server{order:0!important;flex:1 1 100%!important;min-width:0!important;justify-content:center!important;gap:6px!important;font-size:10px!important;white-space:normal!important;flex-wrap:wrap!important}
-  .top-actions{order:1!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-wrap:wrap!important;width:100%!important;gap:8px!important;min-width:0!important}
-  .hexa-swatches{display:flex!important;align-items:center!important;justify-content:center!important;flex:1 1 100%!important;gap:clamp(9px,3vw,16px)!important;padding:5px 4px!important;min-width:0!important}
-  .hexa-swatches button{width:clamp(30px,8.5vw,42px)!important;height:clamp(30px,8.5vw,42px)!important;flex:0 0 auto!important}
-  .top-setting-group{flex:0 0 auto!important;justify-content:center!important}
-  .top-setting-btn{min-width:48px!important;padding:7px 9px!important;font-size:11px!important}
-  .top-notify-wrap{flex:0 0 auto!important}
-  .onex-control-dock{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;margin:0 0 12px!important;padding:7px!important;border-radius:17px!important;width:100%!important;min-width:0!important}
-  .onex-3d-control{display:flex!important;min-width:0!important;min-height:76px!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:5px!important;padding:8px 4px!important;text-align:center!important;border-radius:13px!important}
-  .onex-3d-control .control-icon{width:28px!important;height:28px!important;flex:0 0 28px!important}
-  .onex-3d-control .control-title{font-size:clamp(8px,2.5vw,10px)!important;line-height:1.45!important;white-space:normal!important;overflow-wrap:anywhere!important}
-  .onex-3d-control .control-sub{font-size:7px!important;line-height:1.2!important;white-space:normal!important}
-  #page-dash .dashboard-hero{grid-template-columns:minmax(0,1fr) 94px!important;gap:8px!important;padding:16px!important;border-radius:20px!important}
-  #page-dash .dashboard-hero .hero-main{min-width:0!important}
-  #page-dash .dashboard-hero h1{font-size:clamp(20px,5.4vw,27px)!important;line-height:1.55!important;overflow-wrap:anywhere!important}
-  #page-dash .dashboard-hero .hero-version-strip{min-width:0!important;width:94px!important}
-  #page-dash .version-mini-card{min-width:0!important;width:100%!important;padding:6px 5px!important}
-}
-@media (max-width:380px){
-  .main{padding-left:9px!important;padding-right:9px!important}
-  .top-server small{font-size:8px!important}
-  .onex-control-dock{gap:5px!important;padding:5px!important}
-  .onex-3d-control{min-height:70px!important;padding:6px 2px!important}
-  .onex-3d-control .control-title{font-size:8px!important}
-  #page-dash .dashboard-hero{grid-template-columns:minmax(0,1fr) 84px!important;padding:13px!important}
-  #page-dash .dashboard-hero .hero-version-strip{width:84px!important}
-}
 </style>
 </head>
 <body>
@@ -11186,7 +11108,7 @@ Cache-Control: no-cache"></textarea></div>
     <div class="edge-card"><h3>وضعیت Edge</h3><div class="edge-metrics"><div class="edge-metric"><span>وضعیت Worker</span><b id="edgeWorkerState">—</b></div><div class="edge-metric"><span>دامنه فعال</span><b id="edgeHostState" style="font-size:12px;overflow-wrap:anywhere">—</b></div><div class="edge-metric"><span>IPهای انتخاب‌شده</span><b id="edgeSelectedCount">0</b></div><div class="edge-metric"><span>اشتراک‌ها</span><b id="edgeSyncedCount">—</b></div></div><div class="field" style="margin-top:12px"><label>نوع دامنه</label><div class="edge-choice"><label><input type="radio" name="edgeMode" value="worker" checked onchange="edgeDomainMode()"><strong>دامنه رایگان Worker</strong><small>ساخت خودکار workers.dev</small></label><label><input type="radio" name="edgeMode" value="custom" onchange="edgeDomainMode()"><strong>دامنه اختصاصی</strong><small>دامنه داخل همین حساب Cloudflare</small></label></div></div><div class="field" id="edgeCustomDomainBox" hidden style="margin-top:9px"><label>دامنه اختصاصی</label><input id="edgeDomain" dir="ltr" placeholder="edge.example.com"></div><label class="chk" style="margin-top:10px"><input type="checkbox" id="edgeInSub" checked> افزودن کانفیگ Edge به اشتراک‌ها</label></div>
   </div>
   <div class="edge-card" style="margin-top:13px"><h3>اسکن و انتخاب IP <small>نتیجه‌ها واقعی هستند و از داخل پنل تست می‌شوند</small></h3><div class="edge-scan-box"><div class="field"><label>تعداد تست</label><select id="edgeScanLimit"><option value="60">۶۰</option><option value="120" selected>۱۲۰</option><option value="500">۵۰۰</option><option value="1000">۱۰۰۰</option><option value="2048">حداکثر</option></select></div><div class="field"><label>SNI</label><input id="edgeScanSni" dir="ltr" value="www.cloudflare.com"></div><button class="btn btn-p" onclick="edgeScan()">شروع اسکن واقعی</button></div><div class="edge-manual"><input id="edgeManualIps" dir="ltr" placeholder="IP دستی برای تست، با کاما جدا کن"><button class="btn" onclick="edgeScanManual()">تست IP دستی</button></div><div id="edgeScanResult" class="edge-test-result"></div></div>
-  <div class="edge-card" style="margin-top:13px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0">لیست کامل نتایج IP</h3><div class="edge-actions" style="margin:0"><button class="btn btn-sm" onclick="edgeSelectAll(true)">انتخاب همه سالم‌ها</button><button class="btn btn-sm" onclick="edgeSelectAll(false)">لغو انتخاب</button><button class="btn btn-sm" onclick="edgeCopyIps()">کپی IPها</button><button class="btn btn-sm btn-d" onclick="edgeClearResults()">پاک‌کردن نتایج</button></div></div><div class="edge-filter"><input id="edgeIpSearch" dir="ltr" placeholder="جست‌وجوی IP یا موقعیت" oninput="edgeRender()"><button class="btn btn-sm" type="button" onclick="edgeRender()">جست‌وجو</button><span id="edgeResultCount" class="edge-muted">۰ نتیجه</span></div><div class="edge-table-wrap"><div class="edge-table"><div class="edge-table-head"><span>IP</span><span>موقعیت</span><span>وضعیت</span><span>سرعت</span><span>انتخاب</span></div><div id="edgeIpRows"><div class="edge-muted" style="padding:22px;text-align:center">هنوز اسکن انجام نشده است.</div></div></div></div><div class="edge-apply"><div><b id="edgeApplyText">۰ IP انتخاب شده</b><p>IPهای انتخابی روی Edge و لینک‌های اشتراک اعمال می‌شوند.</p></div><button class="btn btn-p" onclick="edgeApplySelected()">اعمال روی کانفیگ‌های Cloudflare</button></div></div>
+  <div class="edge-card" style="margin-top:13px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0">لیست کامل نتایج IP</h3><div class="edge-actions" style="margin:0"><button class="btn btn-sm" onclick="edgeSelectAll(true)">انتخاب همه سالم‌ها</button><button class="btn btn-sm" onclick="edgeSelectAll(false)">لغو انتخاب</button><button class="btn btn-sm" onclick="edgeCopyIps()">کپی IPها</button><button class="btn btn-sm btn-d" onclick="edgeClearResults()">پاک‌کردن نتایج</button></div></div><div class="edge-filter"><input id="edgeIpSearch" dir="ltr" placeholder="جست‌وجوی IP یا موقعیت" oninput="edgeRender()"><span id="edgeResultCount" class="edge-muted">۰ نتیجه</span></div><div class="edge-table-wrap"><div class="edge-table"><div class="edge-table-head"><span>IP</span><span>موقعیت</span><span>وضعیت</span><span>سرعت</span><span>انتخاب</span></div><div id="edgeIpRows"><div class="edge-muted" style="padding:22px;text-align:center">هنوز اسکن انجام نشده است.</div></div></div></div><div class="edge-apply"><div><b id="edgeApplyText">۰ IP انتخاب شده</b><p>IPهای انتخابی روی Edge و لینک‌های اشتراک اعمال می‌شوند.</p></div><button class="btn btn-p" onclick="edgeApplySelected()">اعمال روی کانفیگ‌های Cloudflare</button></div></div>
   <div class="edge-card edge-sni-card" style="margin-top:13px"><div class="edge-sni-head"><div><h3 style="margin:0">اسکنر SNI برای Reality</h3><p class="edge-muted">دامنه‌ها را از نظر TLS 1.3، HTTP/2 و سرعت اتصال بررسی کن. نتیجه‌ها برای انتخاب Handshake مناسب قابل کپی هستند.</p></div><span class="edge-sni-badge">TLS / H2</span></div><div class="edge-sni-grid"><div class="field"><label>لیست دامنه‌ها</label><textarea id="sniHosts" rows="4" dir="ltr" placeholder="www.cloudflare.com
 www.google.com
 cloudflare.com"></textarea></div><div class="edge-sni-side"><label>تنظیمات تست</label><div class="edge-sni-info"><span>پروتکل</span><b>TLS 1.3 + HTTP/2</b></div><div class="edge-sni-info"><span>هدف</span><b>Reality Handshake</b></div><button class="btn btn-p" onclick="sniScan()">شروع اسکن SNI</button></div></div><div class="edge-sni-actions"><button class="btn btn-sm" onclick="sniFillDefaults()">لیست پیشنهادی</button><button class="btn btn-sm" onclick="sniCopyGood()">کپی دامنه‌های سالم</button><span id="sniResultsSummary" class="edge-muted"></span></div><div id="sniResults" class="edge-sni-results"><div class="edge-muted" style="padding:14px;text-align:center">هنوز تست SNI انجام نشده است.</div></div></div>
