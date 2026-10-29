@@ -83,7 +83,6 @@ import secrets
 import socket
 import string
 import time
-from contextlib import asynccontextmanager
 from collections import defaultdict, deque
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -114,13 +113,7 @@ from onex.deploy import public_endpoint_candidates
 # ============================================================
 
 APP_NAME = "ONEX"
-try:
-    _version_metadata = json.loads(
-        (Path(__file__).resolve().parent / "version.json").read_text(encoding="utf-8")
-    )
-    APP_VERSION = str(_version_metadata.get("version") or "1.4.2")
-except Exception:
-    APP_VERSION = "1.4.2"
+APP_VERSION = "1.4.2"
 
 SUPPORT_USERNAME = "@V2rayTun0"
 SUPPORT_URL = "https://t.me/V2rayTun0"
@@ -230,27 +223,11 @@ DEPLOY_BRANCH = (os.environ.get("ONEX_DEPLOY_BRANCH", "").strip()
 # FASTAPI
 # ============================================================
 
-@asynccontextmanager
-async def lifespan(_app):
-    """Run all application startup/shutdown hooks without deprecated on_event APIs."""
-    await startup()
-    await start_siderail_core()
-    await start_native_core()
-    await _self_update_mark_healthy()
-    await start_optional_telegram()
-    try:
-        yield
-    finally:
-        await _tg_stop_bot()
-        await shutdown()
-
-
 app = FastAPI(
     title=APP_NAME,
     version=APP_VERSION,
     docs_url=None,
     redoc_url=None,
-    lifespan=lifespan,
 )
 
 
@@ -2598,6 +2575,7 @@ async def remove_sub_group(
 # STARTUP
 # ============================================================
 
+@app.on_event("startup")
 async def startup():
 
     global http_client
@@ -2652,6 +2630,7 @@ async def startup():
     )
 
 
+@app.on_event("shutdown")
 async def shutdown():
 
     await save_state()
@@ -3075,6 +3054,68 @@ html.light .update-prompt-modal{background:#fff;border-color:rgba(37,99,235,.16)
 .mob-brand-text{display:none!important;}
 @media(max-width:380px){
   .mob-brand-icon{width:118px!important;height:48px!important;flex-basis:118px!important;}
+}
+</style>
+<style id="onex-dashboard-mobile-final-fix">
+@media (max-width:640px){
+  html,body{overflow-x:hidden!important}
+  .main{min-width:0!important;width:auto!important}
+  .onex-topbar{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-rows:auto auto!important;
+    align-items:center!important;
+    height:auto!important;
+    min-height:58px!important;
+    gap:8px!important;
+    padding:8px 10px!important;
+    overflow:visible!important;
+  }
+  .onex-topbar-brand{min-width:0!important;grid-column:1!important;grid-row:1!important}
+  .top-server{grid-column:2!important;grid-row:1!important;max-width:42vw!important;justify-self:end!important}
+  .top-actions{
+    grid-column:1/-1!important;grid-row:2!important;
+    width:100%!important;min-width:0!important;
+    display:flex!important;align-items:center!important;justify-content:space-between!important;
+    gap:5px!important;padding-top:6px!important;
+    border-top:1px solid rgba(var(--accent-rgb),.16)!important;
+  }
+  .hexa-swatches{
+    display:flex!important;align-items:center!important;justify-content:center!important;
+    flex:1 1 auto!important;min-width:0!important;gap:clamp(5px,2vw,9px)!important;
+    padding:5px 6px!important;overflow:visible!important;
+  }
+  .hexa-swatches button{width:clamp(28px,8vw,38px)!important;height:clamp(28px,8vw,38px)!important;flex:0 0 auto!important}
+  .top-setting-group{display:flex!important;flex:0 0 auto!important}
+  .top-setting-btn{min-width:42px!important;min-height:36px!important;padding:6px 8px!important;font-size:10px!important}
+  .top-notify-wrap{flex:0 0 auto!important}
+  .top-notify-btn{min-width:40px!important;min-height:36px!important;padding:7px 8px!important}
+  .top-notify-btn .notify-label{display:none!important}
+  .onex-control-dock{
+    position:relative!important;z-index:1!important;
+    display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    width:100%!important;min-width:0!important;height:auto!important;
+    margin:10px 0 12px!important;padding:7px!important;gap:7px!important;
+    overflow:visible!important;
+  }
+  .onex-3d-control{display:flex!important;min-width:0!important;min-height:72px!important;padding:8px 5px!important;gap:5px!important;overflow:hidden!important}
+  .onex-3d-control .control-icon{width:30px!important;height:30px!important;flex:0 0 30px!important}
+  .onex-3d-control .control-copy{min-width:0!important;overflow:hidden!important}
+  .onex-3d-control .control-title{font-size:9px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .onex-3d-control .control-sub{font-size:6px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #page-dash{min-width:0!important;width:100%!important}
+}
+@media (max-width:390px){
+  .onex-topbar-brand .onex-brand-word{font-size:17px!important}
+  .top-server b{font-size:8px!important}
+  .top-server small,.top-sep{display:none!important}
+  .hexa-swatches{gap:4px!important;padding-inline:2px!important}
+  .hexa-swatches button{width:27px!important;height:27px!important}
+  .top-setting-btn{min-width:38px!important;padding-inline:5px!important}
+  .onex-control-dock{gap:5px!important;padding:5px!important}
+  .onex-3d-control{min-height:64px!important;padding-inline:3px!important}
+  .onex-3d-control .control-icon{width:25px!important;height:25px!important;flex-basis:25px!important}
+  .onex-3d-control .control-title{font-size:8px!important}
 }
 </style>
 </head>
@@ -4099,7 +4140,8 @@ async def create_auto_link(
 # ============================================================
 
 @app.get("/api/protocols")
-async def api_protocols(request: Request, _=Depends(require_auth)):
+async def api_protocols(request: Request):
+    require_auth(request)
     native_ready = bool(NATIVE_CORE and getattr(NATIVE_CORE, "is_runtime_ready", lambda: False)())
     return {
         "protocols": [{"id": p, "label": PROTOCOL_LABELS.get(p, p), "backend": "native" if p in getattr(NATIVE_CORE, "SUPPORTED", ()) else "panel"} for p in PROTOCOLS],
@@ -7411,6 +7453,7 @@ async def sync_siderail_core():
         return False
 
 
+@app.on_event("startup")
 async def start_siderail_core():
     if SIDERAIL_CORE:
         asyncio.create_task(sync_siderail_core())
@@ -7434,6 +7477,7 @@ async def sync_native_core():
         return False
 
 
+@app.on_event("startup")
 async def start_native_core():
     if NATIVE_CORE:
         asyncio.create_task(sync_native_core())
@@ -7704,12 +7748,6 @@ try:
     app.include_router(_scan_mod.build_router(require_perm))
 except Exception as exc:
     logger.warning("Scanner integration unavailable: %s", exc)
-try:
-    from onex.integrations import pools as _pools_mod
-    app.include_router(_pools_mod.build_router(require_perm))
-    logger.info("IP/Proxy pools routes loaded")
-except Exception as exc:
-    logger.warning("IP/Proxy pools unavailable (copy onex/integrations/pools.py): %s", exc)
 
 
 if "vless-httpupgrade" not in PROTOCOLS and "vless-ws" in PROTOCOLS:
@@ -8140,6 +8178,7 @@ async def self_update_from_github(remote: dict) -> dict:
         return {"path": str(cur)}
 
 
+@app.on_event("startup")
 async def _self_update_mark_healthy():
     if os.environ.get("ONEX_SELF_UPDATED_BOOT") != "1":
         return
@@ -8884,6 +8923,7 @@ except Exception:
         return None
 
 
+@app.on_event("startup")
 async def start_optional_telegram():
 
     try:
@@ -11121,85 +11161,26 @@ Cache-Control: no-cache"></textarea></div>
 </section>
 
 <style id="onex-edge-guide">
-#page-edge .edge-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 14px}
-#page-edge .edge-step{display:flex;align-items:center;gap:8px;padding:11px 10px;border:1px solid var(--card-b);border-radius:14px;background:rgba(var(--accent-rgb),.04);color:var(--t3);font-size:11px}
-#page-edge .edge-step b{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:rgba(var(--accent-rgb),.15);color:var(--accent2);font-family:"JetBrains Mono",monospace}
-#page-edge .edge-step strong{display:block;color:var(--t1);font-size:12px}
-#page-edge .edge-step small{display:block;margin-top:2px}
-#page-edge .edge-choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0 16px}
-#page-edge .edge-choice label{position:relative;display:block;padding:14px;border:1px solid var(--card-b);border-radius:15px;background:rgba(255,255,255,.03);cursor:pointer;transition:.2s ease}
-#page-edge .edge-choice label:hover{transform:translateY(-2px);border-color:rgba(var(--accent-rgb),.55)}
-#page-edge .edge-choice label:has(input:checked){border-color:var(--accent);background:linear-gradient(135deg,rgba(var(--accent-rgb),.18),rgba(var(--accent2-rgb),.08));box-shadow:0 8px 22px -16px rgba(var(--accent-rgb),.9)}
-#page-edge .edge-choice input{position:absolute;opacity:0}
-#page-edge .edge-choice strong{display:block;color:var(--t1);font-size:13px}.edge-choice small{display:block;color:var(--t3);line-height:1.8;margin-top:4px}
-#page-edge .edge-help{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1px solid rgba(var(--accent-rgb),.2);border-radius:14px;background:rgba(var(--accent-rgb),.06);line-height:1.9;color:var(--t2);font-size:12px;margin-bottom:14px}
-#page-edge .edge-help .edge-help-icon{font-size:18px;line-height:1}
-#page-edge .edge-help a{color:var(--accent2);font-weight:800;text-decoration:none}.edge-help a:hover{text-decoration:underline}
-@media(max-width:640px){#page-edge .edge-steps{grid-template-columns:repeat(2,1fr)}#page-edge .edge-choice{grid-template-columns:1fr}}
+#page-edge .edge-hero{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:18px 0 16px}#page-edge .edge-hero h1{margin:5px 0;font-size:27px}#page-edge .edge-hero p{margin:0;color:var(--t3);line-height:1.8;font-size:12px}.edge-mark{width:74px;height:74px;display:grid;place-items:center;border-radius:22px;background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;box-shadow:0 10px 28px rgba(var(--accent-rgb),.22)}.edge-mark svg{width:39px;height:39px}.edge-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(270px,.55fr);gap:13px}.edge-card{padding:15px;border:1px solid var(--card-b);border-radius:18px;background:rgba(var(--accent-rgb),.035);min-width:0}.edge-card h3{margin:0 0 12px;font-size:16px}.edge-card h3 small{color:var(--t3);font-size:10px;font-weight:500}.edge-status{padding:10px 12px;border-radius:12px;background:rgba(var(--accent-rgb),.07);border:1px solid rgba(var(--accent-rgb),.18);color:var(--t2);font-size:11px;line-height:1.8;overflow-wrap:anywhere}.edge-status.ok{border-color:rgba(34,197,94,.35);color:#6ee7b7}.edge-status.err{border-color:rgba(244,63,94,.35);color:#fda4af}.edge-token-help{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;margin:10px 0;border-radius:12px;background:rgba(99,102,241,.08);border:1px solid rgba(129,140,248,.22);color:var(--t2);font-size:11px;line-height:1.8}.edge-token-help a{color:var(--accent2);font-weight:800;text-decoration:none}.edge-token-help svg{width:17px;flex:none;color:var(--accent2);margin-top:2px}.edge-choice{display:grid;grid-template-columns:1fr 1fr;gap:8px}.edge-choice label{position:relative;display:block;padding:12px;border:1px solid var(--card-b);border-radius:13px;cursor:pointer}.edge-choice label:has(input:checked){border-color:var(--accent);background:rgba(var(--accent-rgb),.1)}.edge-choice input{position:absolute;opacity:0}.edge-choice strong{display:block;font-size:12px;color:var(--t1)}.edge-choice small{display:block;color:var(--t3);font-size:10px;line-height:1.7;margin-top:4px}.edge-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.edge-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.edge-actions .btn{flex:1;min-width:115px}.edge-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.edge-metric{padding:12px;border-radius:13px;background:var(--bg3);border:1px solid var(--card-b)}.edge-metric span{display:block;color:var(--t3);font-size:10px}.edge-metric b{display:block;margin-top:7px;font-size:21px;color:var(--t1)}.edge-metric b.good{color:#4ade80}.edge-filter{display:flex;align-items:center;gap:8px;margin:10px 0;flex-wrap:wrap}.edge-filter input{flex:1;min-width:150px}.edge-filter button{white-space:nowrap}.edge-table-wrap{max-height:430px;overflow:auto;border:1px solid var(--card-b);border-radius:12px}.edge-table{min-width:570px}.edge-table-head,.edge-ip-row{display:grid;grid-template-columns:1.7fr .8fr .85fr .7fr 48px;gap:8px;align-items:center;padding:9px 11px}.edge-table-head{position:sticky;top:0;background:var(--bg3);color:var(--t3);font-size:10px;z-index:1}.edge-ip-row{border-top:1px solid var(--card-b);font-size:11px}.edge-ip-row code{direction:ltr;overflow-wrap:anywhere;color:var(--t1)}.edge-ip-row .ms{direction:ltr;color:var(--t2)}.edge-check{width:20px;height:20px;accent-color:var(--accent)}.edge-pill{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:4px 7px;font-size:9px;white-space:nowrap}.edge-pill.ok{color:#4ade80;background:rgba(34,197,94,.1)}.edge-pill.bad{color:#fb7185;background:rgba(244,63,94,.1)}.edge-pill.wait{color:#fbbf24;background:rgba(245,158,11,.1)}.edge-scan-box{display:grid;grid-template-columns:1.3fr .7fr .7fr;gap:8px;align-items:end}.edge-scan-box .btn{height:39px}.edge-test-result{margin-top:9px;padding:10px;border-radius:11px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:#86efac;font-size:11px;display:none}.edge-test-result.show{display:block}.edge-apply{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;padding:12px;border-radius:13px;border:1px solid rgba(var(--purple-rgb),.22);background:rgba(var(--purple-rgb),.06)}.edge-apply p{margin:0;color:var(--t3);font-size:11px}.edge-apply b{color:var(--t1)}.edge-manual{display:flex;gap:8px;align-items:center;margin-top:9px}.edge-manual input{flex:1;min-width:0}.edge-muted{color:var(--t3);font-size:10px;line-height:1.7}@media(max-width:800px){#page-edge .edge-hero{align-items:flex-start}.edge-layout{grid-template-columns:1fr}.edge-row,.edge-scan-box{grid-template-columns:1fr}.edge-mark{width:58px;height:58px;border-radius:17px}.edge-mark svg{width:30px;height:30px}.edge-table-wrap{max-height:360px}.edge-actions .btn{flex-basis:45%}}
 </style>
 <section class="page" id="page-edge">
-  <div class="page-head"><div><div class="page-title"><span>Cloudflare Edge</span></div><div class="page-sub">یک مسیر دوم از شبکه‌ی کلودفلر برای کانفیگ‌ها. این راهنما قدم‌به‌قدم می‌گوید چه چیزی لازم است.</div></div></div>
-  <div class="card">
-    <div class="edge-steps">
-      <div class="edge-step"><b>۱</b><span><strong>توکن</strong><small>ساخت API Token</small></span></div>
-      <div class="edge-step"><b>۲</b><span><strong>دامنه</strong><small>Worker یا اختصاصی</small></span></div>
-      <div class="edge-step"><b>۳</b><span><strong>دیپلوی</strong><small>ساخت Edge</small></span></div>
-      <div class="edge-step"><b>۴</b><span><strong>تست</strong><small>ورود به اشتراک</small></span></div>
-    </div>
-    <div class="card-title">۱) اتصال به Cloudflare</div>
-    <div class="edge-help"><span class="edge-help-icon">☁️</span><div>اول از لینک رسمی زیر یک <b>API Token</b> بساز. مجوزهای لازم: <b>Workers Scripts: Edit</b>، <b>Workers Subdomain: Edit</b> و <b>Account: Read</b>. اگر دامنه اختصاصی می‌خواهی، <b>Zone: Read</b> و <b>Workers Domains: Edit</b> هم لازم است.<br><a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener">باز کردن صفحه ساخت API Token در Cloudflare ↗</a></div></div>
-    <div class="page-sub" id="edgeStatus" style="margin-bottom:10px"></div>
-    <div class="form-row">
-      <div class="field"><label>API Token <small>(ذخیره می‌شود و دوباره نمایش داده نمی‌شود)</small></label><input id="edgeToken" type="password" autocomplete="off" placeholder="توکن کلودفلر را اینجا وارد کن"></div>
-      <div class="field"><label>Account ID <small>(اختیاری)</small></label><input id="edgeAccount" dir="ltr" placeholder="خودکار تشخیص داده می‌شود"></div>
-    </div>
-    <div class="card-title" style="margin-top:14px">۲) نوع دامنه Edge</div>
-    <div class="edge-choice">
-      <label><input type="radio" name="edgeMode" value="worker" checked onchange="edgeDomainMode()"><strong>دامنه رایگان Worker</strong><small>پیشنهاد برای شروع. مثل onex-abc.workers.dev، بدون خرید یا تنظیم DNS.</small></label>
-      <label><input type="radio" name="edgeMode" value="custom" onchange="edgeDomainMode()"><strong>دامنه اختصاصی</strong><small>مثل edge.example.com. دامنه باید داخل همین Cloudflare Account باشد.</small></label>
-    </div>
-    <div class="field" id="edgeCustomDomainBox" hidden><label>دامنه اختصاصی</label><input id="edgeDomain" dir="ltr" placeholder="edge.example.com"><div class="scan-hint">قبل از Deploy، این دامنه را در Cloudflare اضافه کن و DNS آن را روی Cloudflare نگه دار.</div></div>
-    <div class="field" style="margin-top:12px"><label>آی‌پی تمیز <small>(اختیاری، حداکثر ۵ تا)</small></label><input id="edgeIps" dir="ltr" placeholder="104.16.0.1, 172.67.1.1"><div class="scan-hint">اگر خالی باشد، لینک‌ها با دامنه Worker ساخته می‌شوند. بعداً می‌توانی IPهای سالم Scanner را اینجا بگذاری.</div></div>
-    <label class="chk" style="margin-top:12px"><input type="checkbox" id="edgeInSub" checked> کپی Edge را داخل همه‌ی اشتراک‌ها بگذار</label>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-      <button class="btn" onclick="edgeSave()">ذخیره تنظیمات</button>
-      <button class="btn btn-p" onclick="edgeDeploy()">۳) دیپلوی Edge</button>
-      <button class="btn" onclick="edgeTest()">۴) تست اتصال</button>
-      <button class="btn" onclick="edgeRemove()">حذف Edge</button>
-    </div>
+  <div class="edge-hero"><div><div class="page-title"><span>ساخت کانفیگ کلودفلر با پنل ONEX</span></div><div class="page-sub">اتصال واقعی به Cloudflare، انتخاب دامنه، اسکن IP و اعمال مستقیم روی اشتراک‌ها.</div></div><div class="edge-mark" aria-label="Cloudflare Edge"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 35h22a8 8 0 0 0 1-16 13 13 0 0 0-24-2 9 9 0 0 0 1 18Z"/><path d="m18 27 5 5 9-10"/></svg></div></div>
+  <div class="edge-layout">
+    <div class="edge-card"><h3>اتصال واقعی به Cloudflare <small>توکن شما فقط روی سرور ذخیره می‌شود</small></h3><div id="edgeStatus" class="edge-status">در حال بررسی اتصال...</div><div class="edge-token-help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg><div>یک API Token بساز و اینجا وارد کن. برای دامنه اختصاصی، مجوزهای <b>Workers Scripts: Edit</b>، <b>Workers Subdomain: Edit</b>، <b>Account: Read</b>، <b>Zone: Read</b> و <b>Workers Domains: Edit</b> لازم است.<br><a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener">بازکردن صفحه ساخت Token در Cloudflare ↗</a></div></div><div class="edge-row"><div class="field"><label>API Token</label><input id="edgeToken" type="password" autocomplete="off" placeholder="توکن Cloudflare"></div><div class="field"><label>Account ID <small>(اختیاری)</small></label><input id="edgeAccount" dir="ltr" placeholder="خودکار تشخیص داده می‌شود"></div></div><div class="edge-actions"><button class="btn" onclick="edgeSave()">ذخیره Token و تنظیمات</button><button class="btn btn-p" onclick="edgeDeploy()">ساخت و Deploy Edge</button><button class="btn" onclick="edgeTest()">تست اتصال</button><button class="btn btn-d" onclick="edgeRemove()">حذف Edge</button></div></div>
+    <div class="edge-card"><h3>وضعیت Edge</h3><div class="edge-metrics"><div class="edge-metric"><span>وضعیت Worker</span><b id="edgeWorkerState">—</b></div><div class="edge-metric"><span>دامنه فعال</span><b id="edgeHostState" style="font-size:12px;overflow-wrap:anywhere">—</b></div><div class="edge-metric"><span>IPهای انتخاب‌شده</span><b id="edgeSelectedCount">0</b></div><div class="edge-metric"><span>اشتراک‌ها</span><b id="edgeSyncedCount">—</b></div></div><div class="field" style="margin-top:12px"><label>نوع دامنه</label><div class="edge-choice"><label><input type="radio" name="edgeMode" value="worker" checked onchange="edgeDomainMode()"><strong>دامنه رایگان Worker</strong><small>ساخت خودکار workers.dev</small></label><label><input type="radio" name="edgeMode" value="custom" onchange="edgeDomainMode()"><strong>دامنه اختصاصی</strong><small>دامنه داخل همین حساب Cloudflare</small></label></div></div><div class="field" id="edgeCustomDomainBox" hidden style="margin-top:9px"><label>دامنه اختصاصی</label><input id="edgeDomain" dir="ltr" placeholder="edge.example.com"></div><label class="chk" style="margin-top:10px"><input type="checkbox" id="edgeInSub" checked> افزودن کانفیگ Edge به اشتراک‌ها</label></div>
   </div>
-  <div class="card" id="onexPoolsCard">
-<style>
-#onexPoolsCard{background:linear-gradient(145deg,rgba(255,255,255,.82),rgba(247,242,255,.72));border:1px solid rgba(185,145,220,.28);box-shadow:0 18px 50px rgba(110,72,160,.12),inset 0 1px rgba(255,255,255,.9);border-radius:24px}
-.pool-selection-workspace{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;align-items:start}.pool-selection-rail{border:1px solid rgba(var(--accent-rgb),.28);border-radius:17px;background:linear-gradient(145deg,rgba(15,48,55,.96),rgba(7,29,34,.96));padding:13px;position:sticky;top:12px;color:#eafcff}.pool-selection-rail-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}.pool-selection-rail-head b{display:block;font-size:13px}.pool-selection-rail-head small{display:block;color:#a6c6ca;font-size:11px;margin-top:3px}.pool-selection-rail-head button{border:1px solid #9d4b64;background:#472432;color:#ffd0d7;border-radius:10px;padding:7px 9px;cursor:pointer}.pool-selection-list{display:grid;gap:7px;max-height:260px;overflow:auto}.pool-selection-item{display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px solid rgba(90,180,194,.25);border-radius:11px;background:#081b20;padding:8px}.pool-selection-item code{font:11px "JetBrains Mono",monospace;color:#e5fbfc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr}.pool-selection-item button{border:0;background:transparent;color:#ff9faf;font-size:20px;line-height:1;cursor:pointer}.pool-selection-empty{text-align:center;color:#9bbabe;border:1px dashed #3b6870;border-radius:12px;padding:24px 8px;font-size:12px}.pool-selection-continue{width:100%;border:0;border-radius:12px;padding:11px;margin-top:10px;background:linear-gradient(135deg,#39d1e9,#8660f4);font-weight:800;color:#fff}.pool-selection-continue:disabled{opacity:.4;cursor:not-allowed}
-@media(max-width:640px){.pool-selection-workspace{display:flex;flex-direction:column}.pool-selection-rail{width:100%;position:sticky;bottom:8px;top:auto;z-index:3;background:rgba(8,34,39,.96);backdrop-filter:blur(14px)}.pool-selection-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:120px}.pool-selection-item{padding:7px}.pool-selection-item code{font-size:10px}}
-.pool-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.pool-kicker{font:800 10px "JetBrains Mono",monospace;letter-spacing:.12em;color:#9e55d2;direction:ltr}.pool-head h3{margin:4px 0;font-size:22px}.pool-head p{margin:0;color:#887d98;font-size:12px}.pool-live{font-size:11px;color:#6d6280;white-space:nowrap}.pool-live i{display:inline-block;width:7px;height:7px;background:#43c892;border-radius:50%;box-shadow:0 0 9px #43c892;margin-left:5px}.pool-tabs{display:flex;gap:6px;padding:5px;margin:16px 0 10px;background:rgba(145,97,190,.08);border-radius:14px}.pool-tabs button{flex:1;border:0;border-radius:10px;padding:10px;background:transparent;color:#756985;font:700 12px Vazirmatn;cursor:pointer}.pool-tabs button.active{background:linear-gradient(135deg,#a16bea,#de59c7);color:#fff;box-shadow:0 8px 20px rgba(172,82,214,.25)}.pool-input-row{display:flex;gap:8px;align-items:center}.pool-input-row input{flex:1;min-width:0}.pool-input-row .btn{white-space:nowrap}.pool-picker{margin-top:10px;padding:12px;border:1px solid rgba(178,136,213,.25);border-radius:17px;background:rgba(255,255,255,.56);box-shadow:inset 0 1px rgba(255,255,255,.8)}.pool-picker-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-bottom:10px;color:#766a84;font-size:11px}.pool-picker-head label{display:flex;align-items:center;gap:5px;margin-right:auto}.pool-picker-head button{border-radius:10px!important}.pool-picker-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:245px;overflow:auto;padding:2px}.pool-picker-row{display:flex;align-items:center;gap:7px;min-width:0;padding:9px 10px;border:1px solid rgba(200,180,220,.35);border-radius:11px;background:rgba(255,255,255,.7);cursor:pointer}.pool-picker-row:hover,.pool-picker-row:has(input:checked){border-color:#c994e7;background:#fff;box-shadow:0 4px 14px rgba(160,91,200,.1)}.pool-picker-row input{accent-color:#ae62da;width:16px;height:16px}.pool-picker-row code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 11px "JetBrains Mono",monospace;direction:ltr;color:#332b42}.pool-flag{font-size:15px}.pool-picker-empty{color:#837891;font-size:12px;text-align:center;padding:18px}@media(max-width:640px){.pool-head{display:block}.pool-live{margin-top:8px}.pool-input-row{display:block}.pool-input-row input{width:100%;margin-bottom:7px}.pool-input-row .btn{width:100%}.pool-picker-list{grid-template-columns:1fr}.pool-picker-head label{margin-right:0}}
-</style>
-<style>
-#onexPoolsCard{background:linear-gradient(145deg,rgba(10,38,46,.96),rgba(8,22,32,.96));border-color:rgba(56,213,241,.28);color:#eafcff}
-.pool-toolbar{display:flex;align-items:center;gap:10px;padding:12px 14px;margin:16px 0;border:1px solid rgba(56,213,241,.2);border-radius:16px;background:rgba(2,20,27,.5);color:#a9c5ca}.pool-toolbar strong{color:#35d7ef}.pool-toolbar button{margin-right:auto}
-.pool-columns{display:grid;grid-template-columns:1fr 1fr;gap:14px}.pool-column{padding:18px;border-radius:21px;background:linear-gradient(145deg,rgba(8,48,57,.82),rgba(5,27,34,.9));border:1px solid rgba(56,213,241,.32)}.pool-column-proxy{border-color:rgba(167,91,238,.42)}
-.pool-column-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.pool-column-kicker{font:800 10px JetBrains Mono,monospace;letter-spacing:.13em;color:#b98bf2;direction:ltr}.pool-column h4{font-size:22px;margin:8px 0}.pool-column-head>b{font-size:12px;color:#45d8ee;border:1px solid rgba(56,213,241,.3);border-radius:99px;padding:7px 9px;white-space:nowrap}.pool-column-proxy .pool-column-head>b{color:#d19aff;border-color:rgba(180,100,240,.35)}.pool-column-hint{color:#9bb9bf;font-size:13px;min-height:38px;margin:7px 0 14px}.pool-add-trigger{width:100%;border:0;border-radius:12px;padding:12px;background:linear-gradient(110deg,#20d1e5,#bd9af9);font-weight:800;color:#071c27}.pool-items{display:grid;gap:7px;margin-top:15px;max-height:235px;overflow:auto}.pool-item{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(255,255,255,.06);border-radius:10px;padding:10px}.pool-item code{font:12px JetBrains Mono,monospace;direction:ltr;overflow-wrap:anywhere;color:#e8fbff}.pool-item button{border:0;background:none;color:#ff9eae;font-size:18px}.pool-clear-all{margin-top:13px;border:1px solid rgba(255,113,139,.35);border-radius:10px;padding:8px 11px;background:rgba(255,76,109,.08);color:#ffb4c0}.pool-picker{background:rgba(2,17,23,.96);border-color:rgba(56,213,241,.25);color:#eafcff}.pool-picker-head{color:#a8c6ca}.pool-picker-row{background:rgba(255,255,255,.07);border-color:rgba(130,220,230,.2)}.pool-picker-row code{color:#e9fbff}.pool-selection-workspace{display:block}.pool-selection-rail{margin-top:10px;position:static}.pool-selection-continue{color:#071c27}
-@media(max-width:640px){.pool-columns{grid-template-columns:1fr}.pool-toolbar{flex-wrap:wrap}.pool-toolbar button{width:100%;margin-right:0}.pool-column h4{font-size:20px}}
-</style>
-<div class="pool-head"><div><div class="pool-kicker">ONEX CLOUD POOLS</div><h3>مخزن‌های آماده</h3><p>انتخاب سریع IP و Proxy برای تست و استفاده در کانفیگ‌ها</p></div><div class="pool-live"><i></i> داخلی · آماده استفاده</div></div>
-    <div class="pool-toolbar"><span>موجودی داخلی</span><strong id="poolTotalCount">— مورد فعال</strong><button class="btn btn-sm" type="button" onclick="poolPreview()">پیش‌نمایش انتخاب‌ها</button></div>
-    <div class="pool-columns">
-      <div class="pool-column pool-column-ip"><div class="pool-column-head"><div><span class="pool-column-kicker">NETWORK TARGETS</span><h4>مخزن IP 🌐</h4></div><b id="poolIpCount">— مورد</b></div><p class="pool-column-hint">IPهای آماده برای تست و استفاده در کانفیگ‌ها</p><button class="pool-add-trigger" type="button" onclick="poolLoadRepo('ips')">＋ افزودن IP</button><div id="poolRepoRowsIps" class="pool-picker" style="display:none"></div><div id="poolRowsIps" class="pool-items"></div><button class="pool-clear-all" type="button" onclick="poolDeleteAll('ips')">♲ حذف همه IPها</button></div>
-      <div class="pool-column pool-column-proxy"><div class="pool-column-head"><div><span class="pool-column-kicker">ROUTE SOURCES</span><h4>مخزن Proxy 🔐</h4></div><b id="poolProxyCount">— مورد</b></div><p class="pool-column-hint">Proxyهای آماده برای تست و استفاده در کانفیگ‌ها</p><button class="pool-add-trigger" type="button" onclick="poolLoadRepo('proxies')">＋ افزودن Proxy</button><div id="poolRepoRowsProxies" class="pool-picker" style="display:none"></div><div id="poolRowsProxies" class="pool-items"></div><button class="pool-clear-all" type="button" onclick="poolDeleteAll('proxies')">♲ حذف همه Proxyها</button></div>
-    </div>
-    <div class="scan-actions"><button class="btn btn-p" type="button" onclick="poolCheckIps()">تست IPها</button><button class="btn" type="button" onclick="poolCheckProxies()">تست Proxyها</button><span id="poolStatus" class="page-sub"></span></div>
-    <div id="poolRepoRows" hidden></div><div id="poolRows" hidden></div>
-  </div>
-  <div class="card">
-    <div class="card-title">اسکنر SNI برای Reality</div>
-    <div class="page-sub">هر دامنه را از سرور تست می‌کنیم: TLS 1.3، پشتیبانی HTTP/2 و سرعت اتصال.</div>
-    <div class="field" style="margin-top:8px"><label>دامنه‌ها (خالی = لیست آماده)</label><textarea id="sniHosts" rows="3" placeholder="www.google.com"></textarea></div>
-    <button class="btn btn-p" onclick="sniScan()">شروع اسکن</button>
-    <div id="sniResults" style="margin-top:12px"></div>
-  </div>
+  <div class="edge-card" style="margin-top:13px"><h3>اسکن و انتخاب IP <small>نتیجه‌ها واقعی هستند و از داخل پنل تست می‌شوند</small></h3><div class="edge-scan-box"><div class="field"><label>تعداد تست</label><select id="edgeScanLimit"><option value="60">۶۰</option><option value="120" selected>۱۲۰</option><option value="500">۵۰۰</option><option value="1000">۱۰۰۰</option><option value="2048">حداکثر</option></select></div><div class="field"><label>SNI</label><input id="edgeScanSni" dir="ltr" value="www.cloudflare.com"></div><button class="btn btn-p" onclick="edgeScan()">شروع اسکن واقعی</button></div><div class="edge-manual"><input id="edgeManualIps" dir="ltr" placeholder="IP دستی برای تست، با کاما جدا کن"><button class="btn" onclick="edgeScanManual()">تست IP دستی</button></div><div id="edgeScanResult" class="edge-test-result"></div></div>
+  <div class="edge-card" style="margin-top:13px"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0">لیست کامل نتایج IP</h3><div class="edge-actions" style="margin:0"><button class="btn btn-sm" onclick="edgeSelectAll(true)">انتخاب همه سالم‌ها</button><button class="btn btn-sm" onclick="edgeSelectAll(false)">لغو انتخاب</button><button class="btn btn-sm" onclick="edgeCopyIps()">کپی IPها</button><button class="btn btn-sm btn-d" onclick="edgeClearResults()">پاک‌کردن نتایج</button></div></div><div class="edge-filter"><input id="edgeIpSearch" dir="ltr" placeholder="جست‌وجوی IP یا موقعیت" oninput="edgeRender()"><span id="edgeResultCount" class="edge-muted">۰ نتیجه</span></div><div class="edge-table-wrap"><div class="edge-table"><div class="edge-table-head"><span>IP</span><span>موقعیت</span><span>وضعیت</span><span>سرعت</span><span>انتخاب</span></div><div id="edgeIpRows"><div class="edge-muted" style="padding:22px;text-align:center">هنوز اسکن انجام نشده است.</div></div></div></div><div class="edge-apply"><div><b id="edgeApplyText">۰ IP انتخاب شده</b><p>IPهای انتخابی روی Edge و لینک‌های اشتراک اعمال می‌شوند.</p></div><button class="btn btn-p" onclick="edgeApplySelected()">اعمال روی کانفیگ‌های Cloudflare</button></div></div>
+  <div class="edge-card edge-sni-card" style="margin-top:13px"><div class="edge-sni-head"><div><h3 style="margin:0">اسکنر SNI برای Reality</h3><p class="edge-muted">دامنه‌ها را از نظر TLS 1.3، HTTP/2 و سرعت اتصال بررسی کن. نتیجه‌ها برای انتخاب Handshake مناسب قابل کپی هستند.</p></div><span class="edge-sni-badge">TLS / H2</span></div><div class="edge-sni-grid"><div class="field"><label>لیست دامنه‌ها</label><textarea id="sniHosts" rows="4" dir="ltr" placeholder="www.cloudflare.com
+www.google.com
+cloudflare.com"></textarea></div><div class="edge-sni-side"><label>تنظیمات تست</label><div class="edge-sni-info"><span>پروتکل</span><b>TLS 1.3 + HTTP/2</b></div><div class="edge-sni-info"><span>هدف</span><b>Reality Handshake</b></div><button class="btn btn-p" onclick="sniScan()">شروع اسکن SNI</button></div></div><div class="edge-sni-actions"><button class="btn btn-sm" onclick="sniFillDefaults()">لیست پیشنهادی</button><button class="btn btn-sm" onclick="sniCopyGood()">کپی دامنه‌های سالم</button><span id="sniResultsSummary" class="edge-muted"></span></div><div id="sniResults" class="edge-sni-results"><div class="edge-muted" style="padding:14px;text-align:center">هنوز تست SNI انجام نشده است.</div></div></div>
+</div>
 </section>
 
+<style id="onex-edge-mobile-fix">#page-edge{width:100%;max-width:1120px;margin-inline:auto;min-width:0;overflow:visible}#page-edge .edge-card{width:100%;box-sizing:border-box}.edge-sni-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.edge-sni-head p{margin:5px 0 0}.edge-sni-badge{padding:7px 10px;border-radius:99px;color:var(--accent2);background:rgba(var(--accent-rgb),.1);border:1px solid rgba(var(--accent-rgb),.25);font:700 10px "JetBrains Mono",monospace;white-space:nowrap}.edge-sni-grid{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:12px;margin-top:10px}.edge-sni-grid textarea{width:100%;min-height:100px;resize:vertical;box-sizing:border-box}.edge-sni-side{display:flex;flex-direction:column;gap:8px}.edge-sni-side label{color:var(--t2);font-size:11px}.edge-sni-info{display:flex;justify-content:space-between;gap:8px;padding:9px;border-radius:10px;background:var(--bg3);border:1px solid var(--card-b);font-size:10px}.edge-sni-info span{color:var(--t3)}.edge-sni-info b{color:var(--t1);direction:ltr}.edge-sni-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}.edge-sni-results{display:grid;gap:7px;margin-top:10px;max-height:360px;overflow:auto}.edge-sni-result{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:10px 12px;border:1px solid var(--card-b);border-radius:11px;background:rgba(var(--accent-rgb),.045)}.edge-sni-result code{direction:ltr;color:var(--accent2);overflow-wrap:anywhere}.edge-sni-result span{font-size:10px;white-space:nowrap}.edge-sni-result.ok span{color:#35e8a2}.edge-sni-result.bad span{color:var(--t3)}@media(max-width:800px){#page-edge .edge-hero{padding-top:8px}.edge-sni-grid{grid-template-columns:1fr}.edge-sni-side .btn{width:100%}.edge-sni-badge{font-size:9px}.edge-sni-result{grid-template-columns:1fr}.edge-sni-result span{white-space:normal}.edge-sni-actions .btn{flex:1;min-width:130px}#page-edge .edge-layout{display:block}#page-edge .edge-layout>.edge-card+ .edge-card{margin-top:12px}}@media(max-width:520px){#page-edge{padding-inline:0}.edge-hero h1,.edge-hero .page-title{font-size:21px;line-height:1.5}.edge-hero p{font-size:11px}.edge-mark{flex:none}.edge-row{gap:8px}.edge-actions .btn{min-width:0;flex-basis:100%}.edge-filter{align-items:stretch}.edge-filter input{min-width:0;width:100%}.edge-apply{align-items:stretch}.edge-apply .btn{width:100%}}
+</style>
+<style id="onex-panel-mobile-edge-fix">@media(max-width:640px){html,body{max-width:100%;overflow-x:hidden}.page{width:100%;max-width:100%;box-sizing:border-box}.onex-topbar,.mob-bar{min-height:58px;height:auto;max-height:72px;box-sizing:border-box}.onex-topbar{padding:8px 10px!important}.mob-bar{padding:8px 10px!important}.onex-topbar .top-brand,.mob-bar .mob-brand{max-width:55vw;overflow:hidden}.onex-topbar .top-brand img,.mob-bar img{max-width:145px;height:auto}.onex-topbar .top-actions,.mob-bar .mob-actions{gap:5px}.onex-topbar button,.mob-bar button{min-width:40px;min-height:40px}.page-head{max-width:100%;overflow:hidden}.card{max-width:100%;box-sizing:border-box}.form-row,.g2{grid-template-columns:1fr!important}.field input,.field select,.field textarea{max-width:100%;box-sizing:border-box}.edge-card{overflow:hidden}.edge-table-wrap{max-width:100%;-webkit-overflow-scrolling:touch}.edge-sni-card{margin-bottom:12px!important}}
+</style>
 <section class="page" id="page-theme">
   <div class="page-head">
     <div>
@@ -15825,7 +15806,7 @@ html.light .sidebar .nav-label{color:inherit!important}
   document.querySelectorAll('#edgeScanPorts .scanPortChk').forEach(x=>x.addEventListener('change',selectedPorts));selectedPorts();
   const srcEl=$('edgeScanSource');
   if(srcEl)srcEl.addEventListener('change',()=>{$('edgeSourceHint').textContent=HINTS[srcEl.value]||'';const sni=$('edgeScanSni');sni.placeholder=srcEl.value==='cloudflare'?'www.cloudflare.com':'onex.shiprr.dev';loadSaved();});
-  const oldGo=window.goPage;window.goPage=function(name){oldGo(name);if(name==='edge-tools'){loadOnexPublicEndpoint();loadSaved();}if(name==='edge'){loadEdge();loadPools();}};
+  const oldGo=window.goPage;window.goPage=function(name){oldGo(name);if(name==='edge-tools'){loadOnexPublicEndpoint();loadSaved();}if(name==='edge'){loadEdge();}};
 })();
 </script>
 <script id="onexSellEdgeJs">
@@ -15879,57 +15860,35 @@ html.light .sidebar .nav-label{color:inherit!important}
         <div style="display:flex;gap:6px">${x.receipt_file_id?`<a class="btn btn-sm" target="_blank" href="/api/sell/orders/${x.id}/receipt">رسید</a>`:''}${x.status==='pending_review'||x.status==='awaiting_receipt'?`<button class="btn btn-sm btn-p" onclick="sellApprove('${x.id}')">تأیید</button><button class="btn btn-sm" onclick="sellReject('${x.id}')">رد</button>`:''}</div></div>`).join(''):'<div class="page-sub">سفارشی ثبت نشده.</div>';
   }
 
-  async function loadPools(){const r=await j('/api/pools');if(!r)return;const ips=r.ips||[],px=r.proxies||[];window.__poolData={ips,proxies:px};const render=(kind,rows)=>{const box=document.getElementById(kind==='ips'?'poolRowsIps':'poolRowsProxies');box.innerHTML=rows.length?rows.map(x=>{const label=kind==='ips'?`${esc2(x.host)}:${x.port}`:esc2(x.scheme+'://'+x.host+':'+x.port);return `<div class="pool-item"><code>${label}</code><span>${x.status==='healthy'?'✅ '+x.latency_ms+'ms':x.status||'بدون تست'} <button type="button" onclick="poolDel('${kind}','${x.id}')">×</button></span></div>`}).join(''):'<div class="pool-selection-empty">موردی اضافه نشده</div>'};render('ips',ips);render('proxies',px);document.getElementById('poolIpCount').textContent=`${ips.length} مورد`;document.getElementById('poolProxyCount').textContent=`${px.length} مورد`;document.getElementById('poolTotalCount').textContent=`${ips.length+px.length} مورد فعال`}
-  window.poolAddIps=async function(){const v=prompt('IP یا IPها را با کاما وارد کن:','');if(!v)return;const r=await j('/api/pools/ips','POST',{ips:v});if(r){await loadPools();toast(`${r.added} IP اضافه شد`)}}
-  window.poolAddProxy=async function(){const v=prompt('آدرس Proxy را وارد کن:','');if(!v)return;const r=await j('/api/pools/proxies','POST',{url:v});if(r){await loadPools();toast('Proxy اضافه شد')}}
-  window.poolLoadRepo=async function(kind){const box=document.getElementById(kind==='ips'?'poolRepoRowsIps':'poolRepoRowsProxies');box.style.display='block';box.textContent='در حال دریافت مخزن داخلی ONEX…';const r=await j('/api/pools/repository/'+kind);if(!r){box.textContent='مخزن داخلی ONEX پیدا نشد';return}const items=r.items||[];if(!items.length){box.textContent='موردی پیدا نشد';return}window.__poolRepo=window.__poolRepo||{};window.__poolRepo[kind]=items;window.__poolSelected=window.__poolSelected||{};window.__poolSelected[kind]=[];const rows=items.slice(0,60);box.innerHTML=`<div class="pool-selection-workspace"><div class="pool-picker-head"><span>${items.length} مورد آماده · نمایش ۶۰ مورد اول</span><label><input type="checkbox" onchange="poolToggleAll('${kind}',this.checked)"> انتخاب همه</label><button class="btn btn-sm" type="button" onclick="poolAddSelected('${kind}')">افزودن انتخاب‌شده‌ها</button></div><div class="pool-picker-list">`+rows.map(x=>{const value=kind==='ips'?x:(x.value||x);return `<label class="pool-picker-row"><input class="pool-pick-${kind}" type="checkbox" value="${esc2(value)}" onchange="poolSelectionChanged('${kind}',this)"><span class="pool-flag">🌐</span><code dir="ltr">${esc2(value)}</code></label>`}).join('')+'</div><aside class="pool-selection-rail" id="poolSelectionRail-'+kind+'"></aside></div>';renderPoolSelectionRail(kind)};
-  window.poolToggleAll=function(kind,on){const inputs=[...document.querySelectorAll('.pool-pick-'+kind)];inputs.forEach(x=>x.checked=on);window.__poolSelected=window.__poolSelected||{};window.__poolSelected[kind]=on?inputs.map(x=>x.value):[];renderPoolSelectionRail(kind)};
-  window.poolSelectionChanged=function(kind,input){window.__poolSelected=window.__poolSelected||{};const set=new Set(window.__poolSelected[kind]||[]);input.checked?set.add(input.value):set.delete(input.value);window.__poolSelected[kind]=[...set];renderPoolSelectionRail(kind)};
-  window.renderPoolSelectionRail=function(kind){const rail=document.getElementById('poolSelectionRail-'+kind);if(!rail)return;const selected=window.__poolSelected?.[kind]||[];rail.innerHTML=`<div class="pool-selection-rail-head"><div><b>موارد انتخاب‌شده</b><small>${selected.length} مورد</small></div><button type="button" onclick="poolClearSelection('${kind}')">حذف همه</button></div>`+(selected.length?`<div class="pool-selection-list">${selected.map(x=>`<div class="pool-selection-item"><code>${esc2(x)}</code><button type="button" onclick="poolRemoveSelection('${kind}',${JSON.stringify(x)})">×</button></div>`).join('')}</div>`:'<div class="pool-selection-empty">هنوز موردی انتخاب نشده</div>')+`<button class="pool-selection-continue" type="button" ${selected.length?'':'disabled'} onclick="poolAddSelected('${kind}')">ادامه با ${selected.length} مورد</button>`};
-  window.poolRemoveSelection=function(kind,value){window.__poolSelected[kind]=(window.__poolSelected[kind]||[]).filter(x=>x!==value);const el=[...document.querySelectorAll('.pool-pick-'+kind)].find(x=>x.value===value);if(el)el.checked=false;renderPoolSelectionRail(kind)};
-  window.poolClearSelection=function(kind){window.__poolSelected[kind]=[];document.querySelectorAll('.pool-pick-'+kind).forEach(x=>x.checked=false);renderPoolSelectionRail(kind)};
-  window.poolAddSelected=async function(kind){const values=window.__poolSelected?.[kind]||[];if(!values.length){toast('حداقل یک مورد را انتخاب کن');return}if(kind==='ips'){const r=await j('/api/pools/ips','POST',{ips:values});if(!r)return}else{for(const value of values){const r=await j('/api/pools/proxies','POST',{url:value});if(!r)return}}await loadPools();window.__poolSelected[kind]=[];const box=document.getElementById(kind==='ips'?'poolRepoRowsIps':'poolRepoRowsProxies');box.style.display='none';toast(`${values.length} مورد اضافه شد`)};
-  window.poolDeleteAll=async function(kind){if(!confirm(`همه ${kind==='ips'?'IPها':'Proxyها'} حذف شوند؟`))return;const r=await j('/api/pools/'+kind,'DELETE');if(r)loadPools()};
-  window.poolPreview=function(){const ips=window.__poolData?.ips||[],px=window.__poolData?.proxies||[];toast(`IP: ${ips.length} · Proxy: ${px.length}`)};
-  window.poolCheckIps=async function(){const status=document.getElementById('poolStatus');status.textContent='در حال تست IPها…';const r=await j('/api/pools/ips/check','POST',{});if(r){status.textContent=r.checked?`${r.healthy} IP سالم از ${r.checked}`:'مخزن IP خالی است';await loadPools()}};
-  window.poolCheckProxies=async function(){const status=document.getElementById('poolStatus');status.textContent='در حال تست Proxyها…';const r=await j('/api/pools/proxies/check','POST',{});if(r){status.textContent=r.checked?`${r.healthy} Proxy سالم از ${r.checked}`:'مخزن Proxy خالی است';await loadPools()}};
-  window.poolDel=async function(kind,id){const r=await j('/api/pools/'+kind+'/'+encodeURIComponent(id),'DELETE');if(r)loadPools()};
-  // ---- edge
-  window.edgeDomainMode=function(){const custom=document.querySelector('input[name="edgeMode"]:checked')?.value==='custom';const box=document.getElementById('edgeCustomDomainBox');const input=document.getElementById('edgeDomain');if(box)box.hidden=!custom;if(input&&!custom)input.value='';};
+  // ---- Cloudflare Edge: real controls
+  window.__edgeResults=[];window.__edgeSelected=new Set();window.__edgeHasToken=false;
+  window.edgeDomainMode=function(){const custom=document.querySelector('input[name="edgeMode"]:checked')?.value==='custom';const box=document.getElementById('edgeCustomDomainBox');if(box)box.hidden=!custom;};
+  function edgeSetStatus(text,kind=''){const el=document.getElementById('edgeStatus');if(el){el.textContent=text;el.className='edge-status '+kind;}}
+  function edgeEsc(x){return esc2(String(x??''));}
   async function loadEdge(){
-    const e=await j('/api/cfedge'); if(!e)return;
-    document.getElementById('edgeInSub').checked=e.include_in_sub!==false;
-    document.getElementById('edgeAccount').value=e.account_id||'';
-    document.getElementById('edgeDomain').value=e.custom_domain||'';
-    const custom=!!e.custom_domain;const mode=document.querySelector(`input[name="edgeMode"][value="${custom?'custom':'worker'}"]`);if(mode)mode.checked=true;edgeDomainMode();
-    document.getElementById('edgeIps').value=(e.clean_ips||[]).join(', ');
-    const st=document.getElementById('edgeStatus');
-    st.innerHTML=e.edge_host?`✅ دیپلوی شده: <code>${esc2(e.edge_host)}</code> · ${e.enabled?'فعال':'غیرفعال'} · توکن: ${esc2(e.token_masked||'—')}`:(e.last_error?`⚠️ ${esc2(e.last_error)}`:`هنوز دیپلوی نشده. توکن کلودفلر را وارد و ذخیره کنید.`);
+    const e=await j('/api/cfedge');if(!e)return;window.__edgeHasToken=!!e.has_token;
+    c('edgeInSub',e.include_in_sub!==false);v('edgeAccount',e.account_id||'');v('edgeDomain',e.custom_domain||'');
+    const custom=!!e.custom_domain,mode=document.querySelector(`input[name="edgeMode"][value="${custom?'custom':'worker'}"]`);if(mode)mode.checked=true;edgeDomainMode();
+    const state=document.getElementById('edgeWorkerState'),host=document.getElementById('edgeHostState');if(state)state.textContent=e.enabled?'فعال':'خاموش';if(host)host.textContent=e.edge_host||'—';
+    edgeSetStatus(e.edge_host?`Edge فعال است: ${e.edge_host} · Token: ${e.token_masked||'ثبت شده'}`:(e.last_error||'برای شروع API Token را وارد و ذخیره کن'),e.edge_host?'ok':(e.last_error?'err':''));
   }
-  window.edgeSave=async function(){
-    const body={include_in_sub:c('edgeInSub'),account_id:v('edgeAccount'),custom_domain:v('edgeDomain'),clean_ips:v('edgeIps')};
-    if(v('edgeToken'))body.api_token=v('edgeToken');
-    const r=await j('/api/cfedge/settings','POST',body);
-    if(r){document.getElementById('edgeToken').value='';toast('ذخیره شد');loadEdge();}
-  };
-  window.edgeDeploy=async function(){
-    if(v('edgeToken'))await edgeSave();
-    toast('در حال دیپلوی روی کلودفلر…');
-    const r=await j('/api/cfedge/deploy','POST');
-    if(r){toast('Edge دیپلوی شد');loadEdge();}
-  };
-  window.edgeTest=async function(){const r=await j('/api/cfedge/test','POST');if(r)toast(r.ok?`✅ جواب داد (${r.ms}ms${r.colo?' · '+r.colo:''})`:('⚠️ '+(r.error||'بدون پاسخ')));};
-  window.edgeRemove=async function(){if(!confirm('Edge روی کلودفلر حذف شود؟'))return;const r=await j('/api/cfedge/remove','POST');if(r){toast('حذف شد');loadEdge();}};
+  window.edgeSave=async function(){const mode=document.querySelector('input[name="edgeMode"]:checked')?.value||'worker',token=v('edgeToken'),domain=mode==='custom'?v('edgeDomain'):'';if(!token&&!window.__edgeHasToken){edgeSetStatus('برای اتصال واقعی API Token لازم است','err');return false}if(mode==='custom'&&!domain){edgeSetStatus('دامنه اختصاصی را وارد کن','err');return false}const body={include_in_sub:c('edgeInSub'),account_id:v('edgeAccount'),custom_domain:domain,clean_ips:[...window.__edgeSelected]};if(token)body.api_token=token;const r=await j('/api/cfedge/settings','POST',body);if(r){document.getElementById('edgeToken').value='';window.__edgeHasToken=!!r.has_token;toast('تنظیمات واقعی ذخیره شد');await loadEdge();return true}return false;};
+  window.edgeDeploy=async function(){if(!await edgeSave())return;toast('در حال ساخت Worker واقعی در Cloudflare…');const r=await j('/api/cfedge/deploy','POST');if(r){toast('Edge واقعی Deploy شد');loadEdge()}};
+  window.edgeTest=async function(){const r=await j('/api/cfedge/test','POST');const out=document.getElementById('edgeScanResult');if(r){const msg=r.ok?`اتصال واقعی موفق است · ${r.ms}ms${r.colo?' · '+r.colo:''}`:(r.error||'اتصال ناموفق');if(out){out.textContent=msg;out.classList.add('show')}toast(msg)}};
+  window.edgeRemove=async function(){if(!confirm('Worker واقعی Cloudflare حذف شود؟'))return;const r=await j('/api/cfedge/remove','POST');if(r){toast('Worker حذف شد');loadEdge()}};
+  function edgeStatusHtml(x){return x.ok?'<span class="edge-pill ok">● سالم</span>':'<span class="edge-pill bad">● خراب</span>'}
+  window.edgeRender=function(){const q=(v('edgeIpSearch')||'').toLowerCase(),rows=(window.__edgeResults||[]).filter(x=>!q||String(x.host||'').toLowerCase().includes(q)||String(x.colo||'').toLowerCase().includes(q));const box=document.getElementById('edgeIpRows');if(!box)return;document.getElementById('edgeResultCount').textContent=`${rows.length} نتیجه از ${(window.__edgeResults||[]).length}`;box.innerHTML=rows.length?rows.map(x=>{const key=String(x.host||'');return `<div class="edge-ip-row"><code>${edgeEsc(key)}</code><span>${edgeEsc(x.colo||'—')}</span>${edgeStatusHtml(x)}<span class="ms">${x.latency_ms!=null?edgeEsc(x.latency_ms)+'ms':'—'}</span><input class="edge-check" type="checkbox" ${window.__edgeSelected.has(key)?'checked':''} onchange="edgeToggle('${edgeEsc(key)}',this.checked)"></div>`}).join(''):'<div class="edge-muted" style="padding:22px;text-align:center">نتیجه‌ای پیدا نشد.</div>';document.getElementById('edgeSelectedCount').textContent=window.__edgeSelected.size;document.getElementById('edgeApplyText').textContent=`${window.__edgeSelected.size} IP انتخاب شده`};
+  window.edgeToggle=function(ip,on){on?window.__edgeSelected.add(ip):window.__edgeSelected.delete(ip);edgeRender()};window.edgeSelectAll=function(on){(window.__edgeResults||[]).filter(x=>on?x.ok:true).forEach(x=>on?window.__edgeSelected.add(String(x.host)):window.__edgeSelected.delete(String(x.host)));edgeRender()};
+  window.edgeScan=async function(){const limit=Number(v('edgeScanLimit')||120),sni=v('edgeScanSni')||'www.cloudflare.com';toast(`در حال اسکن ${limit} IP…`);const r=await j('/api/scanner/edge/scan','POST',{source:'cloudflare',mode:limit>128?'full':'sample',limit,sni,ports:[443]});if(r){window.__edgeResults=r.results||[];window.__edgeSelected=new Set(window.__edgeResults.filter(x=>x.ok).map(x=>String(x.host)));document.getElementById('edgeScanResult').textContent=`اسکن تمام شد · ${r.good} سالم از ${r.count} · SNI: ${sni}`;document.getElementById('edgeScanResult').classList.add('show');edgeRender()}};
+  window.edgeScanManual=async function(){const raw=v('edgeManualIps');const candidates=raw.split(/[\s,]+/).map(x=>x.trim()).filter(Boolean);if(!candidates.length){toast('حداقل یک IP وارد کن');return}const r=await j('/api/scanner/edge/scan','POST',{source:'cloudflare',mode:'sample',limit:candidates.length,candidates,sni:v('edgeScanSni')||'www.cloudflare.com',ports:[443]});if(r){window.__edgeResults=r.results||[];window.__edgeSelected=new Set(window.__edgeResults.filter(x=>x.ok).map(x=>String(x.host)));document.getElementById('edgeScanResult').textContent=`تست دستی تمام شد · ${r.good} سالم از ${r.count}`;document.getElementById('edgeScanResult').classList.add('show');edgeRender()}};
+  window.edgeCopyIps=function(){const ips=[...window.__edgeSelected];if(!ips.length){toast('IPی انتخاب نشده');return}navigator.clipboard?.writeText(ips.join('\n'));toast(`${ips.length} IP کپی شد`)};
+  window.edgeClearResults=async function(){window.__edgeResults=[];window.__edgeSelected.clear();edgeRender();const r=await j('/api/scanner/edge/clear','POST',{source:'cloudflare'});if(r)toast('نتایج پاک شد')};
+  window.edgeApplySelected=async function(){const ips=[...window.__edgeSelected];if(!ips.length){toast('ابتدا IP انتخاب کن');return}const r=await j('/api/scanner/edge/apply','POST',{source:'cloudflare',ips});if(r){document.getElementById('edgeSyncedCount').textContent=r.updated;await j('/api/cfedge/settings','POST',{clean_ips:ips});toast(`${ips.length} IP روی ${r.updated} کانفیگ اعمال شد`)}else{toast('اعمال IPها ناموفق بود')}};
 
   // ---- SNI
-  window.sniScan=async function(){
-    const hosts=v('sniHosts');
-    toast('در حال اسکن…');
-    const r=await j('/api/scanner/sni','POST',{hosts:hosts||undefined});
-    if(!r)return;
-    document.getElementById('sniResults').innerHTML=`<div class="page-sub">${r.good} از ${r.count} دامنه مناسب Reality</div>`+
-      r.results.slice(0,60).map(x=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--card-b)"><code>${esc2(x.host)}</code><span>${x.ok?'✅':'❌'} ${x.ms!=null?x.ms+'ms':''} ${x.tls13?'TLS1.3':''} ${x.h2?'H2':''} ${x.error?esc2(x.error):''}</span></div>`).join('');
-  };
+  window.sniFillDefaults=function(){v('sniHosts','www.cloudflare.com\nwww.google.com\ncloudflare.com\nwww.microsoft.com\nwww.apple.com')};
+  window.sniCopyGood=function(){const good=[...(window.__sniResults||[])].filter(x=>x.ok).map(x=>x.host);if(!good.length){toast('دامنه سالمی برای کپی وجود ندارد');return}navigator.clipboard?.writeText(good.join('\n'));toast(`${good.length} دامنه سالم کپی شد`)};
+  window.sniScan=async function(){const hosts=v('sniHosts');toast('در حال اسکن واقعی SNI…');const r=await j('/api/scanner/sni','POST',{hosts:hosts||undefined});if(!r)return;window.__sniResults=r.results||[];const summary=document.getElementById('sniResultsSummary');if(summary)summary.textContent=`${r.good} سالم از ${r.count} دامنه`;const box=document.getElementById('sniResults');if(box)box.innerHTML=(r.results||[]).map(x=>`<div class="edge-sni-result ${x.ok?'ok':'bad'}"><code>${esc2(x.host)}</code><span>${x.ok?'✅ سالم':'❌ نامناسب'} · ${x.ms!=null?esc2(x.ms)+'ms':''} ${x.tls13?'· TLS 1.3':''} ${x.h2?'· HTTP/2':''} ${x.error?'· '+esc2(x.error):''}</span></div>`).join('')||'<div class="edge-muted" style="padding:14px;text-align:center">نتیجه‌ای پیدا نشد.</div>';toast(`اسکن SNI تمام شد · ${r.good} سالم از ${r.count}`)};
 
   const prevGo=window.goPage;
   window.goPage=function(name){
@@ -16104,7 +16063,7 @@ async def edge_scan(request: Request, _=Depends(require_auth)):
     if not targets:
         raise HTTPException(400, "مقصدی برای اسکن پیدا نشد")
     results = await _scan_public_targets(targets, sni=sni, timeout=timeout, concurrency=32)
-    good = [r for r in results if r.get("ok")][:20]
+    good = [r for r in results if r.get("ok")]
     EDGE_SCAN_STATE[source] = good
     EDGE_SCAN_STATE["updated_at"] = datetime.now().isoformat()
     EDGE_SCAN_STATE.setdefault("stats", {})[source] = {
@@ -16144,7 +16103,7 @@ async def edge_scan_apply(request: Request, _=Depends(require_perm("configs"))):
     src = str(body.get("source") or "").lower()
     source = src if src in {"cloudflare", "railway", "domain"} else "cloudflare"
     chosen = body.get("ips") or [x.get("host") for x in EDGE_SCAN_STATE.get(source, []) if x.get("ok")]
-    chosen = list(dict.fromkeys(str(x).strip() for x in chosen if str(x).strip()))[:10]
+    chosen = list(dict.fromkeys(str(x).strip() for x in chosen if str(x).strip()))[:50]
     link_ids = body.get("link_ids") or []
     if not chosen:
         raise HTTPException(400, "ابتدا یک اسکن موفق انجام دهید")
@@ -16161,7 +16120,7 @@ async def edge_scan_apply(request: Request, _=Depends(require_perm("configs"))):
 @app.get("/api/scanner/edge/best")
 async def edge_scan_best(source: str = "cloudflare", _=Depends(require_auth)):
     source = source if source in {"cloudflare", "railway", "domain"} else "cloudflare"
-    return {"ok": True, "source": source, "best": (EDGE_SCAN_STATE.get(source) or [])[:10], "stats": EDGE_SCAN_STATE.get("stats", {}).get(source, {})}
+    return {"ok": True, "source": source, "best": (EDGE_SCAN_STATE.get(source) or [])[:50], "stats": EDGE_SCAN_STATE.get("stats", {}).get(source, {})}
 
 
 async def _resolve_public_hosts(host: str, port: int = 443) -> list[tuple[str, int]]:
