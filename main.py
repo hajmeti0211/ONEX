@@ -13792,9 +13792,23 @@ function goPage(name){
   if(name==='theme'){renderOnexThemePresets();loadOnexTheme();}
 }
 function setCloudflareSection(mode){ return mode; }
-function loadReadyCloudflareIps(){const box=document.getElementById('readyIpList');if(!box)return;api('/api/scanner/edge').then(r=>{if(!r)return;const rows=(r.cloudflare||[]).filter(x=>x&&x.ok!==false),st=(r.stats||{}).cloudflare||{},n=v=>{try{return Number(v||0).toLocaleString('fa-IR')}catch(e){return String(v||0)}};const c=document.getElementById('readyIpCount'),u=document.getElementById('readyIpUpdated');if(c)c.textContent=n(rows.length);if(u)u.textContent=String(st.updated_at||r.updated_at||'—').replace('T',' ').slice(0,19);if(!rows.length){box.innerHTML='<div class="ready-ip-empty">هنوز IP سالمی ذخیره نشده است. ابتدا از اسکنر کلودفلر اسکن بگیر.</div>';return}box.innerHTML=rows.map(x=>`<div class="ready-ip-row"><div><code>${String(x.host||x.ip||'—')}</code><br><small>${x.port?'پورت '+x.port:''}${x.latency_ms?' · '+x.latency_ms+'ms':''}</small></div><span class="ready-ip-ok">سالم</span><span class="ready-ip-ok">✓ آماده</span></div>`).join('')})}
-function copyReadyCloudflareIps(){const a=[...document.querySelectorAll('#readyIpList code')].map(x=>x.textContent).filter(Boolean);if(!a.length){toast('IP آماده‌ای وجود ندارد');return}navigator.clipboard?.writeText(a.join('\n'));toast('IPها کپی شدند')}
-async function applyReadyCloudflareIps(){const a=[...document.querySelectorAll('#readyIpList code')].map(x=>x.textContent).filter(Boolean);if(!a.length){toast('IP آماده‌ای وجود ندارد');return}const r=await api('/api/scanner/edge/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'cloudflare',ips:a})});if(r)toast(`${r.updated||0} کانفیگ بروزرسانی شد`)}
+let readyCloudflareRows=[];
+function readyIpFa(v){try{return Number(v||0).toLocaleString('fa-IR')}catch(e){return String(v||0)}}
+function renderReadyCloudflareIps(){
+  const box=document.getElementById('readyIpList'); if(!box)return;
+  const rows=readyCloudflareRows;
+  const c=document.getElementById('readyIpCount'),sel=document.getElementById('readyIpSelected');
+  if(c)c.textContent=readyIpFa(rows.length); if(sel)sel.textContent=readyIpFa(rows.filter(x=>x.selected).length);
+  if(!rows.length){box.innerHTML='<div class="ready-ip-empty">هنوز IP سالمی ذخیره نشده است. ابتدا از اسکنر کلودفلر اسکن بگیر.</div>';return}
+  box.innerHTML=rows.map((x,i)=>{const ip=String(x.host||x.ip||'—');return `<div class="ready-ip-row"><div><code>${ip}</code><br><small>${x.port?'پورت '+x.port:''}${x.latency_ms?' · '+x.latency_ms+'ms':''}</small></div><span class="ready-ip-ok">سالم</span><label class="chk"><input type="checkbox" data-ready-index="${i}" ${x.selected?'checked':''}> انتخاب</label></div>`}).join('');
+  box.querySelectorAll('input[data-ready-index]').forEach(el=>el.addEventListener('change',()=>{const row=readyCloudflareRows[Number(el.dataset.readyIndex)];if(row)row.selected=el.checked;renderReadyCloudflareIps()}));
+}
+function loadReadyCloudflareIps(){
+  const box=document.getElementById('readyIpList'); if(box)box.innerHTML='<div class="ready-ip-empty">در حال دریافت IPهای آماده...</div>';
+  api('/api/scanner/edge').then(r=>{if(!r)return;readyCloudflareRows=(r.cloudflare||[]).filter(x=>x&&x.ok!==false).map(x=>({...x,selected:false}));const st=(r.stats||{}).cloudflare||{};const u=document.getElementById('readyIpUpdated');if(u)u.textContent=String(st.updated_at||r.updated_at||'—').replace('T',' ').slice(0,19);renderReadyCloudflareIps()});
+}
+function copyReadyCloudflareIps(){const ips=readyCloudflareRows.filter(x=>x.selected).map(x=>x.host||x.ip).filter(Boolean);const out=ips.length?ips:readyCloudflareRows.map(x=>x.host||x.ip).filter(Boolean);if(!out.length){toast('IP آماده‌ای وجود ندارد');return}navigator.clipboard?.writeText(out.join('\n'));toast(ips.length?'IPهای انتخاب‌شده کپی شدند':'همه IPها کپی شدند')}
+async function applyReadyCloudflareIps(){const ips=readyCloudflareRows.filter(x=>x.selected).map(x=>x.host||x.ip).filter(Boolean);if(!ips.length){toast('حداقل یک IP را انتخاب کن');return}const r=await api('/api/scanner/edge/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'cloudflare',ips})});if(r)toast(`${r.updated||0} کانفیگ بروزرسانی شد`)}
 
 document.querySelectorAll('.nav-cloudflare-toggle').forEach(toggle=>toggle.addEventListener('click',e=>{e.preventDefault();const group=toggle.closest('.nav-cloudflare'),menu=group?.querySelector('.nav-cloudflare-menu');if(!group||!menu)return;const open=group.classList.toggle('open');toggle.setAttribute('aria-expanded',open?'true':'false');menu.hidden=!open;}));
 document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.addEventListener('click',()=>{
@@ -15974,24 +15988,26 @@ cloudflare.com"></textarea></div>
 </section>
 <style id="onex-ready-ips-css">
 #page-edge-ready-ips{width:100%;max-width:1120px;margin-inline:auto}
-#page-edge-ready-ips .ready-ip-card{border:1px solid var(--card-b);border-radius:20px;padding:18px;background:rgba(var(--accent-rgb),.035);margin-bottom:14px}
-#page-edge-ready-ips .ready-ip-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-#page-edge-ready-ips .ready-ip-title{font-size:20px;font-weight:900;color:var(--t1)}
-#page-edge-ready-ips .ready-ip-sub{font-size:12px;color:var(--t3);line-height:1.8;margin-top:4px}
-#page-edge-ready-ips .ready-ip-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
-#page-edge-ready-ips .ready-ip-kpi{padding:13px;border:1px solid var(--card-b);border-radius:14px;background:var(--bg3)}
-#page-edge-ready-ips .ready-ip-kpi span{display:block;color:var(--t3);font-size:11px}.ready-ip-kpi b{display:block;margin-top:6px;font:800 20px var(--mono);direction:ltr;color:var(--t1)}
-#page-edge-ready-ips .ready-ip-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.ready-ip-actions .btn{min-height:42px}
-#page-edge-ready-ips .ready-ip-list{display:grid;gap:8px;margin-top:12px}
-#page-edge-ready-ips .ready-ip-row{display:grid;grid-template-columns:minmax(0,1fr) 90px 90px;gap:10px;align-items:center;padding:12px;border:1px solid var(--card-b);border-radius:13px;background:rgba(var(--accent-rgb),.045)}
+#page-edge-ready-ips .ready-ip-card{border:1px solid var(--card-b);border-radius:22px;padding:18px;background:rgba(var(--accent-rgb),.035);margin-bottom:14px}
+#page-edge-ready-ips .ready-ip-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+#page-edge-ready-ips .ready-ip-title{font-size:22px;font-weight:900;color:var(--t1);line-height:1.5}
+#page-edge-ready-ips .ready-ip-sub{font-size:12px;color:var(--t3);line-height:2;margin-top:5px}
+#page-edge-ready-ips .ready-ip-badge{padding:7px 13px;border:1px solid rgba(var(--accent2-rgb),.35);border-radius:999px;color:var(--accent2);font:700 11px var(--mono);white-space:nowrap}
+#page-edge-ready-ips .ready-ip-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+#page-edge-ready-ips .ready-ip-kpi{min-height:108px;padding:15px;border:1px solid var(--card-b);border-radius:16px;background:var(--bg3);display:flex;flex-direction:column;justify-content:space-between}
+#page-edge-ready-ips .ready-ip-kpi span{display:block;color:var(--t3);font-size:11px}.ready-ip-kpi b{display:block;margin-top:10px;font:800 24px var(--mono);direction:ltr;color:var(--t1)}
+#page-edge-ready-ips .ready-ip-actions{display:flex;gap:9px;align-items:center;justify-content:flex-start;flex-wrap:wrap;margin-top:16px}.ready-ip-actions .btn{min-height:44px}
+#page-edge-ready-ips .ready-ip-list{display:grid;gap:8px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--card-b)}
+#page-edge-ready-ips .ready-ip-row{display:grid;grid-template-columns:minmax(0,1fr) 90px 110px;gap:10px;align-items:center;padding:13px;border:1px solid var(--card-b);border-radius:14px;background:rgba(var(--accent-rgb),.045)}
 #page-edge-ready-ips .ready-ip-row code{direction:ltr;color:var(--accent2);font:700 14px var(--mono)}
-#page-edge-ready-ips .ready-ip-row small{color:var(--t3);font-size:11px}.ready-ip-ok{color:#35e8a2;font-weight:800}.ready-ip-empty{text-align:center;padding:28px;color:var(--t3);border:1px dashed var(--card-b);border-radius:14px}
-@media(max-width:640px){#page-edge-ready-ips .ready-ip-kpis{grid-template-columns:1fr 1fr}#page-edge-ready-ips .ready-ip-row{grid-template-columns:1fr auto}.ready-ip-row small:last-child{grid-column:1/-1}}
+#page-edge-ready-ips .ready-ip-row small{color:var(--t3);font-size:11px}.ready-ip-ok{color:#35e8a2;font-weight:800;white-space:nowrap}.ready-ip-empty{text-align:center;padding:32px 16px;color:var(--t3);border:1px dashed var(--card-b);border-radius:15px;font-size:13px;line-height:2}
+#page-edge-ready-ips .ready-ip-row .chk{justify-content:flex-end;font-size:11px;color:var(--t2)}
+@media(max-width:640px){#page-edge-ready-ips .ready-ip-kpis{grid-template-columns:1fr 1fr}.ready-ip-kpi:last-child{grid-column:1/-1}#page-edge-ready-ips .ready-ip-row{grid-template-columns:1fr auto}.ready-ip-row .chk{grid-column:1/-1;justify-content:flex-start}}
 </style>
 <section class="page cf-dedicated-page" id="page-edge-ready-ips">
   <div class="page-head"><div><div class="page-title"><span>آیپی‌های آماده کلودفلر</span></div><div class="page-sub">IPهای سالم ذخیره‌شده از اسکن Cloudflare؛ آماده برای انتخاب و اعمال روی کانفیگ‌ها.</div></div></div>
   <div class="ready-ip-card">
-    <div class="ready-ip-head"><div><div class="ready-ip-title">لیست IPهای آماده Cloudflare</div><div class="ready-ip-sub">نتیجه‌های سالم ذخیره‌شده از اسکنر کلودفلر در این بخش نمایش داده می‌شوند.</div></div><span class="edge-sni-badge">CLOUDFLARE IP</span></div>
+    <div class="ready-ip-head"><div><div class="ready-ip-title">لیست IPهای آماده Cloudflare</div><div class="ready-ip-sub">نتیجه‌های سالم ذخیره‌شده از اسکنر کلودفلر در این بخش نمایش داده می‌شوند.</div></div><span class="ready-ip-badge">CLOUDFLARE IP</span></div>
     <div class="ready-ip-kpis"><div class="ready-ip-kpi"><span>IPهای سالم</span><b id="readyIpCount">۰</b></div><div class="ready-ip-kpi"><span>آخرین بروزرسانی</span><b id="readyIpUpdated">—</b></div><div class="ready-ip-kpi"><span>IPهای انتخاب‌شده</span><b id="readyIpSelected">۰</b></div></div>
     <div class="ready-ip-actions"><button type="button" class="btn btn-p" onclick="loadReadyCloudflareIps()">بروزرسانی IPها</button><button type="button" class="btn" onclick="copyReadyCloudflareIps()">کپی IPها</button><button type="button" class="btn btn-p" onclick="applyReadyCloudflareIps()">اعمال روی کانفیگ‌های Cloudflare</button></div>
     <div id="readyIpList" class="ready-ip-list"><div class="ready-ip-empty">در حال دریافت IPهای آماده...</div></div>
