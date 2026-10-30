@@ -5080,12 +5080,17 @@ async def subscription_single(
     lines = subscription_info_lines(uuid, link)
     # 2) every config of this sub (all selected protocols, all clean IPs)
     _uris = link_config_uris(link, uuid, host)
-    lines.extend(_uris)
+    # Edge variants only go to the dedicated Edge subscription, never to every sub
     try:
-        from onex.integrations.cf_edge import extra_uris as _edge_extra
-        lines.extend(_edge_extra(_uris))
+        from onex.integrations.cf_edge import is_edge_only, edge_only_uris as _edge_only
+        if is_edge_only(uuid, link.get("uuid")):
+            _edge_lines = _edge_only(_uris)
+            lines.extend(_edge_lines or _uris)
+        else:
+            lines.extend(_uris)
     except Exception as _edge_exc:
         logger.debug("edge sub skipped: %s", _edge_exc)
+        lines.extend(_uris)
     content = base64.b64encode("\n".join(lines).encode()).decode()
     _vol_t, _time_t = subscription_usage_texts(link)
     profile_title = f"{label} | {_vol_t} | {_time_t}"
@@ -11298,6 +11303,114 @@ Cache-Control: no-cache"></textarea></div>
       <label class="edge-insub"><input type="checkbox" id="edgeInSub" checked> افزودن کانفیگ Edge به اشتراک‌ها</label>
     </div>
   </div>
+<style id="onex-edge-sub-css">
+.es{margin-top:13px;border:1px solid var(--card-b);border-radius:20px;padding:16px;background:rgba(var(--accent-rgb),.035);min-width:0;box-sizing:border-box}
+.es *{box-sizing:border-box}
+.es-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.es-ico{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;flex:none}
+.es-ico svg{width:19px;height:19px}
+.es-title{font-size:15px;font-weight:800;color:var(--t1)}
+.es-sub{font-size:11px;color:var(--t3);margin-top:3px;line-height:1.7}
+.es-pill{margin-inline-start:auto;font-size:10px;padding:4px 10px;border-radius:99px;background:rgba(34,197,94,.12);color:#4ade80;font-weight:700;white-space:nowrap}
+.es-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.es-kpi{padding:11px 12px;border-radius:14px;background:var(--bg3);border:1px solid var(--card-b);min-width:0}
+.es-kpi span{display:block;font-size:10px;color:var(--t3)}
+.es-kpi b{display:block;margin-top:6px;font-size:17px;color:var(--t1);direction:ltr;text-align:start;font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.es-grid{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:14px;margin-top:14px;align-items:start}
+.es-panel{padding:14px;border-radius:16px;border:1px solid var(--card-b);background:var(--bg3);min-width:0}
+.es-panel h4{margin:0 0 4px;font-size:13px;font-weight:800;color:var(--t1)}
+.es-lbl{font-size:11px;color:var(--t3);margin:14px 0 7px;font-weight:600}
+.es-seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:13px;background:var(--card)}
+.es-seg button,.es-chips button{min-height:36px;padding:6px 2px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--t2);font:600 11px var(--font-sans,inherit);cursor:pointer;font-family:inherit;transition:.2s}
+.es-seg button.on,.es-chips button.on{background:linear-gradient(90deg,var(--accent),var(--purple));color:#fff;font-weight:800}
+.es-chips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.es-chips button{border-color:var(--card-b);background:var(--card)}
+.es-num{display:flex;align-items:center;gap:6px;height:44px;padding:0 6px;border-radius:12px;background:var(--card);border:1px solid var(--card-b)}
+.es-num input{flex:1;min-width:0;height:100%;text-align:center;background:transparent;border:0;color:var(--t1);font-family:var(--mono);font-size:16px;font-weight:700;outline:none;padding:0}
+.es-num button{width:32px;height:32px;flex:none;border-radius:9px;border:1px solid var(--card-b);background:transparent;color:var(--t1);cursor:pointer;font-size:16px;line-height:1}
+.es-build{width:100%;min-height:46px;margin-top:14px;border-radius:14px;border:0;background:linear-gradient(90deg,var(--accent),var(--purple));color:#fff;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
+.es-build:disabled{opacity:.6;cursor:wait}
+.es-lanes{display:grid;gap:9px;min-width:0}
+.es-lane{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px;border-radius:15px;background:var(--bg3);border:1px solid var(--card-b);min-width:0}
+.es-lane.off{opacity:.55}
+.es-code{width:44px;height:36px;border-radius:11px;display:grid;place-items:center;font:700 10px var(--mono);color:#fff;background:linear-gradient(135deg,var(--accent),var(--purple))}
+.es-name{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--t1);min-width:0}
+.es-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr}
+.es-name small{font-weight:500;color:var(--t3);font-size:11px;white-space:nowrap}
+.es-bar{height:6px;border-radius:9px;background:var(--card-b);margin-top:8px;overflow:hidden}
+.es-bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--accent),var(--purple))}
+.es-bar i.hot{background:var(--amber)}
+.es-meta{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:11px;color:var(--t3)}
+.es-meta b{font-family:var(--mono);font-weight:500;color:var(--t2);direction:ltr}
+.es-side{display:flex;flex-direction:column;align-items:center;gap:8px}
+.es-tog{width:42px;height:24px;border-radius:99px;border:0;position:relative;cursor:pointer;background:var(--accent);flex:none}
+.es-tog::after{content:"";position:absolute;top:4px;left:22px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.es-tog.off{background:var(--card-b)}
+.es-tog.off::after{left:4px}
+.es-del{background:none;border:0;color:var(--red);font-size:11px;cursor:pointer;padding:2px 0;font-family:inherit}
+.es-empty{padding:26px 14px;text-align:center;font-size:12px;color:var(--t3);border:1px dashed var(--card-b);border-radius:14px}
+.es-count{font-size:11px;color:var(--t3)}
+@media(max-width:800px){
+  .es-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .es{padding:13px;border-radius:18px}
+  .es-kpis{gap:6px}
+  .es-kpi{padding:9px}
+  .es-kpi b{font-size:14px}
+  .es-kpi span{font-size:9px}
+  .es-chips{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .es-seg{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .es-lane{grid-template-columns:40px minmax(0,1fr) auto;gap:9px;padding:11px}
+  .es-code{width:40px;height:34px}
+  .es-num input{font-size:16px}
+}
+</style>
+<section class="es" id="edgeSub" aria-label="ساب اختصاصی Edge">
+  <div class="es-head">
+    <div class="es-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.6 1.6A4 4 0 0 0 6.5 19Z"/></svg></div>
+    <div>
+      <div class="es-title">ساب اختصاصی Cloudflare Edge</div>
+      <div class="es-sub">فقط کانفیگ‌های Edge این بخش داخل ساب اختصاصی هستن و به بقیه‌ی ساب‌ها اضافه نمی‌شن</div>
+    </div>
+    <span class="es-pill" id="esPill">—</span>
+  </div>
+  <div class="es-kpis">
+    <div class="es-kpi"><span>کانفیگ فعال</span><b id="esKActive">—</b></div>
+    <div class="es-kpi"><span>مصرف کل</span><b id="esKUsed">—</b></div>
+    <div class="es-kpi"><span>مدت</span><b id="esKDays">—</b></div>
+  </div>
+  <div class="es-grid">
+    <div class="es-panel">
+      <h4>ساخت کانفیگ</h4>
+      <div class="es-lbl">پروتکل</div>
+      <div class="es-seg" id="esProto">
+        <button type="button" data-v="all" class="on">همه</button>
+        <button type="button" data-v="trojan">Trojan</button>
+        <button type="button" data-v="vless">VLESS</button>
+        <button type="button" data-v="vmess">VMess</button>
+      </div>
+      <div class="es-lbl">تعداد کانفیگ</div>
+      <div class="es-chips" id="esCount">
+        <button type="button" data-v="5">۵</button>
+        <button type="button" data-v="10" class="on">۱۰</button>
+        <button type="button" data-v="20">۲۰</button>
+        <button type="button" data-v="custom">سفارشی</button>
+      </div>
+      <div class="es-num" id="esCustomBox" hidden style="margin-top:8px"><button type="button" data-step="-1">−</button><input id="esCustom" inputmode="numeric" value="10"><button type="button" data-step="1">+</button></div>
+      <div class="es-lbl">حجم هر کانفیگ (GB)</div>
+      <div class="es-num"><button type="button" data-field="quota" data-step="-5">−</button><input id="esQuota" inputmode="numeric" value="50"><button type="button" data-field="quota" data-step="5">+</button></div>
+      <div class="es-lbl">مدت (روز)</div>
+      <div class="es-num"><button type="button" data-field="days" data-step="-1">−</button><input id="esDays" inputmode="numeric" value="30"><button type="button" data-field="days" data-step="1">+</button></div>
+      <button type="button" class="es-build" id="esBuild">ساخت کانفیگ‌ها</button>
+    </div>
+    <div class="es-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px"><h4 style="margin:0">کانفیگ‌های ساب Edge</h4><span class="es-count" id="esTotal">—</span></div>
+      <div class="es-lanes" id="esLanes"><div class="es-empty">هنوز کانفیگی ساخته نشده.</div></div>
+    </div>
+  </div>
+</section>
+
   <div class="edge-card">
     <h3>اسکن و انتخاب IP <small>نتیجه‌ها واقعی هستند و از داخل پنل تست می‌شوند</small></h3>
     <div class="edge-scan-box">
@@ -16108,6 +16221,90 @@ html.light .sidebar .nav-label{color:inherit!important}
     await j('/api/cfedge/settings','POST',{clean_ips:ips});
     const sc=$e('edgeSyncedCount');if(sc)sc.textContent=faN(r.updated);toast(`${faN(ips.length)} IP روی ${faN(r.updated)} کانفیگ اعمال شد`);});
 
+  // ---- Edge subscription (dedicated): settings, build, lanes
+  const ES={proto:'all',count:10,custom:false,quota:50,days:30};
+  const esQ=id=>document.getElementById(id);
+  const esNum=(v,d)=>{const n=Number(String(v).replace(/[^\d.]/g,''));return Number.isFinite(n)&&n>0?n:d};
+  const esGB=b=>(Number(b||0)/1073741824);
+  const esFmtGB=n=>(n>=100?Math.round(n):Number(n.toFixed(1))).toLocaleString('fa-IR');
+  function esCode(p){p=String(p||'').toLowerCase();return p.includes('trojan')?'TRJ':p.includes('vless')?'VLS':p.includes('vmess')?'VMS':'EDG'}
+  function esProtoName(p){p=String(p||'');return p.replace(/-/g,' ')}
+  function esSetProto(){document.querySelectorAll('#esProto button').forEach(b=>b.classList.toggle('on',b.dataset.v===ES.proto))}
+  function esSetCount(){document.querySelectorAll('#esCount button').forEach(b=>b.classList.toggle('on',(b.dataset.v==='custom'&&ES.custom)||(!ES.custom&&Number(b.dataset.v)===ES.count)));esQ('esCustomBox').hidden=!ES.custom;esQ('esCustom').value=ES.count}
+  function esPaint(){esQ('esQuota').value=ES.quota;esQ('esDays').value=ES.days;esSetProto();esSetCount();}
+  function esFillKpis(rows){
+    const act=rows.filter(r=>r.active).length;
+    const used=rows.reduce((s,r)=>s+esGB(r.used_bytes),0);
+    esQ('esKActive').textContent=`${act.toLocaleString('fa-IR')} / ${rows.length.toLocaleString('fa-IR')}`;
+    esQ('esKUsed').textContent=`${esFmtGB(used)} GB`;
+    esQ('esKDays').textContent=`${ES.days.toLocaleString('fa-IR')} روز`;
+    const pill=esQ('esPill');pill.textContent=rows.length?(act?'فعال':'همه خاموش'):'بدون کانفیگ';pill.style.background=act?'':'rgba(148,163,184,.15)';pill.style.color=act?'':'var(--t3)';
+    esQ('esTotal').textContent=`${rows.length.toLocaleString('fa-IR')} مورد`;
+  }
+  function esDate(v){if(!v)return '—';try{const d=new Date(v);if(isNaN(d))return String(v);return d.toLocaleDateString('fa-IR')}catch(e){return String(v)}}
+  function esRender(rows){
+    const box=esQ('esLanes');
+    if(!rows.length){box.innerHTML='<div class="es-empty">هنوز کانفیگی ساخته نشده. تنظیمات رو انتخاب کن و «ساخت کانفیگ‌ها» رو بزن.</div>';return}
+    box.innerHTML=rows.map(r=>{
+      const lim=esGB(r.limit_bytes),used=esGB(r.used_bytes),pct=lim>0?Math.min(100,used/lim*100):0;
+      return `<div class="es-lane${r.active?'':' off'}">
+        <div class="es-code">${esCode(r.protocol)}</div>
+        <div style="min-width:0">
+          <div class="es-name"><span>${edgeEsc(r.label)}</span><small>${edgeEsc(esProtoName(r.protocol))}</small></div>
+          <div class="es-bar"><i class="${pct>85?'hot':''}" style="width:${pct.toFixed(1)}%"></i></div>
+          <div class="es-meta"><span><b>${esFmtGB(used)}/${lim?esFmtGB(lim):'∞'} GB</b></span><span>${Number(r.connected_ips||0).toLocaleString('fa-IR')} کاربر</span><span>انقضا: ${esDate(r.expires_at)}</span></div>
+        </div>
+        <div class="es-side">
+          <button type="button" class="es-tog${r.active?'':' off'}" data-act="toggle" data-uid="${edgeEsc(r.uid)}" data-on="${r.active?1:0}" aria-label="روشن/خاموش"></button>
+          <button type="button" class="es-del" data-act="del" data-uid="${edgeEsc(r.uid)}">حذف</button>
+        </div>
+      </div>`}).join('');
+  }
+  async function loadEdgeSub(){
+    const r=await api('/api/cfedge/sub');if(!r)return;
+    if(r.settings&&r.settings.count){ES.proto=r.settings.protocol||'all';ES.count=Number(r.settings.count)||10;ES.quota=Number(r.settings.quota)||50;ES.days=Number(r.settings.days)||30;ES.custom=![5,10,20].includes(ES.count);esPaint()}
+    esFillKpis(r.links||[]);esRender(r.links||[]);
+  }
+  function esSyncInputs(){ES.quota=esNum(esQ('esQuota').value,50);ES.days=esNum(esQ('esDays').value,30);if(ES.custom)ES.count=Math.min(60,esNum(esQ('esCustom').value,10))}
+  async function esSaveSettings(){esSyncInputs();return api('/api/cfedge/sub/settings','POST',{protocol:ES.proto,count:ES.count,quota:ES.quota,days:ES.days})}
+  async function esListUids(){const r=await api('/api/links');const links=Array.isArray(r)?r:(r&&r.links)||[];return links}
+  function esUidOf(l){const m=String(l.sub_url||'').match(/\/sub\/([^/?#]+)/);return m?m[1]:(l.uid||'')}
+  function esPickProtocols(list){
+    const ids=(list||[]).map(p=>p.id||p);
+    const pick=re=>ids.find(x=>re.test(String(x)));
+    if(ES.proto==='all'){const out=[pick(/trojan/i),pick(/vless/i),pick(/vmess/i)].filter(Boolean);return out.length?out:[ids[0]]}
+    const one=pick(new RegExp(ES.proto,'i'));return [one||ids[0]];
+  }
+  document.addEventListener('click',async e=>{
+    const t=e.target.closest('#esProto button,#esCount button,#esCustomBox button,#esLanes [data-act],#esBuild,[data-field]');
+    if(!t)return;
+    if(t.closest('#esProto')){ES.proto=t.dataset.v;esSetProto();return}
+    if(t.closest('#esCount')){const v=t.dataset.v;if(v==='custom'){ES.custom=true}else{ES.custom=false;ES.count=Number(v)}esSetCount();return}
+    if(t.closest('#esCustomBox')){ES.count=Math.max(1,Math.min(60,esNum(esQ('esCustom').value,ES.count)+Number(t.dataset.step)));esSetCount();return}
+    if(t.hasAttribute('data-field')){const f=t.dataset.field;const v=Math.max(f==='days'?1:1,(f==='days'?ES.days:ES.quota)+Number(t.dataset.step));if(f==='days')ES.days=Math.min(365,v);else ES.quota=Math.min(2000,v);esPaint();return}
+    if(t.id==='esBuild'){return esBuild(t)}
+    if(t.dataset.act==='toggle'){const on=t.dataset.on==='1';const r=await fetch(`/api/links/${encodeURIComponent(t.dataset.uid)}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({active:!on})});if(r.ok){toast(on?'کانفیگ خاموش شد':'کانفیگ روشن شد')}else toast('تغییر وضعیت ناموفق بود');loadEdgeSub();return}
+    if(t.dataset.act==='del'){if(!confirm('این کانفیگ حذف شود؟'))return;const r=await fetch(`/api/links/${encodeURIComponent(t.dataset.uid)}`,{method:'DELETE'});if(r.ok)toast('کانفیگ حذف شد');else toast('حذف ناموفق بود');loadEdgeSub();return}
+  });
+  async function esBuild(btn){
+    esSyncInputs();
+    if(!confirm(`${ES.count.toLocaleString('fa-IR')} کانفیگ ساخته بشه؟`))return;
+    btn.disabled=true;const old=btn.textContent;
+    try{
+      const pr=await api('/api/protocols');if(!pr){return}
+      const protos=esPickProtocols(pr.protocols||[]);
+      await esSaveSettings();
+      const before=new Set((await esListUids()).map(esUidOf));
+      for(let i=0;i<ES.count;i++){
+        btn.textContent=`در حال ساخت ${(i+1).toLocaleString('fa-IR')} از ${ES.count.toLocaleString('fa-IR')}…`;
+        await j('/api/links','POST',{label:`Edge-${String(i+1).padStart(2,'0')}`,protocol:protos[i%protos.length],limit_value:ES.quota,limit_unit:'GB',expires_days:ES.days});
+      }
+      const fresh=(await esListUids()).map(esUidOf).filter(u=>u&&!before.has(u));
+      if(fresh.length)await j('/api/cfedge/sub/mark','POST',{uids:fresh});
+      toast(`${fresh.length.toLocaleString('fa-IR')} کانفیگ به ساب Edge اضافه شد`);
+    }finally{btn.disabled=false;btn.textContent=old;loadEdgeSub()}
+  }
+
   // ---- SNI scanner (TLS 1.3 + HTTP/2)
   const SNI_FALLBACK=['www.cloudflare.com','www.google.com','cloudflare.com','www.microsoft.com','www.apple.com','www.speedtest.net','dl.google.com','www.yahoo.com','www.amazon.com','www.icloud.com'];
   window.sniFillDefaults=async function(){if(!window.__sniDefaults)await loadSniSaved();const list=(window.__sniDefaults&&window.__sniDefaults.length?window.__sniDefaults:SNI_FALLBACK).slice(0,40);evSet('sniHosts',list.join('\n'));toast(`${faN(list.length)} دامنه پیشنهادی اضافه شد`)};
@@ -16130,7 +16327,7 @@ html.light .sidebar .nav-label{color:inherit!important}
   window.goPage=function(name){
     prevGo(name);
     if(name==='sell')loadSell();
-    if(name==='edge'){loadEdge();loadEdgeSaved();loadSniSaved();}
+    if(name==='edge'){loadEdge();loadEdgeSaved();loadEdgeSub();loadSniSaved();}
   };
 })();
 </script>
