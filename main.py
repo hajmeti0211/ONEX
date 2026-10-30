@@ -11275,7 +11275,7 @@ Cache-Control: no-cache"></textarea></div>
     <div class="edge-mark" aria-label="Cloudflare Edge"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 35h22a8 8 0 0 0 1-16 13 13 0 0 0-24-2 9 9 0 0 0 1 18Z"/><path d="m18 27 5 5 9-10"/></svg></div>
   </div>
   <div class="edge-layout">
-    <div class="edge-card" id="edgeAccountSection" data-edge-focus="account">
+    <div class="edge-card cf-block" id="edgeAccountSection" data-cf-section="account">
       <h3>اتصال واقعی به Cloudflare <small>توکن شما فقط روی سرور ذخیره می‌شود</small></h3>
       <div id="edgeStatus" class="edge-status">در حال بررسی اتصال...</div>
       <div class="edge-token-help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg><div>یک API Token بساز و اینجا وارد کن. برای دامنه اختصاصی، مجوزهای <b>Workers Scripts: Edit</b>، <b>Workers Subdomain: Edit</b>، <b>Account: Read</b>، <b>Zone: Read</b> و <b>Workers Domains: Edit</b> لازم است.<br><a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener">بازکردن صفحه ساخت Token در Cloudflare ↗</a></div></div>
@@ -11290,7 +11290,7 @@ Cache-Control: no-cache"></textarea></div>
         <button type="button" class="btn btn-d edge-del" id="edgeBtnRemove" onclick="edgeRemove()">حذف Edge</button>
       </div>
     </div>
-    <div class="edge-card" id="edgeStatusSection" data-edge-focus="status">
+    <div class="edge-card cf-block" id="edgeStatusSection" data-cf-section="account">
       <h3>وضعیت Edge</h3>
       <div class="edge-metrics">
         <div class="edge-metric"><span>وضعیت Worker</span><b id="edgeWorkerState">—</b></div>
@@ -11371,7 +11371,7 @@ Cache-Control: no-cache"></textarea></div>
   .es-num input{font-size:16px}
 }
 </style>
-<section class="es" id="edgeConfigSection" data-edge-focus="config" aria-label="ساخت کانفیگ کلودفلر">
+<section class="es cf-block" id="edgeConfigSection" data-cf-section="config" aria-label="ساخت کانفیگ کلودفلر">
   <div class="es-head">
     <div class="es-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.6 1.6A4 4 0 0 0 6.5 19Z"/></svg></div>
     <div>
@@ -11416,7 +11416,7 @@ Cache-Control: no-cache"></textarea></div>
   </div>
 </section>
 
-  <div class="edge-card" id="edgeCloudflareScanner" data-edge-focus="scanner">
+  <div class="edge-card cf-block" id="edgeCloudflareScanner" data-cf-section="scanner">
     <h3>اسکن و انتخاب IP <small>نتیجه‌ها واقعی هستند و از داخل پنل تست می‌شوند</small></h3>
     <div class="edge-scan-box">
       <div class="field"><label for="edgeScanLimit">تعداد تست</label><select id="edgeScanLimit"><option value="60">۶۰</option><option value="120" selected>۱۲۰</option><option value="500">۵۰۰</option><option value="1000">۱۰۰۰</option><option value="2048">حداکثر</option></select></div>
@@ -11426,7 +11426,7 @@ Cache-Control: no-cache"></textarea></div>
     <div class="edge-manual"><input id="edgeManualIps" dir="ltr" autocomplete="off" placeholder="مثلاً 104.16.0.1, 172.67.1.1"><button type="button" class="btn" id="edgeBtnManual" onclick="edgeScanManual()">تست IP دستی</button></div>
     <div id="edgeScanResult" class="edge-test-result"></div>
   </div>
-  <div class="edge-card" id="edgeScanResultsSection" data-edge-focus="scanner">
+  <div class="edge-card cf-block" id="edgeScanResultsSection" data-cf-section="scanner">
     <div class="edge-res-head"><h3>لیست کامل نتایج IP</h3>
       <div class="edge-res-btns"><button type="button" class="btn btn-sm" onclick="edgeSelectAll(true)">انتخاب همه سالم‌ها</button><button type="button" class="btn btn-sm" onclick="edgeSelectAll(false)">لغو انتخاب</button><button type="button" class="btn btn-sm" onclick="edgeCopyIps()">کپی IPها</button><button type="button" class="btn btn-sm btn-d" onclick="edgeClearResults()">پاک‌کردن نتایج</button></div>
     </div>
@@ -11434,7 +11434,7 @@ Cache-Control: no-cache"></textarea></div>
     <div class="edge-table-wrap"><div class="edge-table"><div class="edge-table-head"><span>IP</span><span>موقعیت</span><span>وضعیت</span><span>سرعت</span><span>انتخاب</span></div><div id="edgeIpRows"><div class="edge-muted" style="padding:22px;text-align:center">هنوز اسکن انجام نشده است.</div></div></div></div>
     <div class="edge-apply"><div><b id="edgeApplyText">۰ IP انتخاب شده</b><p>IPهای انتخابی روی Edge و لینک‌های اشتراک اعمال می‌شوند.</p></div><button type="button" class="btn btn-p" id="edgeBtnApply" onclick="edgeApplySelected()">اعمال روی کانفیگ‌های Cloudflare</button></div>
   </div>
-  <div class="edge-card edge-sni-card" id="edgeSniSection" data-edge-focus="sni">
+  <div class="edge-card edge-sni-card cf-block" id="edgeSniSection" data-cf-section="sni">
     <div class="edge-sni-head"><div><h3 style="margin:0">اسکنر SNI برای Reality</h3><p class="edge-muted">دامنه‌ها را از نظر TLS 1.3، HTTP/2 و سرعت اتصال بررسی کن. نتیجه‌ها برای انتخاب Handshake مناسب قابل کپی هستند.</p></div><span class="edge-sni-badge">TLS / H2</span></div>
     <div class="edge-sni-grid">
       <div class="field"><label for="sniHosts">لیست دامنه‌ها</label><textarea id="sniHosts" rows="4" dir="ltr" spellcheck="false" placeholder="www.cloudflare.com
@@ -11451,7 +11451,12 @@ cloudflare.com"></textarea></div>
 .nav-cloudflare-menu{display:grid;gap:5px;margin:4px 8px 8px 18px;padding:6px;border-inline-start:1px solid rgba(var(--accent-rgb),.32);border-radius:0 12px 12px 0;background:rgba(var(--accent-rgb),.045)}.nav-cloudflare-menu[hidden]{display:none}.nav-cloudflare-menu .nav-subitem{min-height:38px;padding:0 10px 0 12px;border-radius:10px;font-size:11px;background:transparent}.nav-cloudflare-menu .nav-subitem:hover{background:rgba(var(--accent-rgb),.12)}.nav-cloudflare-menu .nav-subitem.on{background:linear-gradient(90deg,rgba(var(--accent-rgb),.2),rgba(var(--accent2-rgb),.12));box-shadow:inset 2px 0 var(--accent)}.nav-subitem .nav-ico{width:17px;height:17px}.sidebar.collapsed .nav-cloudflare-menu{position:absolute;inset-inline-start:calc(100% + 8px);top:0;width:230px;margin:0;padding:8px;border:1px solid var(--card-b);border-inline-start:1px solid var(--accent);border-radius:14px;background:var(--bg2);box-shadow:0 18px 40px rgba(0,0,0,.32);z-index:20}@media(max-width:640px){.nav-cloudflare-menu{margin-inline-start:10px}.nav-cloudflare-menu .nav-subitem{min-height:42px;font-size:12px}}
 </style>
 <style id="onex-cloudflare-section-focus">
-#page-edge.edge-focus-mode .edge-hero{display:none!important}#page-edge.edge-focus-mode [data-edge-focus]{display:none!important}#page-edge.edge-focus-mode [data-edge-focus].edge-focus-active{display:block!important}#page-edge.edge-focus-mode #edgeAccountSection.edge-focus-active,#page-edge.edge-focus-mode #edgeStatusSection.edge-focus-active,#page-edge.edge-focus-mode #edgeSniSection.edge-focus-active{display:block!important}#page-edge.edge-focus-mode #edgeConfigSection.edge-focus-active{display:block!important}#page-edge.edge-focus-mode #edgeCloudflareScanner,#page-edge.edge-focus-mode #edgeScanResultsSection{display:none!important}#page-edge-tools.edge-focus-mode .page-head{display:none!important}
+/* Each Cloudflare menu item owns its own content block. */
+#page-edge.cf-section-mode .edge-hero{display:none!important}
+#page-edge.cf-section-mode .cf-block{display:none!important}
+#page-edge.cf-section-mode .cf-block.cf-visible{display:block!important}
+#page-edge.cf-section-mode #edgeConfigSection.cf-visible{display:block!important}
+#page-edge-tools.cf-section-mode .page-head{display:none!important}
 </style>
 <style id="onex-panel-mobile-edge-fix">@media(max-width:640px){html,body{max-width:100%;overflow-x:hidden}.page{width:100%;max-width:100%;box-sizing:border-box}.onex-topbar,.mob-bar{min-height:58px;height:auto;max-height:72px;box-sizing:border-box}.onex-topbar{padding:8px 10px!important}.mob-bar{padding:8px 10px!important}.onex-topbar .top-brand,.mob-bar .mob-brand{max-width:55vw;overflow:hidden}.onex-topbar .top-brand img,.mob-bar img{max-width:145px;height:auto}.onex-topbar .top-actions,.mob-bar .mob-actions{gap:5px}.onex-topbar button,.mob-bar button{min-width:40px;min-height:40px}.page-head{max-width:100%;overflow:hidden}.card{max-width:100%;box-sizing:border-box}.form-row,.g2{grid-template-columns:1fr!important}.field input,.field select,.field textarea{max-width:100%;box-sizing:border-box}.edge-card{overflow:hidden}.edge-table-wrap{max-width:100%;-webkit-overflow-scrolling:touch}.edge-sni-card{margin-bottom:12px!important}}
 </style>
@@ -13883,14 +13888,30 @@ function goPage(name){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('on',n.dataset.page===name));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id==='page-'+name));
   window.scrollTo({top:0,behavior:'smooth'});
-  if(name!=='edge')document.getElementById('page-edge')?.classList.remove('edge-focus-mode');if(name!=='edge-tools')document.getElementById('page-edge-tools')?.classList.remove('edge-focus-mode');if(name==='edge')document.getElementById('page-edge')?.querySelectorAll('[data-edge-focus]').forEach(x=>x.classList.remove('edge-focus-active'));if(name==='logs')loadLogs();
+  if(name!=='edge')document.getElementById('page-edge')?.classList.remove('cf-section-mode');if(name!=='edge-tools')document.getElementById('page-edge-tools')?.classList.remove('cf-section-mode');if(name==='logs')loadLogs();
   if(name==='groups')loadGroups();
   if(name==='configs'||name==='dash')refreshAll();
   if(name==='stats'){refreshAll();loadStatsDashboard(false);}
   if(name==='theme'){renderOnexThemePresets();loadOnexTheme();}
 }
+function setCloudflareSection(mode){
+  const edge=document.getElementById('page-edge');
+  const tools=document.getElementById('page-edge-tools');
+  if(edge){
+    edge.classList.toggle('cf-section-mode', mode!=='all' && mode!=='scanner');
+    edge.querySelectorAll('[data-cf-section]').forEach(block=>block.classList.toggle('cf-visible', block.dataset.cfSection===mode));
+  }
+  if(tools) tools.classList.toggle('cf-section-mode', mode==='scanner');
+}
 document.querySelectorAll('.nav-cloudflare-toggle').forEach(toggle=>toggle.addEventListener('click',e=>{e.preventDefault();const group=toggle.closest('.nav-cloudflare'),menu=group?.querySelector('.nav-cloudflare-menu');if(!group||!menu)return;const open=group.classList.toggle('open');toggle.setAttribute('aria-expanded',open?'true':'false');menu.hidden=!open;}));
-document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.addEventListener('click',()=>{document.querySelectorAll('.nav-cloudflare').forEach(g=>{g.classList.add('open');const m=g.querySelector('.nav-cloudflare-menu'),t=g.querySelector('.nav-cloudflare-toggle');if(m)m.hidden=false;if(t)t.setAttribute('aria-expanded','true')});goPage(el.dataset.page);const anchor=el.dataset.anchor;if(el.dataset.page==='edge'&&anchor){const page=document.getElementById('page-edge');page?.classList.add('edge-focus-mode');document.getElementById('page-edge-tools')?.classList.remove('edge-focus-mode');const target=document.getElementById(anchor);page?.querySelectorAll('[data-edge-focus]').forEach(x=>x.classList.toggle('edge-focus-active',x===target || (anchor==='edgeAccountSection' && x.id==='edgeStatusSection')));setTimeout(()=>target?.scrollIntoView({behavior:'smooth',block:'start'}),120);}else if(el.dataset.page==='edge-tools'){document.getElementById('page-edge')?.classList.remove('edge-focus-mode');document.getElementById('page-edge-tools')?.classList.add('edge-focus-mode');window.scrollTo({top:0,behavior:'smooth'});}}));
+document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.addEventListener('click',()=>{
+  document.querySelectorAll('.nav-cloudflare').forEach(g=>{g.classList.add('open');const m=g.querySelector('.nav-cloudflare-menu'),t=g.querySelector('.nav-cloudflare-toggle');if(m)m.hidden=false;if(t)t.setAttribute('aria-expanded','true')});
+  const page=el.dataset.page, anchor=el.dataset.anchor;
+  const mode=anchor==='edgeAccountSection'?'account':anchor==='edgeConfigSection'?'config':anchor==='edgeSniSection'?'sni':page==='edge-tools'?'scanner':'all';
+  goPage(page); setCloudflareSection(mode);
+  if(page==='edge'&&anchor)setTimeout(()=>document.getElementById(anchor)?.scrollIntoView({behavior:'smooth',block:'start'}),120);
+  else if(page==='edge-tools')window.scrollTo({top:0,behavior:'smooth'});
+}));
 
 function toast(msg){
   const el=document.getElementById('toast');
