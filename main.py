@@ -10439,7 +10439,7 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
         <button class="nav-item nav-subitem" type="button" data-page="edge-account" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c.5-3.7 2.4-5.7 5.5-5.7s5 2 5.5 5.7"/><path d="M17 8v6M14 11h6"/></svg><span class="nav-label">ساخت اکانت کلودفلر</span></button>
         <button class="nav-item nav-subitem" type="button" data-page="edge-config" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7v5c0 4.5-3.2 7.7-8 9-4.8-1.3-8-4.5-8-9V7l8-4Z"/><path d="M8 12h8M12 8v8"/></svg><span class="nav-label">ساخت کانفیگ کلودفلر</span></button>
         <button class="nav-item nav-subitem" type="button" data-page="edge-tools" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5M11 8v6M8 11h6"/></svg><span class="nav-label">اسکنر کلودفلر</span></button>
-        <button class="nav-item nav-subitem" type="button" data-page="edge-ready-ips" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/><path d="m17 16 2 2 3-4"/></svg><span class="nav-label">آیپی‌های آماده کلودفلر</span></button>
+
         <button class="nav-item nav-subitem" type="button" data-page="edge-sni" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12s2.7-5 8-5 8 5 8 5-2.7 5-8 5-8-5-8-5Z"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v2M12 19v2"/></svg><span class="nav-label">اسکنر Sni</span></button>
       </div>
     </div>
@@ -13825,7 +13825,7 @@ async function applyReadyCloudflareIps(){const ips=[...readyCloudflareSelected];
 document.querySelectorAll('.nav-cloudflare-toggle').forEach(toggle=>toggle.addEventListener('click',e=>{e.preventDefault();const group=toggle.closest('.nav-cloudflare'),menu=group?.querySelector('.nav-cloudflare-menu');if(!group||!menu)return;const open=group.classList.toggle('open');toggle.setAttribute('aria-expanded',open?'true':'false');menu.hidden=!open;}));
 document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.addEventListener('click',()=>{
   document.querySelectorAll('.nav-cloudflare').forEach(g=>{g.classList.add('open');const m=g.querySelector('.nav-cloudflare-menu'),t=g.querySelector('.nav-cloudflare-toggle');if(m)m.hidden=false;if(t)t.setAttribute('aria-expanded','true')});
-  goPage(el.dataset.page); if(el.dataset.page==='edge-ready-ips')loadReadyCloudflareIps(); window.scrollTo({top:0,behavior:'smooth'});
+  goPage(el.dataset.page); window.scrollTo({top:0,behavior:'smooth'});
 }));
 
 function toast(msg){
@@ -16029,7 +16029,7 @@ cloudflare.com"></textarea></div>
 #page-edge-ready-ips .ready-ip-footer strong{font-size:15px}.ready-ip-footer small{display:block;color:var(--t3);margin-top:4px}
 @media(max-width:680px){#page-edge-ready-ips .ready-ip-card{padding:17px;border-radius:20px}.ready-ip-scan-form{grid-template-columns:1fr!important}.ready-ip-manual{grid-template-columns:1fr!important}.ready-ip-table-head{display:none!important}.ready-ip-row{grid-template-columns:1fr auto!important;padding:14px!important}.ready-ip-row>span:nth-child(2),.ready-ip-row>span:nth-child(3),.ready-ip-row>span:nth-child(4){font-size:12px}.ready-ip-row>span:nth-child(2){grid-column:2;grid-row:1}.ready-ip-row>span:nth-child(3){grid-column:1;grid-row:2}.ready-ip-row>span:nth-child(4){grid-column:2;grid-row:2}.ready-ip-row>label{grid-column:1/-1;grid-row:3;justify-content:flex-start!important}.ready-ip-footer .btn{width:100%}}
 </style>
-<section class="page cf-dedicated-page" id="page-edge-ready-ips">
+<section class="page cf-dedicated-page" id="page-edge-ready-ips" hidden>
   <div class="page-head"><div><div class="page-title"><span>آیپی‌های آماده کلودفلر</span></div><div class="page-sub">اسکن و انتخاب IPهای سالم برای اتصال سریع‌تر به Cloudflare</div></div></div>
   <div class="ready-ip-card">
     <div class="ready-ip-head"><div><div class="ready-ip-title">اسکن و انتخاب IP</div><div class="ready-ip-sub">نتیجه‌ها واقعی هستند و از داخل پنل تست می‌شوند.</div></div><span class="ready-ip-badge">CLOUDFLARE IP</span></div>
@@ -16055,10 +16055,12 @@ cloudflare.com"></textarea></div>
     <div class="card-title">تنظیمات اسکن</div>
     <div class="form-row">
       <div class="field"><label>منبع</label><select id="edgeScanSource">
-        <option value="cloudflare">Cloudflare (رنج‌های کلودفلر)</option>
+        <option value="cloudflare">Cloudflare (رنج‌های رسمی کلودفلر)</option>
+        <option value="onex-ready">آیپی‌های آماده پنل ONEX (فایل داخلی)</option>
         <option value="domain">دامنه (IPهای همان دامنه، مثل Shippr)</option>
         <option value="railway">Railway (فقط اگر پنل روی Railway باشد)</option>
       </select><div class="scan-hint" id="edgeSourceHint">از رنج‌های رسمی Cloudflare نمونه‌برداری می‌کند.</div></div>
+      <div class="field"><label>تعداد IP برای تست</label><select id="edgeScanLimit"><option value="60">۶۰</option><option value="120" selected>۱۲۰</option><option value="256">۲۵۶</option><option value="512">۵۱۲</option><option value="1024">۱۰۲۴</option><option value="2048">۲۰۴۸</option></select><div class="scan-hint">برای «آیپی‌های آماده پنل ONEX»، دقیقاً همین تعداد از فایل داخلی خوانده می‌شود.</div></div>
       <div class="field"><label>SNI / دامنه</label><input id="edgeScanSni" dir="ltr" placeholder="www.cloudflare.com"><div class="scan-hint">برای پیدا کردن IP تمیز دامنه‌ی خودت، همین‌جا دامنه‌ات را بنویس.</div></div>
       <div class="field"><label>حالت اسکن</label><select id="edgeScanMode"><option value="sample">سریع، نمونه‌برداری</option><option value="full">کامل، حداکثر ۲۰۴۸ تست</option></select></div>
       <div class="field"><label>Timeout (ثانیه)</label><input id="edgeScanTimeout" type="number" min="0.4" max="8" step="0.1" value="3" dir="ltr"></div>
@@ -16107,7 +16109,7 @@ cloudflare.com"></textarea></div>
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const $=id=>document.getElementById(id);
   const TLS=[443,2053,2083,2087,2096,8443];
-  const HINTS={cloudflare:'از رنج‌های رسمی Cloudflare نمونه‌برداری می‌کند.',domain:'دامنه را resolve می‌کند و IPهایش را روی پورت‌ها تست می‌کند.',railway:'فقط وقتی پنل روی Railway اجرا شود، یا IP:Port دستی بدهی.'};
+  const HINTS={cloudflare:'از رنج‌های رسمی Cloudflare نمونه‌برداری می‌کند.',"onex-ready":'تعداد انتخابی را از onex_repo/ips.txt می‌خواند و تست می‌کند.',domain:'دامنه را resolve می‌کند و IPهایش را روی پورت‌ها تست می‌کند.',railway:'فقط وقتی پنل روی Railway اجرا شود، یا IP:Port دستی بدهی.'};
   let lastGood=[];
   function selectedPorts(){
     const out=[...document.querySelectorAll('#edgeScanPorts .scanPortChk:checked')].map(x=>Number(x.value));
@@ -16143,7 +16145,7 @@ cloudflare.com"></textarea></div>
     if(!ports.length){toast('حداقل یک پورت انتخاب کن');return}
     const body={source,ports,mode:$('edgeScanMode').value,timeout:Number($('edgeScanTimeout').value||3),sni:$('edgeScanSni').value.trim(),
       candidates:$('edgeScanCandidates').value.split(/[,\n]+/).map(x=>x.trim()).filter(Boolean)};
-    body.limit=body.mode==='full'?2048:128;
+    body.limit=Number($('edgeScanLimit')?.value|| (body.mode==='full'?2048:128));
     st.textContent='در حال اسکن...';
     const r=await api('/api/scanner/edge/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     if(!r){st.textContent='اسکن ناموفق بود';return}
@@ -16467,7 +16469,7 @@ async def dashboard(
 # EDGE SCANNER + PUBLIC ENDPOINT
 # ============================================================
 
-EDGE_SCAN_STATE = {"cloudflare": [], "railway": [], "domain": [], "updated_at": None, "stats": {}}
+EDGE_SCAN_STATE = {"cloudflare": [], "onex-ready": [], "railway": [], "domain": [], "updated_at": None, "stats": {}}
 RAILWAY_ENDPOINTS = []  # Railway candidates come only from the active Railway deployment.
 
 
@@ -16535,14 +16537,16 @@ async def edge_scan(request: Request, _=Depends(require_auth)):
     except Exception:
         body = {}
     src = str(body.get("source") or "").lower()
-    source = src if src in {"cloudflare", "railway", "domain"} else "cloudflare"
+    source = src if src in {"cloudflare", "onex-ready", "railway", "domain"} else "cloudflare"
     mode = "full" if str(body.get("mode") or "sample").lower() == "full" else "sample"
-    limit = max(1, min(2048 if mode == "full" else 128, safe_int(body.get("limit"), 512 if mode == "full" else 128, 1, 2048)))
+    max_limit = 2048 if mode == "full" or source == "onex-ready" else 128
+    default_limit = 512 if mode == "full" else 128
+    limit = max(1, min(max_limit, safe_int(body.get("limit"), default_limit, 1, 2048)))
     timeout = max(0.4, min(8.0, safe_float(body.get("timeout"), 3.0, 0.4)))
     ports = _parse_scan_ports(body.get("ports") or body.get("port"), default=[443])
     sni = _clean_scan_host(body.get("sni"))
     if not sni:
-        sni = "www.cloudflare.com" if source == "cloudflare" else _clean_scan_host(get_host(request))
+        sni = "www.cloudflare.com" if source in {"cloudflare", "onex-ready"} else _clean_scan_host(get_host(request))
     if not sni or len(sni) > 253 or sni in {"localhost", "127.0.0.1", "0.0.0.0"}:
         raise HTTPException(400, "SNI یا دامنه معتبر نیست")
 
@@ -16580,9 +16584,9 @@ async def edge_scan(request: Request, _=Depends(require_auth)):
                 sni = host
             for ip, _p in await _resolve_public_hosts(host, 443):
                 add_host(ip)
-    elif source == "cloudflare" and not manual_count:
+    elif source in {"cloudflare", "onex-ready"} and not manual_count:
         per_port = max(4, limit // max(1, len(ports)))
-        for host, _p in load_candidates(BASE_DIR, "cloudflare", per_port, mode=mode):
+        for host, _p in load_candidates(BASE_DIR, source, per_port, mode=mode):
             add_host(host)
 
     targets = targets[:2048]
@@ -16612,7 +16616,7 @@ async def edge_scan_clear(request: Request, _=Depends(require_auth)):
     except Exception:
         body = {}
     src = str(body.get("source") or "").lower()
-    source = src if src in {"cloudflare", "railway", "domain"} else "cloudflare"
+    source = src if src in {"cloudflare", "onex-ready", "railway", "domain"} else "cloudflare"
     EDGE_SCAN_STATE[source] = []
     EDGE_SCAN_STATE.setdefault("stats", {}).pop(source, None)
     EDGE_SCAN_STATE["updated_at"] = datetime.now().isoformat()
@@ -16627,7 +16631,7 @@ async def edge_scan_apply(request: Request, _=Depends(require_perm("configs"))):
     except Exception:
         body = {}
     src = str(body.get("source") or "").lower()
-    source = src if src in {"cloudflare", "railway", "domain"} else "cloudflare"
+    source = src if src in {"cloudflare", "onex-ready", "railway", "domain"} else "cloudflare"
     chosen = body.get("ips") or [x.get("host") for x in EDGE_SCAN_STATE.get(source, []) if x.get("ok")]
     chosen = list(dict.fromkeys(str(x).strip() for x in chosen if str(x).strip()))[:50]
     link_ids = body.get("link_ids") or []
@@ -16645,7 +16649,7 @@ async def edge_scan_apply(request: Request, _=Depends(require_perm("configs"))):
 
 @app.get("/api/scanner/edge/best")
 async def edge_scan_best(source: str = "cloudflare", _=Depends(require_auth)):
-    source = source if source in {"cloudflare", "railway", "domain"} else "cloudflare"
+    source = source if source in {"cloudflare", "onex-ready", "railway", "domain"} else "cloudflare"
     return {"ok": True, "source": source, "best": (EDGE_SCAN_STATE.get(source) or [])[:50], "stats": EDGE_SCAN_STATE.get("stats", {}).get(source, {})}
 
 
