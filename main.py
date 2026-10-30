@@ -10436,10 +10436,10 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
         <span class="nav-label">Cloudflare</span><span class="nav-chevron" aria-hidden="true">⌄</span>
       </button>
       <div class="nav-cloudflare-menu" id="cloudflareNavMenu" hidden>
-        <button class="nav-item nav-subitem" type="button" data-page="edge" data-anchor="edgeAccountSection" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c.5-3.7 2.4-5.7 5.5-5.7s5 2 5.5 5.7"/><path d="M17 8v6M14 11h6"/></svg><span class="nav-label">ساخت اکانت کلودفلر</span></button>
-        <button class="nav-item nav-subitem" type="button" data-page="edge" data-anchor="edgeConfigSection" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7v5c0 4.5-3.2 7.7-8 9-4.8-1.3-8-4.5-8-9V7l8-4Z"/><path d="M8 12h8M12 8v8"/></svg><span class="nav-label">ساخت کانفیگ کلودفلر</span></button>
+        <button class="nav-item nav-subitem" type="button" data-page="edge-account" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c.5-3.7 2.4-5.7 5.5-5.7s5 2 5.5 5.7"/><path d="M17 8v6M14 11h6"/></svg><span class="nav-label">ساخت اکانت کلودفلر</span></button>
+        <button class="nav-item nav-subitem" type="button" data-page="edge-config" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7v5c0 4.5-3.2 7.7-8 9-4.8-1.3-8-4.5-8-9V7l8-4Z"/><path d="M8 12h8M12 8v8"/></svg><span class="nav-label">ساخت کانفیگ کلودفلر</span></button>
         <button class="nav-item nav-subitem" type="button" data-page="edge-tools" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5M11 8v6M8 11h6"/></svg><span class="nav-label">اسکنر کلودفلر</span></button>
-        <button class="nav-item nav-subitem" type="button" data-page="edge" data-anchor="edgeSniSection" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12s2.7-5 8-5 8 5 8 5-2.7 5-8 5-8-5-8-5Z"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v2M12 19v2"/></svg><span class="nav-label">اسکنر Sni</span></button>
+        <button class="nav-item nav-subitem" type="button" data-page="edge-sni" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12s2.7-5 8-5 8 5 8 5-2.7 5-8 5-8-5-8-5Z"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v2M12 19v2"/></svg><span class="nav-label">اسکنر Sni</span></button>
       </div>
     </div>
     <button class="nav-item" data-page="news" data-perm="news">
@@ -11275,38 +11275,8 @@ Cache-Control: no-cache"></textarea></div>
     <div class="edge-mark" aria-label="Cloudflare Edge"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 35h22a8 8 0 0 0 1-16 13 13 0 0 0-24-2 9 9 0 0 0 1 18Z"/><path d="m18 27 5 5 9-10"/></svg></div>
   </div>
   <div class="edge-layout">
-    <div class="edge-card cf-block" id="edgeAccountSection" data-cf-section="account">
-      <h3>اتصال واقعی به Cloudflare <small>توکن شما فقط روی سرور ذخیره می‌شود</small></h3>
-      <div id="edgeStatus" class="edge-status">در حال بررسی اتصال...</div>
-      <div class="edge-token-help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg><div>یک API Token بساز و اینجا وارد کن. برای دامنه اختصاصی، مجوزهای <b>Workers Scripts: Edit</b>، <b>Workers Subdomain: Edit</b>، <b>Account: Read</b>، <b>Zone: Read</b> و <b>Workers Domains: Edit</b> لازم است.<br><a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener">بازکردن صفحه ساخت Token در Cloudflare ↗</a></div></div>
-      <div class="edge-row">
-        <div class="field"><label for="edgeToken">API Token</label><input id="edgeToken" type="password" autocomplete="off" dir="ltr" placeholder="توکن Cloudflare"></div>
-        <div class="field"><label for="edgeAccount">Account ID <small>(اختیاری)</small></label><input id="edgeAccount" dir="ltr" autocomplete="off" placeholder="خودکار تشخیص داده می‌شود"></div>
-      </div>
-      <div class="edge-actions">
-        <button type="button" class="btn" id="edgeBtnSave" onclick="edgeSave()">ذخیره Token و تنظیمات</button>
-        <button type="button" class="btn btn-p" id="edgeBtnDeploy" onclick="edgeDeploy()">ساخت و Deploy Edge</button>
-        <button type="button" class="btn" id="edgeBtnTest" onclick="edgeTest()">تست اتصال</button>
-        <button type="button" class="btn btn-d edge-del" id="edgeBtnRemove" onclick="edgeRemove()">حذف Edge</button>
-      </div>
-    </div>
-    <div class="edge-card cf-block" id="edgeStatusSection" data-cf-section="account">
-      <h3>وضعیت Edge</h3>
-      <div class="edge-metrics">
-        <div class="edge-metric"><span>وضعیت Worker</span><b id="edgeWorkerState">—</b></div>
-        <div class="edge-metric"><span>دامنه فعال</span><b id="edgeHostState" class="small">—</b></div>
-        <div class="edge-metric"><span>IPهای انتخاب‌شده</span><b id="edgeSelectedCount">0</b></div>
-        <div class="edge-metric"><span>اشتراک‌ها</span><b id="edgeSyncedCount">—</b></div>
-      </div>
-      <div class="field" style="margin-top:12px"><label>نوع دامنه</label>
-        <div class="edge-choice">
-          <label><input type="radio" name="edgeMode" value="worker" checked onchange="edgeDomainMode()"><strong>دامنه رایگان Worker</strong><small>ساخت خودکار workers.dev</small></label>
-          <label><input type="radio" name="edgeMode" value="custom" onchange="edgeDomainMode()"><strong>دامنه اختصاصی</strong><small>دامنه داخل همین حساب Cloudflare</small></label>
-        </div>
-      </div>
-      <div class="field" id="edgeCustomDomainBox" hidden style="margin-top:9px"><label for="edgeDomain">دامنه اختصاصی</label><input id="edgeDomain" dir="ltr" autocomplete="off" placeholder="edge.example.com"></div>
-      <label class="edge-insub"><input type="checkbox" id="edgeInSub" checked> افزودن کانفیگ Edge به اشتراک‌ها</label>
-    </div>
+    
+    
   </div>
 <style id="onex-edge-sub-css">
 .es{margin-top:13px;border:1px solid var(--card-b);border-radius:20px;padding:16px;background:rgba(var(--accent-rgb),.035);min-width:0;box-sizing:border-box}
@@ -11371,92 +11341,18 @@ Cache-Control: no-cache"></textarea></div>
   .es-num input{font-size:16px}
 }
 </style>
-<section class="es cf-block" id="edgeConfigSection" data-cf-section="config" aria-label="ساخت کانفیگ کلودفلر">
-  <div class="es-head">
-    <div class="es-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.6 1.6A4 4 0 0 0 6.5 19Z"/></svg></div>
-    <div>
-      <div class="es-title">ساب اختصاصی Cloudflare Edge</div>
-      <div class="es-sub">فقط کانفیگ‌های Edge این بخش داخل ساب اختصاصی هستن و به بقیه‌ی ساب‌ها اضافه نمی‌شن</div>
-    </div>
-    <span class="es-pill" id="esPill">—</span>
-  </div>
-  <div class="es-kpis">
-    <div class="es-kpi"><span>کانفیگ فعال</span><b id="esKActive">—</b></div>
-    <div class="es-kpi"><span>مصرف کل</span><b id="esKUsed">—</b></div>
-    <div class="es-kpi"><span>مدت</span><b id="esKDays">—</b></div>
-  </div>
-  <div class="es-grid">
-    <div class="es-panel">
-      <h4>ساخت کانفیگ</h4>
-      <div class="es-lbl">پروتکل</div>
-      <div class="es-seg" id="esProto">
-        <button type="button" data-v="all" class="on">همه</button>
-        <button type="button" data-v="trojan">Trojan</button>
-        <button type="button" data-v="vless">VLESS</button>
-        <button type="button" data-v="vmess">VMess</button>
-      </div>
-      <div class="es-lbl">تعداد کانفیگ</div>
-      <div class="es-chips" id="esCount">
-        <button type="button" data-v="5">۵</button>
-        <button type="button" data-v="10" class="on">۱۰</button>
-        <button type="button" data-v="20">۲۰</button>
-        <button type="button" data-v="custom">سفارشی</button>
-      </div>
-      <div class="es-num" id="esCustomBox" hidden style="margin-top:8px"><button type="button" data-step="-1">−</button><input id="esCustom" inputmode="numeric" value="10"><button type="button" data-step="1">+</button></div>
-      <div class="es-lbl">حجم هر کانفیگ (GB)</div>
-      <div class="es-num"><button type="button" data-field="quota" data-step="-5">−</button><input id="esQuota" inputmode="numeric" value="50"><button type="button" data-field="quota" data-step="5">+</button></div>
-      <div class="es-lbl">مدت (روز)</div>
-      <div class="es-num"><button type="button" data-field="days" data-step="-1">−</button><input id="esDays" inputmode="numeric" value="30"><button type="button" data-field="days" data-step="1">+</button></div>
-      <button type="button" class="es-build" id="esBuild">ساخت کانفیگ‌ها</button>
-    </div>
-    <div class="es-panel">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px"><h4 style="margin:0">کانفیگ‌های ساب Edge</h4><span class="es-count" id="esTotal">—</span></div>
-      <div class="es-lanes" id="esLanes"><div class="es-empty">هنوز کانفیگی ساخته نشده.</div></div>
-    </div>
-  </div>
-</section>
 
-  <div class="edge-card cf-block" id="edgeCloudflareScanner" data-cf-section="scanner">
-    <h3>اسکن و انتخاب IP <small>نتیجه‌ها واقعی هستند و از داخل پنل تست می‌شوند</small></h3>
-    <div class="edge-scan-box">
-      <div class="field"><label for="edgeScanLimit">تعداد تست</label><select id="edgeScanLimit"><option value="60">۶۰</option><option value="120" selected>۱۲۰</option><option value="500">۵۰۰</option><option value="1000">۱۰۰۰</option><option value="2048">حداکثر</option></select></div>
-      <div class="field"><label for="edgeCfSni">SNI</label><input id="edgeCfSni" dir="ltr" value="www.cloudflare.com" autocomplete="off"></div>
-      <button type="button" class="btn btn-p" id="edgeBtnScan" onclick="edgeScan()">شروع اسکن واقعی</button>
-    </div>
-    <div class="edge-manual"><input id="edgeManualIps" dir="ltr" autocomplete="off" placeholder="مثلاً 104.16.0.1, 172.67.1.1"><button type="button" class="btn" id="edgeBtnManual" onclick="edgeScanManual()">تست IP دستی</button></div>
-    <div id="edgeScanResult" class="edge-test-result"></div>
-  </div>
-  <div class="edge-card cf-block" id="edgeScanResultsSection" data-cf-section="scanner">
-    <div class="edge-res-head"><h3>لیست کامل نتایج IP</h3>
-      <div class="edge-res-btns"><button type="button" class="btn btn-sm" onclick="edgeSelectAll(true)">انتخاب همه سالم‌ها</button><button type="button" class="btn btn-sm" onclick="edgeSelectAll(false)">لغو انتخاب</button><button type="button" class="btn btn-sm" onclick="edgeCopyIps()">کپی IPها</button><button type="button" class="btn btn-sm btn-d" onclick="edgeClearResults()">پاک‌کردن نتایج</button></div>
-    </div>
-    <div class="edge-filter"><input id="edgeIpSearch" dir="ltr" autocomplete="off" placeholder="جست‌وجوی IP یا موقعیت" oninput="edgeRender()"><span id="edgeResultCount" class="edge-muted">۰ نتیجه</span></div>
-    <div class="edge-table-wrap"><div class="edge-table"><div class="edge-table-head"><span>IP</span><span>موقعیت</span><span>وضعیت</span><span>سرعت</span><span>انتخاب</span></div><div id="edgeIpRows"><div class="edge-muted" style="padding:22px;text-align:center">هنوز اسکن انجام نشده است.</div></div></div></div>
-    <div class="edge-apply"><div><b id="edgeApplyText">۰ IP انتخاب شده</b><p>IPهای انتخابی روی Edge و لینک‌های اشتراک اعمال می‌شوند.</p></div><button type="button" class="btn btn-p" id="edgeBtnApply" onclick="edgeApplySelected()">اعمال روی کانفیگ‌های Cloudflare</button></div>
-  </div>
-  <div class="edge-card edge-sni-card cf-block" id="edgeSniSection" data-cf-section="sni">
-    <div class="edge-sni-head"><div><h3 style="margin:0">اسکنر SNI برای Reality</h3><p class="edge-muted">دامنه‌ها را از نظر TLS 1.3، HTTP/2 و سرعت اتصال بررسی کن. نتیجه‌ها برای انتخاب Handshake مناسب قابل کپی هستند.</p></div><span class="edge-sni-badge">TLS / H2</span></div>
-    <div class="edge-sni-grid">
-      <div class="field"><label for="sniHosts">لیست دامنه‌ها</label><textarea id="sniHosts" rows="4" dir="ltr" spellcheck="false" placeholder="www.cloudflare.com
-www.google.com
-cloudflare.com"></textarea></div>
-      <div class="edge-sni-side"><label>تنظیمات تست</label><div class="edge-sni-info"><span>پروتکل</span><b>TLS 1.3 + HTTP/2</b></div><div class="edge-sni-info"><span>هدف</span><b>Reality Handshake</b></div><button type="button" class="btn btn-p" id="sniBtnScan" onclick="sniScan()">شروع اسکن SNI</button></div>
-    </div>
-    <div class="edge-sni-actions"><button type="button" class="btn btn-sm" onclick="sniFillDefaults()">لیست پیشنهادی</button><button type="button" class="btn btn-sm" onclick="sniCopyGood()">کپی دامنه‌های سالم</button><span id="sniResultsSummary" class="edge-muted"></span></div>
-    <div id="sniResults" class="edge-sni-results"><div class="edge-muted" style="padding:14px;text-align:center">هنوز تست SNI انجام نشده است.</div></div>
-  </div>
+
+  
+  
+  
 </section>
 <style id="onex-cloudflare-nav-css">
 .nav-cloudflare{position:relative}.nav-cloudflare-toggle{width:100%;position:relative}.nav-chevron{margin-inline-start:auto;font-size:18px;line-height:1;opacity:.75;transition:transform .25s ease}.nav-cloudflare.open .nav-chevron{transform:rotate(180deg);color:var(--accent2)}
 .nav-cloudflare-menu{display:grid;gap:5px;margin:4px 8px 8px 18px;padding:6px;border-inline-start:1px solid rgba(var(--accent-rgb),.32);border-radius:0 12px 12px 0;background:rgba(var(--accent-rgb),.045)}.nav-cloudflare-menu[hidden]{display:none}.nav-cloudflare-menu .nav-subitem{min-height:38px;padding:0 10px 0 12px;border-radius:10px;font-size:11px;background:transparent}.nav-cloudflare-menu .nav-subitem:hover{background:rgba(var(--accent-rgb),.12)}.nav-cloudflare-menu .nav-subitem.on{background:linear-gradient(90deg,rgba(var(--accent-rgb),.2),rgba(var(--accent2-rgb),.12));box-shadow:inset 2px 0 var(--accent)}.nav-subitem .nav-ico{width:17px;height:17px}.sidebar.collapsed .nav-cloudflare-menu{position:absolute;inset-inline-start:calc(100% + 8px);top:0;width:230px;margin:0;padding:8px;border:1px solid var(--card-b);border-inline-start:1px solid var(--accent);border-radius:14px;background:var(--bg2);box-shadow:0 18px 40px rgba(0,0,0,.32);z-index:20}@media(max-width:640px){.nav-cloudflare-menu{margin-inline-start:10px}.nav-cloudflare-menu .nav-subitem{min-height:42px;font-size:12px}}
 </style>
 <style id="onex-cloudflare-section-focus">
-/* Each Cloudflare menu item owns its own content block. */
-#page-edge.cf-section-mode .edge-hero{display:none!important}
-#page-edge.cf-section-mode .cf-block{display:none!important}
-#page-edge.cf-section-mode .cf-block.cf-visible{display:block!important}
-#page-edge.cf-section-mode #edgeConfigSection.cf-visible{display:block!important}
-#page-edge-tools.cf-section-mode .page-head{display:none!important}
+.cf-dedicated-page{width:100%;max-width:1120px;margin-inline:auto}.cf-dedicated-page .cf-block{display:block!important}
 </style>
 <style id="onex-panel-mobile-edge-fix">@media(max-width:640px){html,body{max-width:100%;overflow-x:hidden}.page{width:100%;max-width:100%;box-sizing:border-box}.onex-topbar,.mob-bar{min-height:58px;height:auto;max-height:72px;box-sizing:border-box}.onex-topbar{padding:8px 10px!important}.mob-bar{padding:8px 10px!important}.onex-topbar .top-brand,.mob-bar .mob-brand{max-width:55vw;overflow:hidden}.onex-topbar .top-brand img,.mob-bar img{max-width:145px;height:auto}.onex-topbar .top-actions,.mob-bar .mob-actions{gap:5px}.onex-topbar button,.mob-bar button{min-width:40px;min-height:40px}.page-head{max-width:100%;overflow:hidden}.card{max-width:100%;box-sizing:border-box}.form-row,.g2{grid-template-columns:1fr!important}.field input,.field select,.field textarea{max-width:100%;box-sizing:border-box}.edge-card{overflow:hidden}.edge-table-wrap{max-width:100%;-webkit-overflow-scrolling:touch}.edge-sni-card{margin-bottom:12px!important}}
 </style>
@@ -13888,29 +13784,17 @@ function goPage(name){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('on',n.dataset.page===name));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('on',p.id==='page-'+name));
   window.scrollTo({top:0,behavior:'smooth'});
-  if(name!=='edge')document.getElementById('page-edge')?.classList.remove('cf-section-mode');if(name!=='edge-tools')document.getElementById('page-edge-tools')?.classList.remove('cf-section-mode');if(name==='logs')loadLogs();
+  if(name==='logs')loadLogs();
   if(name==='groups')loadGroups();
   if(name==='configs'||name==='dash')refreshAll();
   if(name==='stats'){refreshAll();loadStatsDashboard(false);}
   if(name==='theme'){renderOnexThemePresets();loadOnexTheme();}
 }
-function setCloudflareSection(mode){
-  const edge=document.getElementById('page-edge');
-  const tools=document.getElementById('page-edge-tools');
-  if(edge){
-    edge.classList.toggle('cf-section-mode', mode!=='all' && mode!=='scanner');
-    edge.querySelectorAll('[data-cf-section]').forEach(block=>block.classList.toggle('cf-visible', block.dataset.cfSection===mode));
-  }
-  if(tools) tools.classList.toggle('cf-section-mode', mode==='scanner');
-}
+function setCloudflareSection(mode){ return mode; }
 document.querySelectorAll('.nav-cloudflare-toggle').forEach(toggle=>toggle.addEventListener('click',e=>{e.preventDefault();const group=toggle.closest('.nav-cloudflare'),menu=group?.querySelector('.nav-cloudflare-menu');if(!group||!menu)return;const open=group.classList.toggle('open');toggle.setAttribute('aria-expanded',open?'true':'false');menu.hidden=!open;}));
 document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.addEventListener('click',()=>{
   document.querySelectorAll('.nav-cloudflare').forEach(g=>{g.classList.add('open');const m=g.querySelector('.nav-cloudflare-menu'),t=g.querySelector('.nav-cloudflare-toggle');if(m)m.hidden=false;if(t)t.setAttribute('aria-expanded','true')});
-  const page=el.dataset.page, anchor=el.dataset.anchor;
-  const mode=anchor==='edgeAccountSection'?'account':anchor==='edgeConfigSection'?'config':anchor==='edgeSniSection'?'sni':page==='edge-tools'?'scanner':'all';
-  goPage(page); setCloudflareSection(mode);
-  if(page==='edge'&&anchor)setTimeout(()=>document.getElementById(anchor)?.scrollIntoView({behavior:'smooth',block:'start'}),120);
-  else if(page==='edge-tools')window.scrollTo({top:0,behavior:'smooth'});
+  goPage(el.dataset.page); window.scrollTo({top:0,behavior:'smooth'});
 }));
 
 function toast(msg){
@@ -15990,6 +15874,99 @@ html.light .sidebar .nav-label{color:inherit!important}
 #page-edge-tools #onexPublicEndpoint{padding:12px;border:1px solid var(--card-b);border-radius:12px;margin:10px 0;line-height:1.9;overflow-wrap:anywhere}
 @media (max-width:640px){#page-edge-tools .scan-actions .btn{flex:1 1 100%}}
 </style>
+<section class="page cf-dedicated-page" id="page-edge-account">
+  <div class="edge-card cf-block" id="edgeAccountSection" data-cf-section="account">
+      <h3>اتصال واقعی به Cloudflare <small>توکن شما فقط روی سرور ذخیره می‌شود</small></h3>
+      <div id="edgeStatus" class="edge-status">در حال بررسی اتصال...</div>
+      <div class="edge-token-help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="M9 12l2 2 4-4"/></svg><div>یک API Token بساز و اینجا وارد کن. برای دامنه اختصاصی، مجوزهای <b>Workers Scripts: Edit</b>، <b>Workers Subdomain: Edit</b>، <b>Account: Read</b>، <b>Zone: Read</b> و <b>Workers Domains: Edit</b> لازم است.<br><a href="https://dash.cloudflare.com/profile/api-tokens" target="_blank" rel="noopener">بازکردن صفحه ساخت Token در Cloudflare ↗</a></div></div>
+      <div class="edge-row">
+        <div class="field"><label for="edgeToken">API Token</label><input id="edgeToken" type="password" autocomplete="off" dir="ltr" placeholder="توکن Cloudflare"></div>
+        <div class="field"><label for="edgeAccount">Account ID <small>(اختیاری)</small></label><input id="edgeAccount" dir="ltr" autocomplete="off" placeholder="خودکار تشخیص داده می‌شود"></div>
+      </div>
+      <div class="edge-actions">
+        <button type="button" class="btn" id="edgeBtnSave" onclick="edgeSave()">ذخیره Token و تنظیمات</button>
+        <button type="button" class="btn btn-p" id="edgeBtnDeploy" onclick="edgeDeploy()">ساخت و Deploy Edge</button>
+        <button type="button" class="btn" id="edgeBtnTest" onclick="edgeTest()">تست اتصال</button>
+        <button type="button" class="btn btn-d edge-del" id="edgeBtnRemove" onclick="edgeRemove()">حذف Edge</button>
+      </div>
+    </div>
+<div class="edge-card cf-block" id="edgeStatusSection" data-cf-section="account">
+      <h3>وضعیت Edge</h3>
+      <div class="edge-metrics">
+        <div class="edge-metric"><span>وضعیت Worker</span><b id="edgeWorkerState">—</b></div>
+        <div class="edge-metric"><span>دامنه فعال</span><b id="edgeHostState" class="small">—</b></div>
+        <div class="edge-metric"><span>IPهای انتخاب‌شده</span><b id="edgeSelectedCount">0</b></div>
+        <div class="edge-metric"><span>اشتراک‌ها</span><b id="edgeSyncedCount">—</b></div>
+      </div>
+      <div class="field" style="margin-top:12px"><label>نوع دامنه</label>
+        <div class="edge-choice">
+          <label><input type="radio" name="edgeMode" value="worker" checked onchange="edgeDomainMode()"><strong>دامنه رایگان Worker</strong><small>ساخت خودکار workers.dev</small></label>
+          <label><input type="radio" name="edgeMode" value="custom" onchange="edgeDomainMode()"><strong>دامنه اختصاصی</strong><small>دامنه داخل همین حساب Cloudflare</small></label>
+        </div>
+      </div>
+      <div class="field" id="edgeCustomDomainBox" hidden style="margin-top:9px"><label for="edgeDomain">دامنه اختصاصی</label><input id="edgeDomain" dir="ltr" autocomplete="off" placeholder="edge.example.com"></div>
+      <label class="edge-insub"><input type="checkbox" id="edgeInSub" checked> افزودن کانفیگ Edge به اشتراک‌ها</label>
+    </div>
+</section>
+<section class="page cf-dedicated-page" id="page-edge-config">
+  <section class="es cf-block" id="edgeConfigSection" data-cf-section="config" aria-label="ساخت کانفیگ کلودفلر">
+  <div class="es-head">
+    <div class="es-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.6 1.6A4 4 0 0 0 6.5 19Z"/></svg></div>
+    <div>
+      <div class="es-title">ساب اختصاصی Cloudflare Edge</div>
+      <div class="es-sub">فقط کانفیگ‌های Edge این بخش داخل ساب اختصاصی هستن و به بقیه‌ی ساب‌ها اضافه نمی‌شن</div>
+    </div>
+    <span class="es-pill" id="esPill">—</span>
+  </div>
+  <div class="es-kpis">
+    <div class="es-kpi"><span>کانفیگ فعال</span><b id="esKActive">—</b></div>
+    <div class="es-kpi"><span>مصرف کل</span><b id="esKUsed">—</b></div>
+    <div class="es-kpi"><span>مدت</span><b id="esKDays">—</b></div>
+  </div>
+  <div class="es-grid">
+    <div class="es-panel">
+      <h4>ساخت کانفیگ</h4>
+      <div class="es-lbl">پروتکل</div>
+      <div class="es-seg" id="esProto">
+        <button type="button" data-v="all" class="on">همه</button>
+        <button type="button" data-v="trojan">Trojan</button>
+        <button type="button" data-v="vless">VLESS</button>
+        <button type="button" data-v="vmess">VMess</button>
+      </div>
+      <div class="es-lbl">تعداد کانفیگ</div>
+      <div class="es-chips" id="esCount">
+        <button type="button" data-v="5">۵</button>
+        <button type="button" data-v="10" class="on">۱۰</button>
+        <button type="button" data-v="20">۲۰</button>
+        <button type="button" data-v="custom">سفارشی</button>
+      </div>
+      <div class="es-num" id="esCustomBox" hidden style="margin-top:8px"><button type="button" data-step="-1">−</button><input id="esCustom" inputmode="numeric" value="10"><button type="button" data-step="1">+</button></div>
+      <div class="es-lbl">حجم هر کانفیگ (GB)</div>
+      <div class="es-num"><button type="button" data-field="quota" data-step="-5">−</button><input id="esQuota" inputmode="numeric" value="50"><button type="button" data-field="quota" data-step="5">+</button></div>
+      <div class="es-lbl">مدت (روز)</div>
+      <div class="es-num"><button type="button" data-field="days" data-step="-1">−</button><input id="esDays" inputmode="numeric" value="30"><button type="button" data-field="days" data-step="1">+</button></div>
+      <button type="button" class="es-build" id="esBuild">ساخت کانفیگ‌ها</button>
+    </div>
+    <div class="es-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px"><h4 style="margin:0">کانفیگ‌های ساب Edge</h4><span class="es-count" id="esTotal">—</span></div>
+      <div class="es-lanes" id="esLanes"><div class="es-empty">هنوز کانفیگی ساخته نشده.</div></div>
+    </div>
+  </div>
+</section>
+</section>
+<section class="page cf-dedicated-page" id="page-edge-sni">
+  <div class="edge-card edge-sni-card cf-block" id="edgeSniSection" data-cf-section="sni">
+    <div class="edge-sni-head"><div><h3 style="margin:0">اسکنر SNI برای Reality</h3><p class="edge-muted">دامنه‌ها را از نظر TLS 1.3، HTTP/2 و سرعت اتصال بررسی کن. نتیجه‌ها برای انتخاب Handshake مناسب قابل کپی هستند.</p></div><span class="edge-sni-badge">TLS / H2</span></div>
+    <div class="edge-sni-grid">
+      <div class="field"><label for="sniHosts">لیست دامنه‌ها</label><textarea id="sniHosts" rows="4" dir="ltr" spellcheck="false" placeholder="www.cloudflare.com
+www.google.com
+cloudflare.com"></textarea></div>
+      <div class="edge-sni-side"><label>تنظیمات تست</label><div class="edge-sni-info"><span>پروتکل</span><b>TLS 1.3 + HTTP/2</b></div><div class="edge-sni-info"><span>هدف</span><b>Reality Handshake</b></div><button type="button" class="btn btn-p" id="sniBtnScan" onclick="sniScan()">شروع اسکن SNI</button></div>
+    </div>
+    <div class="edge-sni-actions"><button type="button" class="btn btn-sm" onclick="sniFillDefaults()">لیست پیشنهادی</button><button type="button" class="btn btn-sm" onclick="sniCopyGood()">کپی دامنه‌های سالم</button><span id="sniResultsSummary" class="edge-muted"></span></div>
+    <div id="sniResults" class="edge-sni-results"><div class="edge-muted" style="padding:14px;text-align:center">هنوز تست SNI انجام نشده است.</div></div>
+  </div>
+</section>
 <section class="page" id="page-edge-tools">
   <div class="page-head"><div><div class="page-title"><span>اسکنر IP</span></div><div class="page-sub">پیدا کردن IPهای سالم و سریع برای Cloudflare، دامنه‌ی دلخواه یا Railway، روی هر پورتی که بخواهی.</div></div></div>
   <div class="card">
