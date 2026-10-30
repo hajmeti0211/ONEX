@@ -257,15 +257,27 @@ def _rewrite_uri(uri: str, host: str, address: str, tag: str = _TAG) -> str | No
     return urlunsplit((parts.scheme, f"{user}@{addr}:443", parts.path, urlencode(q, safe="/,"), quote(name, safe="")))
 
 
-def extra_uris(uris: list[str]) -> list[str]:
+def edge_uids(cfg: dict | None = None) -> set[str]:
+    cfg = cfg or load()
+    return {str(x) for x in (cfg.get("edge_uids") or []) if str(x)}
+
+
+def is_edge_only(*keys) -> bool:
+    ids = edge_uids()
+    return any(str(k) in ids for k in keys if k)
+
+
+def edge_only_uris(uris: list[str]) -> list[str]:
+    """Edge variants for the dedicated Edge subscription (ignores include_in_sub)."""
     cfg = load()
-    if not cfg.get("enabled") or not cfg.get("include_in_sub"):
-        return []
     host = edge_host(cfg)
     if not host:
         return []
-    limit = int(cfg.get("edge_ip_limit") or 5)
-    limit = max(1, min(50, limit))
+    return _expand_edge(uris, cfg, host)
+
+
+def _expand_edge(uris: list[str], cfg: dict, host: str) -> list[str]:
+    limit = max(1, min(50, int(cfg.get("edge_ip_limit") or 5)))
     addresses = [a for a in (cfg.get("clean_ips") or []) if a][:limit] or [host]
     out: list[str] = []
     for uri in uris:
@@ -274,6 +286,16 @@ def extra_uris(uris: list[str]) -> list[str]:
             if new:
                 out.append(new)
     return out
+
+
+def extra_uris(uris: list[str]) -> list[str]:
+    cfg = load()
+    if not cfg.get("enabled") or not cfg.get("include_in_sub"):
+        return []
+    host = edge_host(cfg)
+    if not host:
+        return []
+    return _expand_edge(uris, cfg, host)
 
 
 # ---------------------------------------------------------------- panel API
@@ -348,6 +370,49 @@ def build_router(require_perm) -> APIRouter:
         view = public_view(cfg)
         view["synced_links"] = synced_links
         return view
+
+    @r.get("/sub")
+    async def sub_get(_=dep):
+        cfg = load()
+        m = _m()
+        ids = edge_uids(cfg)
+        rows = []
+        async with m.LINKS_LOCK:
+            items = [(k, dict(v)) for k, v in m.LINKS.items() if k in ids or str(v.get("uuid") or "") in ids]
+        for key, link in items:
+            rows.append({
+                "uid": key, "uuid": str(link.get("uuid") or ""),
+                "label": link.get("label") or key, "protocol": link.get("protocol") or "",
+                "active": bool(link.get("active", True)),
+                "used_bytes": int(link.get("used_bytes") or 0),
+                "limit_bytes": int(link.get("limit_bytes") or 0),
+                "connected_ips": int(link.get("connected_ips") or 0),
+                "expires_at": link.get("expires_at"),
+            })
+        return {"ok": True, "settings": cfg.get("edge_sub") or {}, "links": rows}
+
+    @r.post("/sub/settings")
+    async def sub_settings(request: Request, _=dep):
+        body = await request.json()
+        cfg = load()
+        proto = str(body.get("protocol") or "all")[:40]
+        cfg["edge_sub"] = {
+            "protocol": proto,
+            "count": max(1, min(60, int(body.get("count") or 10))),
+            "quota": max(1, min(2000, float(body.get("quota") or 50))),
+            "days": max(1, min(365, int(body.get("days") or 30))),
+        }
+        save(cfg)
+        return {"ok": True, "settings": cfg["edge_sub"]}
+
+    @r.post("/sub/mark")
+    async def sub_mark(request: Request, _=dep):
+        body = await request.json()
+        cfg = load()
+        new = [str(x)[:80] for x in (body.get("uids") or []) if str(x).strip()][:200]
+        cfg["edge_uids"] = list(dict.fromkeys(list(edge_uids(cfg)) + new))
+        save(cfg)
+        return {"ok": True, "count": len(cfg["edge_uids"])}
 
     @r.post("/deploy")
     async def do_deploy(request: Request, _=dep):
