@@ -61,50 +61,16 @@ def load_candidates(root: Path, source: str, limit: int = 80, mode: str = "sampl
     source = "railway" if source == "railway" else "cloudflare"
     limit = max(1, min(4096, int(limit or 80)))
     values: list[str] = []
-    prepared_loaded = False
-    # ONEX ships a large, prepared candidate file. The ready-IP screen must
-    # scan this file instead of silently falling back to provider CIDR ranges.
-    if source == "cloudflare":
-        prepared_files = (
-            root / "onex_repo" / "ips.txt",
-            root / "data" / "cloudflare_ips.txt",
-            root / "config" / "cloudflare_ips.txt",
-        )
-        for path in prepared_files:
-            if path.is_file():
-                values.extend(path.read_text(errors="ignore").splitlines())
-                prepared_loaded = True
-                break
     if source == "railway":
         files = (root / "data" / "endpoint.txt", root / "config" / "endpoint.txt")
     else:
         files = (root / "data" / "cf_subnets.txt", root / "config" / "cf_subnets.txt")
-    # Only use the older subnet files when the prepared file is absent.
-    if not values:
-        for path in files:
-            if path.is_file():
-                values.extend(path.read_text(errors="ignore").splitlines())
-                break
+    for path in files:
+        if path.is_file():
+            values.extend(path.read_text(errors="ignore").splitlines())
+            break
     if source == "cloudflare" and not values:
         values = list(DEFAULT_CLOUDFLARE_CIDRS)
-
-    # The shipped file also has a small number of hostnames. This screen is
-    # explicitly an IP tester, so keep only literal IPv4/IPv6 entries from it.
-    if source == "cloudflare" and prepared_loaded:
-        ip_values: list[str] = []
-        for raw in values:
-            value = raw.strip()
-            if not value or value.startswith("#"):
-                continue
-            parsed = _parse_endpoint(value)
-            if not parsed:
-                continue
-            try:
-                ipaddress.ip_address(parsed[0])
-            except ValueError:
-                continue
-            ip_values.append(value)
-        values = ip_values
     if source == "railway" and not values:
         target = (os.environ.get("RAILWAY_PUBLIC_DOMAIN") or os.environ.get("RAILWAY_STATIC_URL") or os.environ.get("ONEX_PUBLIC_URL") or "")
         target = target.split("://", 1)[-1].split("/", 1)[0].rsplit(":", 1)[0]
@@ -116,11 +82,6 @@ def load_candidates(root: Path, source: str, limit: int = 80, mode: str = "sampl
 
     out: list[tuple[str, int]] = []
     seen: set[tuple[str, int]] = set()
-    # The prepared file contains many hosts. Sampling from the whole file
-    # prevents small scans from repeatedly testing only its first lines.
-    if source == "cloudflare" and mode == "sample" and len(values) > limit:
-        rng = random.Random(f"{root}:{len(values)}:{limit}")
-        values = rng.sample(values, limit)
     per_range = max(1, min(limit, 512))
     for raw in values:
         raw = raw.strip()
