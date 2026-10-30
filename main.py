@@ -10460,18 +10460,9 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
 
 <style id="onex-mobile-topbar-final">
 @media (max-width:640px){
-  .onex-topbar{display:flex!important;flex-wrap:wrap;align-items:center;justify-content:center;height:auto!important;min-height:0!important;max-width:100%;width:100%;box-sizing:border-box;gap:8px!important;padding:10px!important;margin-bottom:10px;overflow:hidden}
-  .onex-topbar-brand{display:none!important}
-  .top-server{order:-1;flex:0 0 100%;width:100%;min-width:0;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:4px 8px;white-space:normal;text-align:center}
-  .top-server b{font-size:12px;white-space:nowrap}
-  .top-server small{font-size:9px;max-width:none;white-space:normal;overflow-wrap:anywhere}
-  .top-server .top-sep{display:none}
-  .top-actions{flex:0 0 100%;width:100%;min-width:0;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px}
-  .hexa-swatches{flex:1 1 auto;min-width:0;display:flex;flex-wrap:wrap;justify-content:center;gap:7px}
-  .hexa-swatches button{width:24px;height:24px}
-  .top-setting-group{flex:0 0 auto;display:flex;gap:4px}
-  .top-setting-btn{min-height:32px;min-width:44px;padding:0 10px}
-  .top-avatar,.top-chip{display:none!important}
+  .onex-topbar{display:flex!important;align-items:center;justify-content:center;height:auto!important;min-height:0!important;width:100%;max-width:100%;box-sizing:border-box;padding:10px!important;margin-bottom:10px;overflow:hidden}
+  .onex-topbar-brand{display:flex!important;justify-content:center;min-width:0!important;margin:0 auto}
+  .top-server,.top-actions,.hexa-swatches,.top-setting-group,.top-chip,.top-avatar,.top-notify,.top-bell{display:none!important}
 }
 </style>
 <main class="main" id="main">
