@@ -2,6 +2,8 @@
   "$schema": "https://schema.railpack.com",
   "provider": "python",
   "deploy": {
-    "startCommand": "python main.py"
+    "startCommand": "python -u main.py",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 120
   }
 }
