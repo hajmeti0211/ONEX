@@ -1685,13 +1685,11 @@ def group_subscription_lines_for_link(
     if not selected:
         return []
     names = used_names if used_names is not None else set()
-    cfg_count = 1 if (link.get("all_protocols") or link.get("bundle_protocols")) else max(1, min(40, int(link.get("config_count") or 1)))
+    cfg_count = 1 if (link.get("all_protocols") or link.get("bundle_protocols")) else max(1, min(50, int(link.get("config_count") or 1)))
     clean_ips = list(link.get("clean_ips") or [])
     if clean_ips:
-        hosts = []
-        while len(hosts) < cfg_count:
-            hosts.extend(clean_ips)
-        hosts = hosts[:cfg_count]
+        # one clean IP per config; configs beyond the IP count fall back to the base host
+        hosts = (clean_ips[:cfg_count] + [host] * cfg_count)[:cfg_count]
     else:
         hosts = [host] * cfg_count
     lines = []
@@ -1732,12 +1730,10 @@ def link_config_uris(link: dict, uid: str, host: str) -> list[str]:
         normalize_protocol(str(link.get("protocol", DEFAULT_PROTOCOL)))
     ]
     multi = bool(link.get("all_protocols") or link.get("bundle_protocols"))
-    cfg_count = 1 if multi else max(1, min(40, int(link.get("config_count") or 1)))
+    cfg_count = 1 if multi else max(1, min(50, int(link.get("config_count") or 1)))
     if clean_ips:
-        hosts = list(clean_ips)
-        while len(hosts) < cfg_count:
-            hosts.extend(clean_ips)
-        hosts = hosts[:max(cfg_count, len(clean_ips) if multi else cfg_count)]
+        # bundle links keep every IP; normal links place one IP per config
+        hosts = list(clean_ips) if multi else (clean_ips[:cfg_count] + [host] * cfg_count)[:cfg_count]
     else:
         hosts = [host] * cfg_count
     used_names: set = set()
@@ -2211,7 +2207,7 @@ async def make_link(
         "clean_ips": list(clean_ips or []),
         "alarm_enabled": bool(alarm_enabled),
         "category_id": str(category_id or "0"),
-        "config_count": max(1, min(40, int(config_count or 1))),
+        "config_count": max(1, min(50, int(config_count or 1))),
         "all_protocols": bool(all_protocols),
         "bundle_protocols": [
             p for p in (bundle_protocols or [])
@@ -3890,7 +3886,7 @@ async def create_link_api(
     category_id = str(body.get("category_id") or "0")
     if category_id not in CATEGORIES:
         category_id = "0"
-    config_count = safe_int(body.get("config_count", 1), minimum=1, maximum=40)
+    config_count = safe_int(body.get("config_count", 1), minimum=1, maximum=50)
     all_protocols = bool(body.get("all_protocols", False))
     if all_protocols and protocol not in RAILWAY_SUB_PROTOCOLS:
         all_protocols = False
@@ -4046,7 +4042,7 @@ async def create_auto_link(
         "maximum": {"ip":0,"conn":0,"speed":0,"fp":"randomized","fragment":"safe"},
     }
     cfg = profiles.get(profile, profiles["balanced"])
-    config_count = safe_int(body.get("config_count", 1), minimum=1, maximum=40)
+    config_count = safe_int(body.get("config_count", 1), minimum=1, maximum=50)
     all_protocols = bool(body.get("all_protocols", False))
     if all_protocols and protocol not in RAILWAY_SUB_PROTOCOLS:
         all_protocols = False
@@ -4706,7 +4702,7 @@ async def update_link(
                 body.get("config_count", 1),
                 default=1,
                 minimum=1,
-                maximum=40,
+                maximum=50,
             )
 
         if "all_protocols" in body:
@@ -13820,7 +13816,7 @@ function readySelectAll(){const good=readyCloudflareRows.filter(x=>x.ok).slice(0
 function readyClearSelection(){readyCloudflareSelected.clear();renderReadyCloudflareIps();toast('انتخاب‌ها لغو شد')}
 async function readyCopyIps(){let ips=[...readyCloudflareSelected];if(!ips.length)ips=readyCloudflareRows.filter(x=>x.ok).map(readyIpKey);if(!ips.length){toast('IPی برای کپی نیست');return}toast(await edgeCopy(ips.join('\n'))?`${readyIpFa(ips.length)} IP کپی شد`:'کپی ممکن نشد')}
 async function readyClearResults(){if(!readyCloudflareRows.length){toast('نتیجه‌ای برای پاک کردن نیست');return}readyCloudflareRows=[];readyCloudflareSelected.clear();renderReadyCloudflareIps();const r=await api('/api/scanner/edge/clear',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'cloudflare'})});if(r)toast('نتایج پاک شد')}
-async function applyReadyCloudflareIps(){const ips=[...readyCloudflareSelected];if(!ips.length){toast('ابتدا IP انتخاب کن');return}const b=document.getElementById('readyIpApplyBtn');if(b)b.disabled=true;try{const r=await api('/api/scanner/edge/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'cloudflare',ips})});if(!r)return;await api('/api/cfedge/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({clean_ips:ips})});toast(`${readyIpFa(ips.length)} IP روی ${readyIpFa(r.updated||0)} کانفیگ اعمال شد`)}finally{if(b)b.disabled=false}}
+async function applyReadyCloudflareIps(){const ips=[...readyCloudflareSelected];if(!ips.length){toast('ابتدا IP انتخاب کن');return}const b=document.getElementById('readyIpApplyBtn');if(b)b.disabled=true;try{const r=await api('/api/scanner/edge/apply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source:'cloudflare',ips,config_count:Math.max(1,Math.min(50,Number(document.getElementById('readyIpCfgCount')?.value)||ips.length))})});if(!r)return;await api('/api/cfedge/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({clean_ips:ips})});toast(`${readyIpFa(ips.length)} IP روی ${readyIpFa(r.updated||0)} کانفیگ اعمال شد`)}finally{if(b)b.disabled=false}}
 
 document.querySelectorAll('.nav-cloudflare-toggle').forEach(toggle=>toggle.addEventListener('click',e=>{e.preventDefault();const group=toggle.closest('.nav-cloudflare'),menu=group?.querySelector('.nav-cloudflare-menu');if(!group||!menu)return;const open=group.classList.toggle('open');toggle.setAttribute('aria-expanded',open?'true':'false');menu.hidden=!open;}));
 document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.addEventListener('click',()=>{
@@ -16045,7 +16041,7 @@ cloudflare.com"></textarea></div>
     <div class="ready-ip-head"><div><div class="ready-ip-title">لیست کامل نتایج IP</div><div class="ready-ip-sub">IPهای سالم را انتخاب کن و مستقیم روی کانفیگ‌های Cloudflare اعمال کن.</div></div><strong id="readyIpUpdated" class="ready-ip-badge">—</strong></div>
     <div class="ready-ip-toolbar"><button type="button" class="btn btn-danger" onclick="readyClearResults()">پاک کردن نتایج</button><button type="button" class="btn" onclick="readyCopyIps()">کپی IPها</button><button type="button" class="btn" onclick="readyClearSelection()">لغو انتخاب</button><button type="button" class="btn" onclick="readySelectAll()">انتخاب همه سرورها</button><input id="readyIpSearch" class="ready-ip-search" dir="rtl" placeholder="جستجوی IP یا موقعیت سرور" oninput="renderReadyCloudflareIps()"><span id="readyIpCount" class="ready-ip-badge">۰ نتیجه</span></div>
     <div class="ready-ip-list"><div class="ready-ip-table-head"><span>IP</span><span>موقعیت</span><span>وضعیت</span><span>سرعت</span><span>انتخاب</span></div><div id="readyIpList"><div class="ready-ip-empty">هنوز اسکن انجام نشده است.</div></div></div>
-    <div class="ready-ip-footer"><div><strong id="readyIpSelected">۰ IP انتخاب شده</strong><small>IPهای انتخابی روی لینک‌ها و کانفیگ‌های Cloudflare اعمال می‌شوند.</small></div><button type="button" id="readyIpApplyBtn" class="btn btn-p" onclick="applyReadyCloudflareIps()">اعمال روی کانفیگ‌های Cloudflare</button></div>
+    <div class="ready-ip-footer"><div><strong id="readyIpSelected">۰ IP انتخاب شده</strong><small>هر IP انتخابی به یک کانفیگ می‌رسد. اگر تعداد کانفیگ کمتر باشد، فقط همان تعداد IP اعمال می‌شود.</small></div><div class="ready-ip-field" style="min-width:170px"><label for="readyIpCfgCount">تعداد کانفیگ در ساب (۱ تا ۵۰)</label><input id="readyIpCfgCount" type="number" min="1" max="50" value="50" dir="ltr"></div><button type="button" id="readyIpApplyBtn" class="btn btn-p" onclick="applyReadyCloudflareIps()">اعمال روی کانفیگ‌های Cloudflare</button></div>
   </div>
 </section>
 
@@ -16633,11 +16629,13 @@ async def edge_scan_apply(request: Request, _=Depends(require_perm("configs"))):
     link_ids = body.get("link_ids") or []
     if not chosen:
         raise HTTPException(400, "ابتدا یک اسکن موفق انجام دهید")
+    cfg_n = safe_int(body.get("config_count"), default=0, minimum=0, maximum=50)
     async with LINKS_LOCK:
         targets = list(LINKS.keys()) if not link_ids else [str(x) for x in link_ids if str(x) in LINKS]
         for lid in targets:
-            current = LINKS[lid].get("clean_ips") or []
-            LINKS[lid]["clean_ips"] = list(dict.fromkeys(chosen + [str(x) for x in current if str(x) not in chosen]))[:10]
+            LINKS[lid]["clean_ips"] = list(chosen)
+            if cfg_n:
+                LINKS[lid]["config_count"] = max(1, min(50, cfg_n))
     await save_state()
     log_activity("scanner", f"{len(chosen)} IP از {source} روی {len(targets)} کانفیگ اعمال شد", "ok")
     return {"ok": True, "source": source, "ips": chosen, "updated": len(targets)}
