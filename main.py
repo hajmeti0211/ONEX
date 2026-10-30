@@ -16952,17 +16952,21 @@ def _front_proxy_ctx(internal_port: int) -> dict:
 
 
 async def _serve():
-    internal_port = safe_int(os.environ.get("ONEX_INTERNAL_PORT", PORT + 1), PORT + 1, 1, 65535)
-    host, port = "127.0.0.1", internal_port
+    # Shiprr and other PaaS platforms probe PORT directly with HTTP. Keep
+    # Uvicorn on that public port by default; the raw TCP front proxy is
+    # opt-in for deployments that explicitly need protocol routing.
+    host, port = "0.0.0.0", PORT
     front = None
-    try:
-        from onex.core.front_proxy import make_handler
-        ctx = _front_proxy_ctx(internal_port)
-        front = await asyncio.start_server(make_handler(ctx), "0.0.0.0", PORT)
-        logger.info("Front proxy on 0.0.0.0:%s (panel via 127.0.0.1:%s)", PORT, internal_port)
-    except Exception as exc:
-        logger.warning("Front proxy unavailable (%s); uvicorn binds the public port directly", exc)
-        host, port = "0.0.0.0", PORT
+    if os.environ.get("ONEX_ENABLE_FRONT_PROXY", "").strip().lower() in {"1", "true", "yes"}:
+        internal_port = safe_int(os.environ.get("ONEX_INTERNAL_PORT", PORT + 1), PORT + 1, 1, 65535)
+        try:
+            from onex.core.front_proxy import make_handler
+            ctx = _front_proxy_ctx(internal_port)
+            front = await asyncio.start_server(make_handler(ctx), "0.0.0.0", PORT)
+            host, port = "127.0.0.1", internal_port
+            logger.info("Front proxy enabled on 0.0.0.0:%s (panel via 127.0.0.1:%s)", PORT, internal_port)
+        except Exception as exc:
+            logger.warning("Front proxy unavailable (%s); Uvicorn binds the public port directly", exc)
     config = uvicorn.Config(app, host=host, port=port, log_level="info")
     server = uvicorn.Server(config)
     if front is not None:
