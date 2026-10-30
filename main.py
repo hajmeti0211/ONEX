@@ -11234,6 +11234,31 @@ Cache-Control: no-cache"></textarea></div>
  #page-edge input:not([type=checkbox]):not([type=radio]),#page-edge select,#page-edge textarea{font-size:16px;min-height:44px}
 }
 </style>
+<style id="onex-edge-fix4">
+/* inputs/buttons inherit the panel font (no more system handwriting font) */
+#page-edge input,#page-edge select,#page-edge textarea,#page-edge button{font-family:Vazirmatn,system-ui,sans-serif}
+#page-edge input[dir=ltr],#page-edge textarea[dir=ltr]{font-family:"JetBrains Mono",ui-monospace,monospace}
+#page-edge input:not([type=checkbox]):not([type=radio]),#page-edge select,#page-edge textarea{height:44px;padding:0 12px;border-radius:12px;box-sizing:border-box;line-height:1.4}
+#page-edge textarea{height:auto;padding:10px 12px}
+#page-edge input::placeholder,#page-edge textarea::placeholder{font-family:Vazirmatn,system-ui,sans-serif;font-size:12px;opacity:.6}
+#page-edge input[dir=ltr]::placeholder{text-align:right}
+.edge-filter{flex-wrap:nowrap}
+.edge-filter input{min-width:0}
+.edge-filter #edgeResultCount{white-space:nowrap;flex:none}
+.edge-manual input{min-width:0}
+.edge-actions .btn{height:44px;min-height:44px}
+@media(max-width:640px){
+ .edge-actions{display:flex;flex-direction:column;gap:8px}
+ .edge-actions .btn,.edge-actions .edge-del{width:100%;display:flex;justify-content:center;align-items:center;order:0}
+ .edge-actions .btn-p{order:-1}
+ .edge-actions #edgeBtnTest{order:1}
+ .edge-filter{flex-wrap:wrap}
+ .edge-filter #edgeResultCount{width:100%;text-align:start}
+ .edge-manual{flex-direction:column;align-items:stretch;gap:8px}
+ .edge-manual .btn{width:100%}
+ .edge-scan-box{gap:10px}
+}
+</style>
 <section class="page" id="page-edge">
   <div class="edge-hero">
     <div><div class="page-title"><span>ساخت کانفیگ کلودفلر با پنل ONEX</span></div><div class="page-sub">اتصال واقعی به Cloudflare، انتخاب دامنه، اسکن IP و اعمال مستقیم روی اشتراک‌ها.</div></div>
@@ -11280,7 +11305,7 @@ Cache-Control: no-cache"></textarea></div>
       <div class="field"><label for="edgeCfSni">SNI</label><input id="edgeCfSni" dir="ltr" value="www.cloudflare.com" autocomplete="off"></div>
       <button type="button" class="btn btn-p" id="edgeBtnScan" onclick="edgeScan()">شروع اسکن واقعی</button>
     </div>
-    <div class="edge-manual"><input id="edgeManualIps" dir="ltr" autocomplete="off" placeholder="IP دستی برای تست، با کاما جدا کن"><button type="button" class="btn" id="edgeBtnManual" onclick="edgeScanManual()">تست IP دستی</button></div>
+    <div class="edge-manual"><input id="edgeManualIps" dir="ltr" autocomplete="off" placeholder="مثلاً 104.16.0.1, 172.67.1.1"><button type="button" class="btn" id="edgeBtnManual" onclick="edgeScanManual()">تست IP دستی</button></div>
     <div id="edgeScanResult" class="edge-test-result"></div>
   </div>
   <div class="edge-card">
