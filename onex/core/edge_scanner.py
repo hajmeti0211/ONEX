@@ -58,15 +58,13 @@ def _expand_network(raw: str, limit: int, mode: str) -> list[tuple[str, int]]:
 
 def load_candidates(root: Path, source: str, limit: int = 80, mode: str = "sample") -> list[tuple[str, int]]:
     """Load and expand provider candidates with validation and hard caps."""
-    source = str(source or "cloudflare").lower()
-    if source not in {"cloudflare", "onex-ready", "railway"}:
-        source = "cloudflare"
+    source = "railway" if source == "railway" else "cloudflare"
     limit = max(1, min(4096, int(limit or 80)))
     values: list[str] = []
     prepared_loaded = False
     # ONEX ships a large, prepared candidate file. The ready-IP screen must
     # scan this file instead of silently falling back to provider CIDR ranges.
-    if source == "onex-ready":
+    if source == "cloudflare":
         prepared_files = (
             root / "onex_repo" / "ips.txt",
             root / "data" / "cloudflare_ips.txt",
@@ -92,7 +90,7 @@ def load_candidates(root: Path, source: str, limit: int = 80, mode: str = "sampl
 
     # The shipped file also has a small number of hostnames. This screen is
     # explicitly an IP tester, so keep only literal IPv4/IPv6 entries from it.
-    if source == "onex-ready" and prepared_loaded:
+    if source == "cloudflare" and prepared_loaded:
         ip_values: list[str] = []
         for raw in values:
             value = raw.strip()
@@ -120,7 +118,7 @@ def load_candidates(root: Path, source: str, limit: int = 80, mode: str = "sampl
     seen: set[tuple[str, int]] = set()
     # The prepared file contains many hosts. Sampling from the whole file
     # prevents small scans from repeatedly testing only its first lines.
-    if source == "onex-ready" and mode == "sample" and len(values) > limit:
+    if source == "cloudflare" and mode == "sample" and len(values) > limit:
         rng = random.Random(f"{root}:{len(values)}:{limit}")
         values = rng.sample(values, limit)
     per_range = max(1, min(limit, 512))
