@@ -145,37 +145,3 @@ async def scan(candidates: list[tuple[str, int]], sni: str = "", timeout: float 
 
     results = await asyncio.gather(*(one(h, p) for h, p in unique))
     return sorted(results, key=lambda item: (not item["ok"], item["latency_ms"]))
-
-
-def load_repo_ipv4(root: Path, limit: int = 128, mode: str = "sample") -> list[str]:
-    """Return IPv4 addresses from the bundled ONEX repository (onex_repo/ips.txt).
-
-    Domain lines and private/reserved addresses are skipped. Sample mode picks a
-    deterministic random subset so repeated scans compare the same IPs; full mode
-    takes the first `limit` addresses. Hard-capped at 2048 per call.
-    """
-    limit = max(1, min(2048, int(limit or 128)))
-    path = Path(root) / "onex_repo" / "ips.txt"
-    try:
-        rows = path.read_text(encoding="utf-8", errors="ignore").splitlines()
-    except OSError:
-        return []
-    seen: set[str] = set()
-    ips: list[str] = []
-    for raw in rows:
-        value = raw.strip()
-        if not value:
-            continue
-        try:
-            addr = ipaddress.IPv4Address(value)
-        except ValueError:
-            continue
-        if addr.is_private or addr.is_reserved or addr.is_multicast or addr.is_unspecified or addr.is_loopback:
-            continue
-        if value not in seen:
-            seen.add(value)
-            ips.append(value)
-    if mode == "sample" and len(ips) > limit:
-        rng = random.Random("onex-repo-ips")
-        return sorted(rng.sample(ips, limit))
-    return ips[:limit]
