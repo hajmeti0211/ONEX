@@ -10438,7 +10438,7 @@ html.light .onex-topbar-brand{background:#fff;border-color:rgba(var(--accent-rgb
       <div class="nav-cloudflare-menu" id="cloudflareNavMenu" hidden>
         <button class="nav-item nav-subitem" type="button" data-page="edge-account" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c.5-3.7 2.4-5.7 5.5-5.7s5 2 5.5 5.7"/><path d="M17 8v6M14 11h6"/></svg><span class="nav-label">ساخت اکانت کلودفلر</span></button>
         <button class="nav-item nav-subitem" type="button" data-page="edge-config" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 20 7v5c0 4.5-3.2 7.7-8 9-4.8-1.3-8-4.5-8-9V7l8-4Z"/><path d="M8 12h8M12 8v8"/></svg><span class="nav-label">ساخت کانفیگ کلودفلر</span></button>
-        <button class="nav-item nav-subitem" type="button" data-page="edge-tools" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5M11 8v6M8 11h6"/></svg><span class="nav-label">اسکنر کلودفلر</span></button>
+        <button class="nav-item nav-subitem" type="button" data-page="edge-ready-ips" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 5 5M11 8v6M8 11h6"/></svg><span class="nav-label">اسکنر کلودفلر</span></button>
         <button class="nav-item nav-subitem" type="button" data-page="edge-ready-ips" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/><path d="m17 16 2 2 3-4"/></svg><span class="nav-label">آیپی‌های آماده کلودفلر</span></button>
         <button class="nav-item nav-subitem" type="button" data-page="edge-sni" data-anchor="" data-perm="settings"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12s2.7-5 8-5 8 5 8 5-2.7 5-8 5-8-5-8-5Z"/><circle cx="12" cy="12" r="2.5"/><path d="M12 3v2M12 19v2"/></svg><span class="nav-label">اسکنر Sni</span></button>
       </div>
@@ -16005,16 +16005,15 @@ cloudflare.com"></textarea></div>
 @media(max-width:640px){#page-edge-ready-ips .ready-ip-kpis{grid-template-columns:1fr 1fr}.ready-ip-kpi:last-child{grid-column:1/-1}#page-edge-ready-ips .ready-ip-row{grid-template-columns:1fr auto}.ready-ip-row .chk{grid-column:1/-1;justify-content:flex-start}}
 </style>
 <section class="page cf-dedicated-page" id="page-edge-ready-ips">
-  <div class="page-head"><div><div class="page-title"><span>آیپی‌های آماده کلودفلر</span></div><div class="page-sub">IPهای سالم ذخیره‌شده از اسکن Cloudflare؛ آماده برای انتخاب و اعمال روی کانفیگ‌ها.</div></div></div>
+  <div class="page-head"><div><div class="page-title"><span>آیپی‌های آماده کلودفلر</span></div><div class="page-sub">اسکن، انتخاب، ذخیره و اعمال IPهای سالم Cloudflare روی کانفیگ‌ها.</div></div></div>
   <div class="ready-ip-card">
     <div class="ready-ip-head"><div><div class="ready-ip-title">لیست IPهای آماده Cloudflare</div><div class="ready-ip-sub">نتیجه‌های سالم ذخیره‌شده از اسکنر کلودفلر در این بخش نمایش داده می‌شوند.</div></div><span class="ready-ip-badge">CLOUDFLARE IP</span></div>
     <div class="ready-ip-kpis"><div class="ready-ip-kpi"><span>IPهای سالم</span><b id="readyIpCount">۰</b></div><div class="ready-ip-kpi"><span>آخرین بروزرسانی</span><b id="readyIpUpdated">—</b></div><div class="ready-ip-kpi"><span>IPهای انتخاب‌شده</span><b id="readyIpSelected">۰</b></div></div>
     <div class="ready-ip-actions"><button type="button" class="btn btn-p" onclick="loadReadyCloudflareIps()">بروزرسانی IPها</button><button type="button" class="btn" onclick="copyReadyCloudflareIps()">کپی IPها</button><button type="button" class="btn btn-p" onclick="applyReadyCloudflareIps()">اعمال روی کانفیگ‌های Cloudflare</button></div>
     <div id="readyIpList" class="ready-ip-list"><div class="ready-ip-empty">در حال دریافت IPهای آماده...</div></div>
   </div>
-</section>
 
-<section class="page" id="page-edge-tools">
+  <div class="ready-ip-scan-area">
   <div class="page-head"><div><div class="page-title"><span>اسکنر IP</span></div><div class="page-sub">پیدا کردن IPهای سالم و سریع برای Cloudflare، دامنه‌ی دلخواه یا Railway، روی هر پورتی که بخواهی.</div></div></div>
   <div class="card">
     <div class="card-title">تنظیمات اسکن</div>
@@ -16066,7 +16065,11 @@ cloudflare.com"></textarea></div>
     <div id="onexPublicEndpoint">در حال بررسی...</div>
     <button class="btn" type="button" onclick="loadOnexPublicEndpoint()">بروزرسانی دامنه</button>
   </div>
+
+  </div>
 </section>
+
+<section class="page" id="page-edge-tools"><div class="page-head"><div><div class="page-title"><span>اسکنر کلودفلر</span></div><div class="page-sub">این ابزار در بخش «آیپی‌های آماده کلودفلر» قرار دارد.</div></div></div></section>
 <script>
 (function(){
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
